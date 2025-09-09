@@ -1,41 +1,117 @@
+# Production-ready Docker Compose for AWS Elastic Beanstalk
+# Single nginx entrypoint on port 80, proxies to frontend/backend services
+# Compatible with EB multi-container Docker (no profiles or buildx features)
+
 services:
-  api:
+  # Nginx reverse proxy - single public entrypoint
+  nginx:
     build:
       context: .
-      dockerfile: docker/django.Dockerfile
-    env_file:
-      - ie_professors_database/.env
+      dockerfile: infra/nginx.Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      frontend:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: "${EB_ENV_NAME:-env}-nginx"
+        awslogs-region: "${AWS_DEFAULT_REGION:-us-east-1}"
+        awslogs-stream-prefix: "${EB_LOG_STREAM_PREFIX:-app}"
+        # Required IAM role permissions: logs:CreateLogGroup, logs:CreateLogStream, logs:PutLogEvents
+
+  # Django backend service
+  backend:
+    build:
+      context: ./ie_professors_database
+      dockerfile: Dockerfile
+    # Alternative for ECR pre-built images (uncomment and update):
+    # image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_BACKEND_REPO}:${IMAGE_TAG:-latest}
     environment:
-      # Override DB_HOST if needed (localhost won't work in container)
-      DB_HOST: ${DB_HOST_OVERRIDE:-host.docker.internal}
-      GUNICORN_WORKERS: 3
-      GUNICORN_TIMEOUT: 60
+      # Database connection
+      DATABASE_URL: ${DATABASE_URL}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT: ${DB_PORT:-5432}
+      
+      # Django security
+      SECRET_KEY: ${SECRET_KEY}
       DEBUG: "false"
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+      CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+      
+      # Static/media files
+      DJANGO_COLLECTSTATIC: ${DJANGO_COLLECTSTATIC:-1}
       STATIC_ROOT: "/vol/static"
       MEDIA_ROOT: "/vol/media"
+      
+      # Email configuration
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      
+      # Gunicorn settings
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS:-3}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT:-60}
     volumes:
       - static_data:/vol/static
       - media_data:/vol/media
-    ports:
-      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/admin/login/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     restart: unless-stopped
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: "${EB_ENV_NAME:-env}-backend"
+        awslogs-region: "${AWS_DEFAULT_REGION:-us-east-1}"
+        awslogs-stream-prefix: "${EB_LOG_STREAM_PREFIX:-app}"
 
-  web:
+  # Next.js frontend service
+  frontend:
     build:
-      context: .
-      dockerfile: docker/next.Dockerfile
+      context: ./ie-professors-frontend
+      dockerfile: Dockerfile
+    # Alternative for ECR pre-built images (uncomment and update):
+    # image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_FRONTEND_REPO}:${IMAGE_TAG:-latest}
     environment:
-      # Ensure frontend talks to the api service name
-      NEXT_PUBLIC_PROFESSORS_API_SERVICE: http://api:8000 #On pipeline make it be set on a variable
-      PROFESSORS_API_SERVICE: http://api:8000 #On pipeline make it be set on a variable
       NODE_ENV: production
-    ports:
-      - "3000:3000"
+      NEXT_TELEMETRY_DISABLED: 1
+      # Runtime environment variables (NEXT_PUBLIC_* available in browser)
+      NEXT_PUBLIC_API_BASE: ${NEXT_PUBLIC_API_BASE} # !!!! Might be NEXT_PUBLIC_API
+      NEXT_PUBLIC_PROFESSORS_API_SERVICE: ${NEXT_PUBLIC_API_BASE}
+      PROFESSORS_API_SERVICE: "http://backend:8000"
     depends_on:
-      - api
+      - backend
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     restart: unless-stopped
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: "${EB_ENV_NAME:-env}-frontend"
+        awslogs-region: "${AWS_DEFAULT_REGION:-us-east-1}"
+        awslogs-stream-prefix: "${EB_LOG_STREAM_PREFIX:-app}"
 
 volumes:
   static_data:
   media_data:
-
