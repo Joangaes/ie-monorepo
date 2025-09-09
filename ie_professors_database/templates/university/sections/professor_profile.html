@@ -1,0 +1,19 @@
+{% load i18n unfold %}
+
+{% component "unfold/components/card.html" with class="p-5" %}
+    <h2 class="text-lg font-bold mb-2">{{ professor.name }}</h2>
+    <p><strong>{% trans "Email" %}:</strong> {{ professor.email }}</p>
+    <p><strong>{% trans "Campus" %}:</strong> {{ professor.get_campus_display }}</p>
+    <p><strong>{% trans "Degrees" %}:</strong>
+        {% for degree in degrees %}
+            {{ degree.name }}{% if not forloop.last %}, {% endif %}
+        {% empty %}
+            <span class="text-gray-400">{% trans "No degrees listed." %}</span>
+        {% endfor %}
+    </p>
+    <p><strong>{% trans "Availability" %}:</strong> {{ professor.get_availability_display }}</p>
+    <p><strong>{% trans "Type" %}:</strong> {{ professor.get_professor_type_display }}</p>
+    <p><strong>{% trans "Phone" %}:</strong> {{ professor.phone_number }}</p>
+    <p><strong>{% trans "Birth Year" %}:</strong> {{ professor.birth_year }}</p>
+    <p><strong>{% trans "Joined Year" %}:</strong> {{ professor.joined_year }}</p>
+{% endcomponent %} 

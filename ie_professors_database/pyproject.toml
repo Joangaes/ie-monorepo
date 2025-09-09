@@ -1,0 +1,32 @@
+[project]
+name = "ie-professor-management"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Jose Antonio Garcia"}
+]
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "django (>=5.2.3,<6.0.0)",
+    "django-unfold (>=0.60.0,<0.61.0)",
+    "django-countries (>=7.6.1,<8.0.0)",
+    "django-modeltranslation (>=0.19.15,<0.20.0)",
+    "django-extensions (>=4.1,<5.0)",
+    "psycopg2-binary (>=2.9.10,<3.0.0)",
+    "python-dotenv (>=1.1.1,<2.0.0)",
+    "django-import-export (>=4.3.8,<5.0.0)",
+    "django-simple-history (>=3.10.1,<4.0.0)",
+    "django-timestampable (>=1.1.4,<2.0.0)",
+    "djangorestframework (>=3.16.0,<4.0.0)",
+    "django-filter (>=25.1,<26.0)",
+    "django-cors-headers (>=4.7.0,<5.0.0)",
+    "djangorestframework-simplejwt (>=5.5.1,<6.0.0)",
+    "gunicorn (>=22.0.0,<23.0.0)",
+]
+packe-mode = false
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

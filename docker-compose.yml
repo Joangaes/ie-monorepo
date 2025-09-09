@@ -1,0 +1,41 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/django.Dockerfile
+    env_file:
+      - ie_professors_database/.env
+    environment:
+      # Override DB_HOST if needed (localhost won't work in container)
+      DB_HOST: ${DB_HOST_OVERRIDE:-host.docker.internal}
+      GUNICORN_WORKERS: 3
+      GUNICORN_TIMEOUT: 60
+      DEBUG: "false"
+      STATIC_ROOT: "/vol/static"
+      MEDIA_ROOT: "/vol/media"
+    volumes:
+      - static_data:/vol/static
+      - media_data:/vol/media
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/next.Dockerfile
+    environment:
+      # Ensure frontend talks to the api service name
+      NEXT_PUBLIC_PROFESSORS_API_SERVICE: http://api:8000 #On pipeline make it be set on a variable
+      PROFESSORS_API_SERVICE: http://api:8000 #On pipeline make it be set on a variable
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  static_data:
+  media_data:
+

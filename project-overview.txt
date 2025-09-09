@@ -1,0 +1,42 @@
+🗂️ Project Overview
+This project represents a frontend migration of an existing Django-based admin interface (originally built using django-unfold) into a React-based application.
+
+🎯 Purpose
+The goal of this migration is to modernize and modularize the frontend interface while continuing to rely on the existing Django backend for:
+
+Authentication and authorization
+
+Database access and business logic
+
+Security and session management
+
+Admin-level API services
+
+By decoupling the UI from Django templates and building it in React (Next.js + TypeScript), we gain:
+
+A faster, more dynamic user experience
+
+Better component reuse and UI testing
+
+Easier integration with frontend libraries and state management tools
+
+🏗️ Architecture
+Frontend: React (Next.js), TypeScript, modular components
+
+Backend: Django (with django-unfold), PostgreSQL, DRF (if applicable)
+
+Communication: REST or GraphQL API layer (depending on Django config)
+
+Local Development: Two separate codebases (frontend & backend) structured for collaboration
+
+🔄 Migration Strategy
+We are gradually porting features from the Django interface to the React app:
+
+Visual components are re-implemented in React
+
+Backend logic remains in Django
+
+Any necessary API endpoints are exposed from Django to power the new frontend
+
+This approach allows us to retain the strengths of Django's ecosystem while moving toward a more flexible and maintainable frontend.
+

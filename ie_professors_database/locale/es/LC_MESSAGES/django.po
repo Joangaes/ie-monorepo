@@ -1,0 +1,344 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-27 11:08+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: ie_professor_management/settings.py:155
+msgid "IE University Admin"
+msgstr "Administración de IE University"
+
+#: ie_professor_management/settings.py:156
+msgid "IE University"
+msgstr "IE University"
+
+#: ie_professor_management/settings.py:157
+msgid "Academic Management"
+msgstr "Gestión Académica"
+
+#: ie_professor_management/settings.py:161
+msgid "IE University Website"
+msgstr "Sitio Web de IE University"
+
+#: ie_professor_management/settings.py:221
+msgid "Main Navigation"
+msgstr "Navegación Principal"
+
+#: ie_professor_management/settings.py:226 university/models.py:159
+msgid "Professors"
+msgstr "Profesores"
+
+#: ie_professor_management/settings.py:231 university/admin.py:74
+#: university/models.py:48 university/models.py:69
+msgid "Programs"
+msgstr "Programas"
+
+#: ie_professor_management/settings.py:238 university/models.py:28
+msgid "Intakes"
+msgstr "Convocatorias"
+
+#: ie_professor_management/settings.py:245 university/models.py:82
+msgid "Courses"
+msgstr "Cursos"
+
+#: ie_professor_management/settings.py:253
+msgid "User Management"
+msgstr "Gestión de Usuarios"
+
+#: ie_professor_management/settings.py:258
+msgid "Users"
+msgstr "Usuarios"
+
+#: ie_professor_management/settings.py:263
+msgid "Groups"
+msgstr "Grupos"
+
+#: university/admin.py:51 university/models.py:100
+msgid "Sections"
+msgstr "Secciones"
+
+#: university/admin.py:123
+msgid "Personal Information"
+msgstr "Información Personal"
+
+#: university/admin.py:126
+msgid "Academic Information"
+msgstr "Información Académica"
+
+#: university/models.py:6
+msgid "Fall"
+msgstr "Otoño"
+
+#: university/models.py:7
+msgid "Spring"
+msgstr "Primavera"
+
+#: university/models.py:10
+msgid "Segovia"
+msgstr "Segovia"
+
+#: university/models.py:11
+msgid "Madrid IE Tower"
+msgstr "Madrid IE Tower"
+
+#: university/models.py:14
+msgid "Morning"
+msgstr "Mañana"
+
+#: university/models.py:15
+msgid "Afternoon"
+msgstr "Tarde"
+
+#: university/models.py:18 university/models.py:40 university/models.py:51 university/models.py:72 university/models.py:89 university/models.py:103 university/models.py:122 university/models.py:140
+msgid "Name"
+msgstr "Nombre"
+
+#: university/models.py:19
+msgid "Start Time"
+msgstr "Fecha de inicio"
+
+#: university/models.py:20
+msgid "End Time"
+msgstr "Fecha de fin"
+
+#: university/models.py:21
+msgid "Semester"
+msgstr "Semestre"
+
+#: university/models.py:27 university/models.py:90
+msgid "Intake"
+msgstr "Convocatoria"
+
+#: university/models.py:32
+msgid "Business School"
+msgstr "Escuela de Negocios"
+
+#: university/models.py:33
+msgid "Law School"
+msgstr "Escuela de Derecho"
+
+#: university/models.py:34
+msgid "Science and Technology School"
+msgstr "Escuela de Ciencia y Tecnología"
+
+#: university/models.py:35
+msgid "School of Humanities"
+msgstr "Escuela de Humanidades"
+
+#: university/models.py:36
+msgid "Politics, Economics and Global Affairs School"
+msgstr "Escuela de Política, Economía y Asuntos Globales"
+
+#: university/models.py:37
+msgid "School of Architecture and Design"
+msgstr "Escuela de Arquitectura y Diseño"
+
+#: university/models.py:41
+msgid "School"
+msgstr "Escuela"
+
+#: university/models.py:47
+msgid "Program"
+msgstr "Programa"
+
+#: university/models.py:52
+msgid "Atenea Code"
+msgstr "Código Atenea"
+
+#: university/models.py:58 university/models.py:70
+msgid "Area"
+msgstr "Área"
+
+#: university/models.py:59
+msgid "Areas"
+msgstr "Áreas"
+
+#: university/models.py:62
+msgid "Basic"
+msgstr "Básica"
+
+#: university/models.py:63
+msgid "Obligatory"
+msgstr "Obligatoria"
+
+#: university/models.py:64
+msgid "Optional"
+msgstr "Optativa"
+
+#: university/models.py:65
+msgid "Other Activities"
+msgstr "Otras Actividades"
+
+#: university/models.py:71
+msgid "Code"
+msgstr "Código"
+
+#: university/models.py:73
+msgid "Course Type"
+msgstr "Tipo de curso"
+
+#: university/models.py:74
+msgid "Credits"
+msgstr "Créditos"
+
+#: university/models.py:75
+msgid "Sessions"
+msgstr "Sesiones"
+
+#: university/models.py:81 university/models.py:175
+msgid "Course"
+msgstr "Curso"
+
+#: university/models.py:85
+msgid "A"
+msgstr "A"
+
+#: university/models.py:86
+msgid "B"
+msgstr "B"
+
+#: university/models.py:91 university/models.py:144
+msgid "Campus"
+msgstr "Campus"
+
+#: university/models.py:92
+msgid "Course Year"
+msgstr "Año del curso"
+
+#: university/models.py:99 university/models.py:177
+msgid "Section"
+msgstr "Sección"
+
+#: university/models.py:104
+msgid "Country"
+msgstr "País"
+
+#: university/models.py:108 university/models.py:123
+msgid "University"
+msgstr "Universidad"
+
+#: university/models.py:109
+msgid "Universities"
+msgstr "Universidades"
+
+#: university/models.py:116
+msgid "Bachelor"
+msgstr "Grado"
+
+#: university/models.py:117
+msgid "Master"
+msgstr "Máster"
+
+#: university/models.py:118
+msgid "Doctorate"
+msgstr "Doctorado"
+
+#: university/models.py:119
+msgid "Other"
+msgstr "Otro"
+
+#: university/models.py:124
+msgid "Degree Type"
+msgstr "Tipo de titulación"
+
+#: university/models.py:128 university/models.py:163
+msgid "Degree"
+msgstr "Titulación"
+
+#: university/models.py:129 university/models.py:152
+msgid "Degrees"
+msgstr "Titulaciones"
+
+#: university/models.py:135
+msgid "Faculty"
+msgstr "Profesorado"
+
+#: university/models.py:136
+msgid "Adjunct Professor"
+msgstr "Profesor Adjunto"
+
+#: university/models.py:137
+msgid "Visiting Professor"
+msgstr "Profesor Visitante"
+
+#: university/models.py:141
+msgid "Email"
+msgstr "Correo electrónico"
+
+#: university/models.py:142
+msgid "Corporate Email"
+msgstr "Correo corporativo"
+
+#: university/models.py:143
+msgid "Phone Number"
+msgstr "Teléfono"
+
+#: university/models.py:145
+msgid "Availability"
+msgstr "Disponibilidad"
+
+#: university/models.py:146
+msgid "Professor Type"
+msgstr "Tipo de profesor"
+
+#: university/models.py:147
+msgid "Minimum Number of Sessions"
+msgstr "Número mínimo de sesiones"
+
+#: university/models.py:148
+msgid "Birth Year"
+msgstr "Año de nacimiento"
+
+#: university/models.py:149
+msgid "Sex"
+msgstr "Sexo"
+
+#: university/models.py:149
+msgid "Male"
+msgstr "Hombre"
+
+#: university/models.py:149
+msgid "Female"
+msgstr "Mujer"
+
+#: university/models.py:150
+msgid "Joined Year"
+msgstr "Año de incorporación"
+
+#: university/models.py:158 university/models.py:162 university/models.py:176
+msgid "Professor"
+msgstr "Profesor"
+
+#: university/models.py:167
+msgid "Professor Degree"
+msgstr "Titulación del Profesor"
+
+#: university/models.py:168
+msgid "Professor Degrees"
+msgstr "Titulaciones del Profesor"
+
+#: university/models.py:183
+msgid "Course Delivery"
+msgstr "Impartición de Curso"
+
+#: university/models.py:184
+msgid "Course Deliveries"
+msgstr "Imparticiones de Curso"
+
+#~ msgid "Switch Language"
+#~ msgstr "Cambiar idioma"

@@ -1,0 +1,89 @@
+{% extends "admin/base_site.html" %}
+{% load i18n unfold %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% url 'admin:jsi18n' %}"></script>
+    {{ date_form.media }}
+{% endblock %}
+
+{% block content %}
+{% component "unfold/components/container.html" %}
+
+    {% if intakes %}
+        <h2 class="text-lg font-semibold mb-2">🚨 Missing Programs</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {% for intake in intakes %}
+                {% for group in intake.missing_programs %}
+                    {% component "unfold/components/card.html" %}
+                        <div class="flex justify-between">
+                            <a href="{% url 'admin:program_delivery_overview' program_id=group.program.id %}"><strong>{{ group.program.name }}</strong></a>
+                            <span class="text-xs text-gray-400">
+                                {{ intake.name }} – {{ intake.get_semester_display }}
+                            </span>
+                        </div>
+                        <div class="text-xs text-gray-500 mb-2">
+                            {{ intake.start_time }} → {{ intake.end_time }}
+                        </div>
+
+                        <div class="flex items-center justify-between mt-2 mb-4">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-red-100 text-red-600 text-xs font-medium">
+                                🚨 ×{{ group.total_missing }} missing
+                            </span>
+                            <a href="/admin/university/coursedelivery/?sections__intake__id__exact={{ intake.id }}&missing_professor=true&sections__program__id__exact={{ group.program.id }}"
+                               class="text-xs text-blue-600 hover:underline"
+                               target="_blank">
+                                Assign Professors →
+                            </a>
+                        </div>
+
+                        {% if group.sections %}
+                            <ul class="mt-2 space-y-1 text-sm text-gray-600">
+                                {% for section in group.sections %}
+                                    <li class="border-t pt-2">
+                                        <div class="flex justify-between">
+                                            <div>
+                                                Section {{ section.section_name }} —
+                                                Year {{ section.course_year }},
+                                                {{ section.campus }}
+                                            </div>
+                                            <span class="font-mono text-red-500">×{{ section.missing_count }}</span>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endcomponent %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+        <h2 class="text-lg font-semibold mb-2">✅ Complete Programs</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for intake in intakes %}
+                {% for program in intake.complete_programs %}
+                    {% component "unfold/components/card.html" %}
+                        <div class="flex justify-between">
+                            <strong>{{ program.name }}</strong>
+                            <span class="text-xs text-gray-400">
+                                {{ intake.name }} – {{ intake.get_semester_display }}
+                            </span>
+                        </div>
+                        <div class="text-xs text-gray-500 mb-2">
+                            {{ intake.start_time }} → {{ intake.end_time }}
+                        </div>
+                        <span class="inline-flex items-center px-2 py-0.5 mt-2 rounded-full bg-green-100 text-green-600 text-xs font-medium">
+                            ✅ All assigned
+                        </span>
+                    {% endcomponent %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="prose mt-6">
+            <p>No active intakes for today.</p>
+        </div>
+    {% endif %}
+
+{% endcomponent %}
+{% endblock %}

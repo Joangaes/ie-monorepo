@@ -1,0 +1,21 @@
+{% extends "admin/base_site.html" %}
+{% load unfold %}
+
+{% block content %}
+  <h1 class="text-2xl font-bold mb-6">{{intake.name}} - {{ title }}</h1>
+
+  {% if not tables %}
+    <p class="text-gray-500 italic">No course delivery information available for this program and intake.</p>
+  {% endif %}
+
+  {% for table_item in tables %}
+    <div class="mb-8">
+      {% comment %} Use the Unfold card and table components {% endcomment %}
+      {% component "unfold/components/card.html" with title=table_item.title %}
+        {% component "unfold/components/table.html" with table=table_item.table_data card_included=1 striped=1 %}
+      {% endcomponent %}
+      {% endcomponent %}
+
+    </div>
+  {% endfor %}
+{% endblock %}
