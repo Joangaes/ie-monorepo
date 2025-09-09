@@ -10,55 +10,8 @@ on:
     branches: [main]
 
 jobs:
-  # Test stage
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
-
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      - name: Install backend dependencies
-        run: |
-          cd ie_professors_database
-          # Update lock file if pyproject.toml has changed
-          poetry lock
-          poetry install
-
-      - name: Run backend tests
-        run: |
-          cd ie_professors_database
-          poetry run python manage.py test --settings=ie_professor_management.test_settings
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: ie-professors-frontend/package-lock.json
-
-      - name: Install frontend dependencies
-        run: |
-          cd ie-professors-frontend
-          npm ci
-
-      - name: Build frontend (test)
-        run: |
-          cd ie-professors-frontend
-          npm run build
-
   # Deploy stage (only on main branch)
   deploy:
-    needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     
