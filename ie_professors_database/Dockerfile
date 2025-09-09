@@ -32,7 +32,7 @@ COPY pyproject.toml poetry.lock* ./
 # Generate lock file if missing or out of sync, then install
 RUN if [ ! -f poetry.lock ] || ! poetry check; then \
         echo "Regenerating poetry.lock file..." && \
-        poetry lock --no-update; \
+        poetry lock; \
     fi && \
     poetry install --only=main --no-root && \
     rm -rf $POETRY_CACHE_DIR
