@@ -1,0 +1,153 @@
+# Production CI/CD Pipeline for AWS Elastic Beanstalk
+# Builds Docker images, pushes to ECR, and deploys to EB
+
+name: Deploy to AWS EB
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+  BACKEND_REPO: iemanager/backend
+  FRONTEND_REPO: iemanager/frontend
+
+jobs:
+  # Test stage
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install backend dependencies
+        run: |
+          cd ie_professors_database
+          poetry install
+
+      - name: Run backend tests
+        run: |
+          cd ie_professors_database
+          poetry run python manage.py test
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: ie-professors-frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: |
+          cd ie-professors-frontend
+          npm ci
+
+      - name: Run frontend tests
+        run: |
+          cd ie-professors-frontend
+          npm run test:ci
+
+      - name: Build frontend
+        run: |
+          cd ie-professors-frontend
+          npm run build
+
+  # Build and deploy stage (only on main branch)
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Create ECR repositories if they don't exist
+        run: |
+          aws ecr describe-repositories --repository-names ${{ env.BACKEND_REPO }} || \
+          aws ecr create-repository --repository-name ${{ env.BACKEND_REPO }}
+          
+          aws ecr describe-repositories --repository-names ${{ env.FRONTEND_REPO }} || \
+          aws ecr create-repository --repository-name ${{ env.FRONTEND_REPO }}
+
+      - name: Build and push backend image
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd ie_professors_database
+          docker build -t $ECR_REGISTRY/$BACKEND_REPO:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$BACKEND_REPO:latest .
+          docker push $ECR_REGISTRY/$BACKEND_REPO:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$BACKEND_REPO:latest
+
+      - name: Build and push frontend image
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd ie-professors-frontend
+          docker build -t $ECR_REGISTRY/$FRONTEND_REPO:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$FRONTEND_REPO:latest .
+          docker push $ECR_REGISTRY/$FRONTEND_REPO:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$FRONTEND_REPO:latest
+
+      - name: Update docker-compose for ECR images
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Create deployment version of docker-compose.yml
+          cp docker-compose.yml docker-compose.deploy.yml
+          
+          # Replace build contexts with ECR image references
+          sed -i "s|build:|# build:|g" docker-compose.deploy.yml
+          sed -i "s|context: ./ie_professors_database|# context: ./ie_professors_database|g" docker-compose.deploy.yml
+          sed -i "s|dockerfile: Dockerfile|# dockerfile: Dockerfile|g" docker-compose.deploy.yml
+          sed -i "s|context: ./ie-professors-frontend|# context: ./ie-professors-frontend|g" docker-compose.deploy.yml
+          
+          # Add ECR image references
+          sed -i "/# build:/a\\    image: $ECR_REGISTRY/$BACKEND_REPO:$IMAGE_TAG" docker-compose.deploy.yml
+          sed -i "/# context: \.\/ie-professors-frontend/a\\    image: $ECR_REGISTRY/$FRONTEND_REPO:$IMAGE_TAG" docker-compose.deploy.yml
+          
+          # Replace main compose file
+          mv docker-compose.deploy.yml docker-compose.yml
+
+      - name: Install EB CLI
+        run: |
+          pip install awsebcli
+
+      - name: Deploy to Elastic Beanstalk
+        run: |
+          eb deploy production
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Notify deployment success
+        if: success()
+        run: |
+          echo "🚀 Deployment successful!"
+          echo "Backend image: $ECR_REGISTRY/$BACKEND_REPO:${{ github.sha }}"
+          echo "Frontend image: $ECR_REGISTRY/$FRONTEND_REPO:${{ github.sha }}"
