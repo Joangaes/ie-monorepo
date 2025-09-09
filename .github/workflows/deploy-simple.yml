@@ -72,6 +72,15 @@ jobs:
         run: |
           pip install awsebcli
 
+      - name: Verify Dockerfile exists at root
+        run: |
+          if [ ! -f "Dockerfile" ]; then
+            echo "❌ ERROR: No Dockerfile found at repository root!"
+            echo "EB Docker platform requires Dockerfile or Dockerrun.aws.json at root"
+            exit 1
+          fi
+          echo "✅ Dockerfile found at root"
+
       - name: Check Environment Status
         run: |
           eb status Ieuniversitydocker-env 
