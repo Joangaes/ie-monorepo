@@ -72,6 +72,34 @@ jobs:
         run: |
           pip install awsebcli
 
+      - name: Check Environment Status
+        run: |
+          eb status Ieuniversitydocker-env
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Wait for Environment Ready (if needed)
+        run: |
+          echo "Checking if environment is ready for deployment..."
+          for i in {1..10}; do
+            STATUS=$(eb status Ieuniversitydocker-env --verbose | grep "Status:" | awk '{print $2}')
+            echo "Environment status: $STATUS"
+            if [ "$STATUS" = "Ready" ]; then
+              echo "Environment is ready for deployment"
+              break
+            elif [ "$STATUS" = "Updating" ]; then
+              echo "Environment is still updating, waiting 30 seconds..."
+              sleep 30
+            else
+              echo "Environment status: $STATUS - proceeding with deployment"
+              break
+            fi
+          done
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
       - name: Stream EB Events
         run: |
           eb events --follow &
@@ -90,7 +118,7 @@ jobs:
       - name: Fetch Logs on Failure
         if: failure()
         run: |
-          eb logs --all --zip
+          eb logs --all
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
