@@ -1,50 +1,75 @@
-# Django .dockerignore - exclude unnecessary files from build context
-
-# Python
+# Python cache
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
+*.pyc
+*.pyo
+*.pyd
 .Python
-env/
+*.so
+
+# Virtual environments
+.venv/
 venv/
+env/
 ENV/
-env.bak/
-venv.bak/
 
-# Django
-*.log
-db.sqlite3
-db.sqlite3-journal
-/media/
-/static/
-.env
-.env.local
-
-# Development
-.git/
-.gitignore
-README.md
-*.md
+# IDE files
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# Testing
-.coverage
-.pytest_cache/
-htmlcov/
-.tox/
-
-# OS
+# OS files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+README*
+
+# Test files
+tests/
+test/
+__tests__/
+*.test.py
+*.spec.py
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Django specific
+media/
+staticfiles/
+static/admin/
+static/rest_framework/
+
+# Environment files (keep production ones)
+.env.local
+.env.development
+.env.test
+
+# Poetry
+poetry.lock
+
+# Database
+*.db
+*.sqlite3
 
 # Docker
 Dockerfile*
-docker-compose*.yml
+docker-compose*
 .dockerignore

@@ -37,20 +37,20 @@ RUN if [ ! -f poetry.lock ] || ! poetry check; then \
     poetry install --only=main --no-root && \
     rm -rf $POETRY_CACHE_DIR
 
-# Copy application code
-COPY . .
+# Create required directories and non-root user first
+RUN mkdir -p /vol/static /vol/media /app/staticfiles && \
+    groupadd -r django && useradd -r -g django django && \
+    chown -R django:django /app /vol
 
-# Create required directories
-RUN mkdir -p /vol/static /vol/media /app/staticfiles
-
-# Create non-root user
-RUN groupadd -r django && useradd -r -g django django
-RUN chown -R django:django /app /vol
-USER django
-
-# Copy and make entrypoint executable
+# Copy entrypoint script and make executable
 COPY --chown=django:django infra/entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
+
+# Copy application code (do this last for better caching)
+COPY --chown=django:django . .
+
+# Switch to non-root user
+USER django
 
 ENV PORT=8000
 EXPOSE 8000
