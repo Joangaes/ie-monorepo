@@ -37,7 +37,7 @@ jobs:
       - name: Run backend tests
         run: |
           cd ie_professors_database
-          poetry run python manage.py test
+          poetry run python manage.py test --settings=ie_professor_management.test_settings
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
