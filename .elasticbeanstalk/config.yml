@@ -1,0 +1,11 @@
+branch-defaults:
+  main:
+    environment: Ieuniversitydocker-env
+environment-defaults:
+  Ieuniversitydocker-env:
+    branch: null
+    repository: null
+global:
+  application_name: ie_university_docker
+  default_region: eu-north-1
+  sc: git

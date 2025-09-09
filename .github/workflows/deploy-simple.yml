@@ -66,22 +66,16 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
+          aws-region: eu-north-1
 
       - name: Install EB CLI
         run: |
           pip install awsebcli
 
-      - name: Initialize EB CLI
-        run: |
-          eb init --region eu-west-1 --platform "Docker running on 64bit Amazon Linux 2023" ie-professor-management
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
       - name: Deploy to Elastic Beanstalk
         run: |
-          eb deploy Ieuniversitydocker-env --timeout 20
+          eb use Ieuniversitydocker-env
+          eb deploy --timeout 20
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
