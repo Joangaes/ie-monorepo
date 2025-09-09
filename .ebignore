@@ -1,0 +1,101 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+.dockerignore
+docker-compose*.yml
+Dockerfile.dev
+
+# Documentation
+*.md
+docs/
+README*
+
+# Test files
+tests/
+test/
+__tests__/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.eslintcache
+
+# Environment files (keep production ones)
+.env.local
+.env.development
+.env.test
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Poetry
+poetry.lock
+
+# Frontend specific
+ie-professors-frontend/node_modules/
+ie-professors-frontend/.next/
+ie-professors-frontend/out/
+ie-professors-frontend/dist/
+
+# Backend specific
+ie_professors_database/__pycache__/
+ie_professors_database/.venv/
+ie_professors_database/venv/
