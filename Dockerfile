@@ -42,12 +42,11 @@ RUN mkdir -p /vol/static /vol/media /app/staticfiles && \
     groupadd -r django && useradd -r -g django django && \
     chown -R django:django /app /vol
 
-# Copy entrypoint script and make executable
-COPY ie_professors_database/infra/entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
-
 # Copy application code (do this last for better caching)
 COPY ie_professors_database/ ./
+
+# Ensure entrypoint script has correct permissions
+RUN chmod +x /app/entrypoint.sh
 
 # Switch to non-root user
 USER django
