@@ -100,8 +100,9 @@ WSGI_APPLICATION = 'ie_professor_management.wsgi.application'
 
 # Use SQLite as fallback if PostgreSQL is not configured
 DB_HOST = os.getenv("DB_HOST")
-if DB_HOST:
+if DB_HOST and DB_HOST.strip():
     # PostgreSQL configuration
+    print(f"Using PostgreSQL database at {DB_HOST}")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -110,10 +111,14 @@ if DB_HOST:
             'PASSWORD': os.getenv("DB_PASSWORD", "password"),   
             'HOST': DB_HOST,
             'PORT': os.getenv("DB_PORT", "5432"),
+            'OPTIONS': {
+                'connect_timeout': 10,
+            },
         }
     }
 else:
     # SQLite fallback for testing/development
+    print("Using SQLite database (fallback)")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
