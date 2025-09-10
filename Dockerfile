@@ -28,19 +28,40 @@ WORKDIR /app
 # Copy Poetry configuration files to the correct location
 COPY ie_professors_database/pyproject.toml ie_professors_database/poetry.lock* ./
 
+# Force rebuild cache buster
+ARG FORCE_REBUILD=0
+
+# Debug: Show what files we have
+RUN echo "=== Debug: Files in current directory ===" && \
+    ls -la && \
+    echo "=== pyproject.toml contents ===" && \
+    cat pyproject.toml && \
+    echo "=== Poetry config ===" && \
+    poetry config --list
+
 # Install dependencies globally using Poetry
-RUN if [ ! -f poetry.lock ] || ! poetry check; then \
+RUN echo "Installing dependencies with Poetry..." && \
+    poetry config virtualenvs.create false && \
+    poetry config virtualenvs.in-project false && \
+    if [ ! -f poetry.lock ] || ! poetry check; then \
         echo "Regenerating poetry.lock file..." && \
         poetry lock; \
     fi && \
-    poetry config virtualenvs.create false && \
-    poetry install --only=main --no-root && \
+    echo "Running poetry install..." && \
+    poetry install --only=main --no-root --no-interaction --no-ansi --verbose && \
+    echo "Poetry install completed" && \
     rm -rf $POETRY_CACHE_DIR
 
+# Safety fallback - ensure Django and Gunicorn are installed
+RUN echo "Installing critical packages as safety fallback..." && \
+    pip install --no-cache-dir django gunicorn
+
 # Verify critical packages are installed
-RUN python -c "import django; print(f'Django {django.get_version()} installed')" && \
-    python -c "import gunicorn; print('Gunicorn installed')" && \
-    which gunicorn
+RUN echo "Verifying installations..." && \
+    python -c "import django; print(f'✅ Django {django.get_version()} installed')" && \
+    python -c "import gunicorn; print('✅ Gunicorn installed')" && \
+    which gunicorn && \
+    echo "✅ All critical packages verified"
 
 # Create required directories and non-root user
 RUN mkdir -p /vol/static /vol/media /app/staticfiles && \
