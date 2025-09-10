@@ -20,13 +20,17 @@ WORKDIR /app
 ARG POETRY_CACHE_BUSTER=0
 
 # Copy the entire backend project first (needed for poetry install without --no-root)
-COPY ie_professors_database/ ./
+COPY ie_professors_database/ ./ie_professors_database/
 
-# Install deps AND the local project into system site-packages (no venv)
+# Change to backend directory and install deps AND the local project
+WORKDIR /app/ie_professors_database
 RUN poetry config virtualenvs.create false \
  && poetry install --only=main --no-interaction --no-ansi \
  && python -c "import sys; print('site-packages:', next(p for p in sys.path if 'site-packages' in p))" \
  && poetry show | sed -n '1,120p'
+
+# Return to app root
+WORKDIR /app
 
 # Create required directories and user
 RUN mkdir -p /vol/static /vol/media /app/staticfiles && \
@@ -34,8 +38,8 @@ RUN mkdir -p /vol/static /vol/media /app/staticfiles && \
     chown -R django:django /app /vol
 
 # Set proper ownership and permissions for entrypoint
-RUN chown django:django /app/entrypoint.sh && \
-    chmod +x /app/entrypoint.sh
+RUN chown django:django /app/ie_professors_database/entrypoint.sh && \
+    chmod +x /app/ie_professors_database/entrypoint.sh
 
 # Verify critical packages are installed (fail fast)
 RUN python - <<'PY'
@@ -55,7 +59,7 @@ USER django
 
 # Set Django settings module and Python path
 ENV DJANGO_SETTINGS_MODULE=ie_professor_management.settings
-ENV PYTHONPATH=/app
+ENV PYTHONPATH=/app/ie_professors_database
 
 ENV PORT=8000
 EXPOSE 8000
@@ -64,4 +68,4 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=60s \
   CMD curl -fsS http://127.0.0.1:8000/health/ || exit 1
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/app/ie_professors_database/entrypoint.sh"]
