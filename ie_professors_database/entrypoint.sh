@@ -55,8 +55,23 @@ python -c "import django; django.setup(); from django.conf import settings; prin
     echo "Django settings import failed!"
 }
 
+# Verify Gunicorn is available
+echo "Verifying Gunicorn installation..."
+which gunicorn || {
+    echo "ERROR: Gunicorn not found in PATH!"
+    echo "PATH: $PATH"
+    echo "Available commands:"
+    ls -la /usr/local/bin/ | grep -i gunicorn || echo "No gunicorn found"
+    exit 1
+}
+
 # Start Gunicorn with more verbose logging
 echo "Starting Gunicorn with verbose logging..."
+echo "DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-'not set'}"
+echo "PYTHONPATH: ${PYTHONPATH:-'not set'}"
+echo "Working directory: $(pwd)"
+echo "Python version: $(python --version)"
+
 exec gunicorn ie_professor_management.wsgi:application \
     --bind 0.0.0.0:8000 \
     --workers ${GUNICORN_WORKERS:-2} \
@@ -64,5 +79,5 @@ exec gunicorn ie_professor_management.wsgi:application \
     --log-level debug \
     --access-logfile - \
     --error-logfile - \
-    --capture-output
+    --preload
 
