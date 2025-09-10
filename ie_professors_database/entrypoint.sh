@@ -2,6 +2,15 @@
 
 set -e
 
+# Print environment info for debugging
+echo "=== Environment Debug Info ==="
+echo "DB_HOST: ${DB_HOST:-'not set'}"
+echo "DB_NAME: ${DB_NAME:-'not set'}"
+echo "DB_USER: ${DB_USER:-'not set'}"
+echo "DB_PORT: ${DB_PORT:-'not set'}"
+echo "DEBUG: ${DEBUG:-'not set'}"
+echo "================================"
+
 # Wait for database if DB_HOST is set
 if [ -n "$DB_HOST" ]; then
     echo "Waiting for database at $DB_HOST:$DB_PORT..."
@@ -10,6 +19,8 @@ if [ -n "$DB_HOST" ]; then
         sleep 1
     done
     echo "Database is up - continuing..."
+else
+    echo "WARNING: DB_HOST not set, skipping database connectivity check"
 fi
 
 # Run Django management commands

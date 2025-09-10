@@ -1,0 +1,1930 @@
+2025/09/09 19:29:53.009743 [INFO] Starting...
+2025/09/09 19:29:53.009795 [INFO] Starting EBPlatform-PlatformEngine
+2025/09/09 19:29:53.010411 [INFO] reading event message file
+2025/09/09 19:29:53.010763 [INFO] Engine received EB command userdata-exec
+
+2025/09/09 19:29:53.016371 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1
+2025/09/09 19:29:53.303072 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBBeanstalkMetadata --region eu-north-1
+2025/09/09 19:29:53.648588 [INFO] Received 400 status code from launch URL. This is a scale-up instance.
+2025/09/09 19:29:53.648652 [INFO] Engine command: (self-startup)
+
+2025/09/09 19:29:53.648677 [INFO] Downloading EB Application...
+2025/09/09 19:29:53.648681 [INFO] Region: eu-north-1
+2025/09/09 19:29:53.648683 [INFO] envID: e-bjbuat2emk
+2025/09/09 19:29:53.648686 [INFO] envBucket: elasticbeanstalk-eu-north-1-777842694475
+2025/09/09 19:29:53.648689 [INFO] accountID: 777842694475
+2025/09/09 19:29:53.648692 [INFO] Using manifest file name from command request
+2025/09/09 19:29:53.648726 [INFO] Unable to get version manifest file.
+2025/09/09 19:29:53.648728 [INFO] Downloading latest manifest available.
+2025/09/09 19:29:53.648731 [INFO] Download latest app version manifest
+2025/09/09 19:29:53.648962 [INFO] resources/environments/e-bjbuat2emk/_runtime/versions/manifest
+2025/09/09 19:29:53.697982 [INFO] latestManifest key *: resources/environments/e-bjbuat2emk/_runtime/versions/manifest_1757431854416
+
+2025/09/09 19:29:53.698203 [INFO] Downloading: bucket: elasticbeanstalk-eu-north-1-777842694475, object: resources/environments/e-bjbuat2emk/_runtime/versions/manifest_1757431854416, expected bucket owner: 777842694475
+2025/09/09 19:29:53.733176 [INFO] Download successful49bytes downloaded
+2025/09/09 19:29:53.733281 [INFO] Trying to read and parse version manifest...
+2025/09/09 19:29:53.733304 [INFO] Downloading file with path: /opt/elasticbeanstalk/deployment/app_source_bundle
+2025/09/09 19:29:53.733363 [INFO] URL: https://elasticbeanstalk-platform-assets-eu-north-1.s3.eu-north-1.amazonaws.com/stalks/eb_docker_amazon_linux_2023_1.0.927.0_20250819152009/sampleapp/EBSampleApp-Docker.zip
+2025/09/09 19:29:53.767382 [INFO] Finished download file from https://elasticbeanstalk-platform-assets-eu-north-1.s3.eu-north-1.amazonaws.com/stalks/eb_docker_amazon_linux_2023_1.0.927.0_20250819152009/sampleapp/EBSampleApp-Docker.zip
+2025/09/09 19:29:53.767699 [INFO] Executing instruction: SyncClock
+2025/09/09 19:29:53.767704 [INFO] Starting SyncClock
+2025/09/09 19:29:53.767711 [INFO] Running command: /usr/bin/chronyc tracking
+2025/09/09 19:29:53.770867 [INFO] Reference ID    : 00000000 ()
+Stratum         : 0
+Ref time (UTC)  : Thu Jan 01 00:00:00 1970
+System time     : 0.000000000 seconds slow of NTP time
+Last offset     : +0.000000000 seconds
+RMS offset      : 0.000000000 seconds
+Frequency       : 11.280 ppm slow
+Residual freq   : +0.000 ppm
+Skew            : 0.000 ppm
+Root delay      : 1.000000000 seconds
+Root dispersion : 1.000000000 seconds
+Update interval : 0.0 seconds
+Leap status     : Not synchronised
+
+2025/09/09 19:29:53.770885 [INFO] Running command: /usr/bin/chronyc -a makestep
+2025/09/09 19:29:53.773500 [INFO] 200 OK
+
+2025/09/09 19:29:53.773546 [INFO] Skipping Configure OS
+2025/09/09 19:29:53.773552 [INFO] Skipping LockRepo
+2025/09/09 19:29:53.773556 [INFO] Skipping GenerateEBBanner
+2025/09/09 19:29:53.773560 [INFO] Skipping Install Process Manager
+2025/09/09 19:29:53.773564 [INFO] Skipping install syslog
+2025/09/09 19:29:53.773567 [INFO] Skipping install cron
+2025/09/09 19:29:53.773571 [INFO] Skipping install proxy
+2025/09/09 19:29:53.773575 [INFO] Skipping installhealthd
+2025/09/09 19:29:53.773578 [INFO] Skipping Install Log Streaming Manager
+2025/09/09 19:29:53.773582 [INFO] Skipping install X-Ray
+2025/09/09 19:29:53.773585 [INFO] Skipping install Third Party License
+2025/09/09 19:29:53.773608 [INFO] Instance has NOT been bootstrapped
+2025/09/09 19:29:53.773610 [INFO] Executing instruction: installSqsd
+2025/09/09 19:29:53.773613 [INFO] This is a web server environment instance, skip install sqsd daemon ...
+2025/09/09 19:29:53.773617 [INFO] Instance has NOT been bootstrapped
+2025/09/09 19:29:53.773619 [INFO] Executing instruction: bootstraphealthd
+2025/09/09 19:29:53.773622 [INFO] this is an enhanced health env ...
+2025/09/09 19:29:53.773632 [INFO] bootstrap healthd....
+2025/09/09 19:29:53.773639 [INFO] Running command: /usr/bin/id -u healthd || /usr/sbin/useradd --user-group healthd -s /sbin/nologin --create-home
+2025/09/09 19:29:53.967689 [INFO] /usr/bin/id: ‘healthd’: no such user
+
+2025/09/09 19:29:53.967923 [INFO] none proxy, skip creating proxy dir for healthd
+2025/09/09 19:29:53.967934 [INFO] bootstrap healthd....
+2025/09/09 19:29:53.967945 [INFO] Running command: /usr/bin/id -u healthd || /usr/sbin/useradd --user-group healthd -s /sbin/nologin --create-home
+2025/09/09 19:29:53.970808 [INFO] 1001
+
+2025/09/09 19:29:53.971075 [INFO] configure bundle log for healthd...
+2025/09/09 19:29:53.971135 [INFO] Skipping Install yum packages
+2025/09/09 19:29:53.971140 [INFO] Skipping install docker-compose
+2025/09/09 19:29:53.971144 [INFO] Skipping Configure Docker Daemon
+2025/09/09 19:29:53.971148 [INFO] Skipping MarkBaked
+2025/09/09 19:29:53.971153 [INFO] Instance has NOT been bootstrapped
+2025/09/09 19:29:53.971155 [INFO] Executing instruction: TuneSystemSettings
+2025/09/09 19:29:53.971157 [INFO] Starting TuneSystemSettings
+2025/09/09 19:29:53.971160 [INFO] Instance has NOT been bootstrapped
+2025/09/09 19:29:53.972504 [INFO] Executing instruction: GetSetupLogRotate
+2025/09/09 19:29:53.972510 [INFO] Initialize LogRotate files and directories
+2025/09/09 19:29:53.990536 [INFO] Instance has NOT been bootstrapped
+2025/09/09 19:29:53.990551 [INFO] Executing instruction: BootstrapCFNHup
+2025/09/09 19:29:53.990555 [INFO] Bootstrap cfn-hup
+2025/09/09 19:29:53.993171 [INFO] Copying file /opt/elasticbeanstalk/config/private/aws-eb-command-handler.conf to /etc/cfn/hooks.d/aws-eb-command-handler.conf
+2025/09/09 19:29:53.995373 [INFO] Executing instruction: StartCFNHup
+2025/09/09 19:29:53.995383 [INFO] Start cfn-hup
+2025/09/09 19:29:53.995398 [INFO] Running command: systemctl show -p PartOf cfn-hup.service
+2025/09/09 19:29:54.009792 [INFO] cfn-hup is not registered with EB yet, registering it now
+2025/09/09 19:29:54.009827 [INFO] Running command: systemctl show -p PartOf cfn-hup.service
+2025/09/09 19:29:54.024529 [INFO] Running command: systemctl daemon-reload
+2025/09/09 19:29:54.238224 [INFO] Running command: systemctl reset-failed
+2025/09/09 19:29:54.248080 [INFO] Running command: systemctl is-enabled aws-eb.target
+2025/09/09 19:29:54.256190 [INFO] Running command: systemctl enable aws-eb.target
+2025/09/09 19:29:54.487254 [INFO] Running command: systemctl start aws-eb.target
+2025/09/09 19:29:54.496951 [INFO] Running command: systemctl enable cfn-hup.service
+2025/09/09 19:29:54.772411 [INFO] Created symlink /etc/systemd/system/multi-user.target.wants/cfn-hup.service → /etc/systemd/system/cfn-hup.service.
+
+2025/09/09 19:29:54.772443 [INFO] Running command: systemctl is-active cfn-hup.service
+2025/09/09 19:29:54.781201 [INFO] cfn-hup process is not running, starting it now
+2025/09/09 19:29:54.781233 [INFO] Running command: systemctl show -p PartOf cfn-hup.service
+2025/09/09 19:29:54.828065 [INFO] Running command: systemctl is-active cfn-hup.service
+2025/09/09 19:29:54.836210 [INFO] Running command: systemctl start cfn-hup.service
+2025/09/09 19:29:54.872589 [INFO] Instance has NOT been bootstrapped
+2025/09/09 19:29:54.872617 [INFO] Executing instruction: SetupPublishLogCronjob
+2025/09/09 19:29:54.872621 [INFO] Setup publish logs cron job...
+2025/09/09 19:29:54.872625 [INFO] Copying file /opt/elasticbeanstalk/config/private/logtasks/cron/publishlogs to /etc/cron.d/publishlogs
+2025/09/09 19:29:54.875298 [INFO] Executing instruction: Start Docker
+2025/09/09 19:29:54.875331 [INFO] Starting Docker...
+2025/09/09 19:29:54.875413 [INFO] Copying file /opt/elasticbeanstalk/config/private/docker-log.conf to /etc/systemd/system/docker.service.d/docker-log.conf
+2025/09/09 19:29:54.877596 [INFO] Copying file /opt/elasticbeanstalk/config/private/docker-rsyslog.conf to /etc/rsyslog.d/docker-log.conf
+2025/09/09 19:29:54.879859 [INFO] Running command: systemctl restart rsyslog.service
+2025/09/09 19:29:55.240049 [INFO] Running command: systemctl show -p PartOf docker.service
+2025/09/09 19:29:55.257864 [INFO] Running command: systemctl daemon-reload
+2025/09/09 19:29:55.548639 [INFO] Running command: systemctl reset-failed
+2025/09/09 19:29:55.557406 [INFO] Running command: systemctl show -p PartOf docker.service
+2025/09/09 19:29:55.569888 [INFO] Running command: systemctl restart docker.service
+2025/09/09 19:29:58.251563 [INFO] Instance has NOT been bootstrapped
+2025/09/09 19:29:58.251578 [INFO] Executing instruction: Setup Docker Options
+2025/09/09 19:29:58.251581 [INFO] Setting up configurations for docker platform
+2025/09/09 19:29:58.263807 [INFO] Running command: systemctl show -p PartOf eb-docker-events.service
+2025/09/09 19:29:58.285105 [INFO] Running command: systemctl daemon-reload
+2025/09/09 19:29:58.620371 [INFO] Running command: systemctl reset-failed
+2025/09/09 19:29:58.630756 [INFO] Running command: systemctl enable eb-docker-events.service
+2025/09/09 19:29:58.947465 [INFO] Created symlink /etc/systemd/system/docker.service.wants/eb-docker-events.service → /etc/systemd/system/eb-docker-events.service.
+
+2025/09/09 19:29:58.947498 [INFO] Running command: systemctl show -p PartOf eb-docker-events.service
+2025/09/09 19:29:58.961929 [INFO] Running command: systemctl is-active eb-docker-events.service
+2025/09/09 19:29:58.970469 [INFO] Running command: systemctl start eb-docker-events.service
+2025/09/09 19:29:59.043266 [INFO] Instance has NOT been bootstrapped
+2025/09/09 19:29:59.043278 [INFO] Executing instruction: MarkBootstrapped
+2025/09/09 19:29:59.043281 [INFO] Starting MarkBootstrapped
+2025/09/09 19:29:59.043285 [INFO] Instance has NOT been bootstrapped
+2025/09/09 19:29:59.043436 [INFO] Marked instance as Bootstrapped
+2025/09/09 19:29:59.043440 [INFO] Executing instruction: Save CFN Stack Info
+2025/09/09 19:29:59.043491 [INFO] Executing instruction: stopSqsd
+2025/09/09 19:29:59.043494 [INFO] This is a web server environment instance, skip stop sqsd daemon ...
+2025/09/09 19:29:59.043496 [INFO] Executing instruction: PreBuildEbExtension
+2025/09/09 19:29:59.043499 [INFO] Starting executing the config set Infra-EmbeddedPreBuild.
+2025/09/09 19:29:59.043512 [INFO] Running command: /opt/aws/bin/cfn-init -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1 --configsets Infra-EmbeddedPreBuild
+2025/09/09 19:29:59.398510 [INFO] Finished executing the config set Infra-EmbeddedPreBuild.
+
+2025/09/09 19:29:59.398536 [INFO] Executing instruction: StagedockerApplication
+2025/09/09 19:29:59.398545 [INFO] Running command: docker ps -a -q -f status=running
+2025/09/09 19:29:59.413989 [INFO] Pruning containers ...
+2025/09/09 19:29:59.414019 [INFO] Running command: docker ps -a
+2025/09/09 19:29:59.428753 [INFO] CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+2025/09/09 19:29:59.428783 [INFO] Running command: docker container prune -f
+2025/09/09 19:29:59.449080 [INFO] Total reclaimed space: 0B
+
+2025/09/09 19:29:59.449124 [INFO] Running command: docker ps -a
+2025/09/09 19:29:59.464742 [INFO] CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+2025/09/09 19:29:59.464772 [INFO] Recreating /var/app/staging/
+2025/09/09 19:29:59.464894 [INFO] Recreating /var/log/eb-docker/containers/eb-current-app
+2025/09/09 19:29:59.465121 [INFO] Running command: /bin/file -m /opt/elasticbeanstalk/config/private/beanstalk-magic -b --mime-type /opt/elasticbeanstalk/deployment/app_source_bundle
+2025/09/09 19:29:59.480185 [INFO] application/zip
+
+2025/09/09 19:29:59.480208 [INFO] app source bundle is zip file ...
+2025/09/09 19:29:59.480227 [INFO] extracting /opt/elasticbeanstalk/deployment/app_source_bundle to /var/app/staging/
+2025/09/09 19:29:59.480238 [INFO] Running command: /usr/bin/unzip -q -o /opt/elasticbeanstalk/deployment/app_source_bundle -d /var/app/staging/
+2025/09/09 19:29:59.484055 [INFO] finished extracting /opt/elasticbeanstalk/deployment/app_source_bundle to /var/app/staging/ successfully
+2025/09/09 19:29:59.484068 [INFO] Executing instruction: RunAppDeployPreBuildHooks
+2025/09/09 19:29:59.484142 [INFO] Executing platform hooks in .platform/hooks/prebuild/
+2025/09/09 19:29:59.484160 [INFO] The dir .platform/hooks/prebuild/ does not exist
+2025/09/09 19:29:59.484164 [INFO] Finished running scripts in /var/app/staging/.platform/hooks/prebuild
+2025/09/09 19:29:59.484169 [INFO] Executing instruction: Generate environment file
+2025/09/09 19:29:59.484218 [INFO] Executing instruction: Docker Specific Build Application
+2025/09/09 19:29:59.484222 [INFO] start build docker app
+2025/09/09 19:29:59.484348 [INFO] fetching image names from Dockerfile /var/app/staging/Dockerfile
+2025/09/09 19:29:59.484401 [INFO] found images [public.ecr.aws/docker/library/python:3.12] in Dockerfile /var/app/staging/Dockerfile
+2025/09/09 19:29:59.484407 [INFO] authenticate with ECR public
+2025/09/09 19:29:59.484414 [INFO] Running command: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+2025/09/09 19:30:01.466029 [INFO] 
+An error occurred (AccessDeniedException) when calling the GetAuthorizationToken operation: User: arn:aws:sts::777842694475:assumed-role/aws-elasticbeanstalk-ec2-role/i-0de7f5345a0faac28 is not authorized to perform: ecr-public:GetAuthorizationToken on resource: * because no identity-based policy allows the ecr-public:GetAuthorizationToken action
+Error: Cannot perform an interactive login from a non TTY device
+
+2025/09/09 19:30:01.466056 [WARN] failed to authenticate to ECR public registries; the deployment will continue to use unauthenticated pulls
+2025/09/09 19:30:01.466060 [INFO] pull docker image if update is not false in Dockerrun.aws.json
+2025/09/09 19:30:01.466063 [INFO] start to build docker image
+2025/09/09 19:30:01.466099 [INFO] Running command: docker build -t aws_beanstalk/staging-app /var/app/staging/
+2025/09/09 19:30:24.591771 [INFO] #0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 268B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for public.ecr.aws/docker/library/python:3.12
+#2 DONE 1.8s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 21.92kB done
+#4 DONE 0.0s
+
+#5 [1/2] FROM public.ecr.aws/docker/library/python:3.12@sha256:3ec5656f86a485ab3fc247758561dfbdcfe45b56e83b6fddc77a26bc2c114681
+#5 resolve public.ecr.aws/docker/library/python:3.12@sha256:3ec5656f86a485ab3fc247758561dfbdcfe45b56e83b6fddc77a26bc2c114681 0.0s done
+#5 sha256:34972e12cd00724911e444c3ff0f45324692b20bff71f9987d26748d96157ecf 2.32kB / 2.32kB done
+#5 sha256:15b1d8a5ff03aeb0f14c8d39a60a73ef22f656550bfa1bb90d1850f25a0ac0fa 0B / 49.28MB 0.1s
+#5 sha256:22718812f617084a0c5e539e02723b75bf79ea2a589430f820efcbb07f45b91b 0B / 25.61MB 0.1s
+#5 sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97 0B / 67.78MB 0.1s
+#5 sha256:3ec5656f86a485ab3fc247758561dfbdcfe45b56e83b6fddc77a26bc2c114681 10.32kB / 10.32kB done
+#5 sha256:48374675bfb70b70165ff4a6783d23c80b8e8c71d14dfda6edb4aaedf49bfe78 6.42kB / 6.42kB done
+#5 sha256:15b1d8a5ff03aeb0f14c8d39a60a73ef22f656550bfa1bb90d1850f25a0ac0fa 17.83MB / 49.28MB 0.3s
+#5 sha256:15b1d8a5ff03aeb0f14c8d39a60a73ef22f656550bfa1bb90d1850f25a0ac0fa 42.99MB / 49.28MB 0.5s
+#5 sha256:22718812f617084a0c5e539e02723b75bf79ea2a589430f820efcbb07f45b91b 18.87MB / 25.61MB 0.5s
+#5 sha256:15b1d8a5ff03aeb0f14c8d39a60a73ef22f656550bfa1bb90d1850f25a0ac0fa 49.28MB / 49.28MB 0.6s
+#5 sha256:22718812f617084a0c5e539e02723b75bf79ea2a589430f820efcbb07f45b91b 20.97MB / 25.61MB 0.6s
+#5 extracting sha256:15b1d8a5ff03aeb0f14c8d39a60a73ef22f656550bfa1bb90d1850f25a0ac0fa
+#5 sha256:15b1d8a5ff03aeb0f14c8d39a60a73ef22f656550bfa1bb90d1850f25a0ac0fa 49.28MB / 49.28MB 0.6s done
+#5 sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 0B / 235.91MB 0.7s
+#5 sha256:22718812f617084a0c5e539e02723b75bf79ea2a589430f820efcbb07f45b91b 24.12MB / 25.61MB 0.8s
+#5 sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97 4.19MB / 67.78MB 0.8s
+#5 sha256:22718812f617084a0c5e539e02723b75bf79ea2a589430f820efcbb07f45b91b 25.61MB / 25.61MB 0.9s
+#5 sha256:22718812f617084a0c5e539e02723b75bf79ea2a589430f820efcbb07f45b91b 25.61MB / 25.61MB 0.9s done
+#5 sha256:3ea8285073a3f5ec6da2e620620a77c35b467a7f38f720a0dba2d392f0cd2216 0B / 6.08MB 1.1s
+#5 sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97 8.39MB / 67.78MB 1.2s
+#5 sha256:3ea8285073a3f5ec6da2e620620a77c35b467a7f38f720a0dba2d392f0cd2216 1.05MB / 6.08MB 1.2s
+#5 sha256:3ea8285073a3f5ec6da2e620620a77c35b467a7f38f720a0dba2d392f0cd2216 2.10MB / 6.08MB 1.3s
+#5 sha256:3ea8285073a3f5ec6da2e620620a77c35b467a7f38f720a0dba2d392f0cd2216 3.15MB / 6.08MB 1.4s
+#5 sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97 12.58MB / 67.78MB 1.5s
+#5 sha256:3ea8285073a3f5ec6da2e620620a77c35b467a7f38f720a0dba2d392f0cd2216 4.19MB / 6.08MB 1.5s
+#5 sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 12.58MB / 235.91MB 1.6s
+#5 sha256:3ea8285073a3f5ec6da2e620620a77c35b467a7f38f720a0dba2d392f0cd2216 6.08MB / 6.08MB 1.6s done
+#5 sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97 16.78MB / 67.78MB 1.8s
+#5 sha256:9263f10fdf975b3c164fc62ced2f7d3301df2c5cd1ac77fd4d3ba86103b1d188 0B / 25.66MB 1.8s
+#5 sha256:9263f10fdf975b3c164fc62ced2f7d3301df2c5cd1ac77fd4d3ba86103b1d188 2.10MB / 25.66MB 2.0s
+#5 sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97 23.07MB / 67.78MB 2.2s
+#5 sha256:9263f10fdf975b3c164fc62ced2f7d3301df2c5cd1ac77fd4d3ba86103b1d188 5.24MB / 25.66MB 2.2s
+#5 sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97 27.26MB / 67.78MB 2.3s
+#5 sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 25.17MB / 235.91MB 2.3s
+#5 sha256:9263f10fdf975b3c164fc62ced2f7d3301df2c5cd1ac77fd4d3ba86103b1d188 10.26MB / 25.66MB 2.3s
+#5 sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97 33.55MB / 67.78MB 2.4s
+#5 sha256:9263f10fdf975b3c164fc62ced2f7d3301df2c5cd1ac77fd4d3ba86103b1d188 13.63MB / 25.66MB 2.4s
+#5 sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97 40.89MB / 67.78MB 2.5s
+#5 sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 44.04MB / 235.91MB 2.5s
+#5 sha256:9263f10fdf975b3c164fc62ced2f7d3301df2c5cd1ac77fd4d3ba86103b1d188 19.92MB / 25.66MB 2.5s
+#5 sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97 60.66MB / 67.78MB 2.7s
+#5 sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 60.82MB / 235.91MB 2.7s
+#5 sha256:9263f10fdf975b3c164fc62ced2f7d3301df2c5cd1ac77fd4d3ba86103b1d188 25.66MB / 25.66MB 2.7s done
+#5 sha256:280a8213ce163f3bbbe72c44c1935e2cc551150d9dd98afbd0281c1cf7152724 0B / 249B 2.7s
+#5 sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97 67.78MB / 67.78MB 2.8s
+#5 sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97 67.78MB / 67.78MB 2.8s done
+#5 sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 80.74MB / 235.91MB 2.9s
+#5 sha256:280a8213ce163f3bbbe72c44c1935e2cc551150d9dd98afbd0281c1cf7152724 249B / 249B 2.8s done
+#5 sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 103.81MB / 235.91MB 3.1s
+#5 sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 123.73MB / 235.91MB 3.3s
+#5 sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 146.80MB / 235.91MB 3.5s
+#5 sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 181.40MB / 235.91MB 3.8s
+#5 sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 195.04MB / 235.91MB 3.9s
+#5 extracting sha256:15b1d8a5ff03aeb0f14c8d39a60a73ef22f656550bfa1bb90d1850f25a0ac0fa 3.4s done
+#5 sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 230.14MB / 235.91MB 4.2s
+#5 sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 235.91MB / 235.91MB 4.3s done
+#5 extracting sha256:22718812f617084a0c5e539e02723b75bf79ea2a589430f820efcbb07f45b91b 0.1s
+#5 extracting sha256:22718812f617084a0c5e539e02723b75bf79ea2a589430f820efcbb07f45b91b 0.9s done
+#5 extracting sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97
+#5 extracting sha256:401a98f7495bee3e8e6943da9f52f0ab1043c43eb1d107a3817fc2a4b916be97 3.3s done
+#5 extracting sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f
+#5 extracting sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 5.1s
+#5 extracting sha256:ad446e7df19acd39290d995e6d78ccbfde171596237968a140518b183d94c04f 9.6s done
+#5 extracting sha256:3ea8285073a3f5ec6da2e620620a77c35b467a7f38f720a0dba2d392f0cd2216
+#5 extracting sha256:3ea8285073a3f5ec6da2e620620a77c35b467a7f38f720a0dba2d392f0cd2216 0.4s done
+#5 extracting sha256:9263f10fdf975b3c164fc62ced2f7d3301df2c5cd1ac77fd4d3ba86103b1d188
+#5 extracting sha256:9263f10fdf975b3c164fc62ced2f7d3301df2c5cd1ac77fd4d3ba86103b1d188 1.0s done
+#5 extracting sha256:280a8213ce163f3bbbe72c44c1935e2cc551150d9dd98afbd0281c1cf7152724 done
+#5 DONE 20.1s
+
+#6 [2/2] ADD application.py /tmp/application.py
+#6 DONE 0.1s
+
+#7 exporting to image
+#7 exporting layers 0.0s done
+#7 writing image sha256:ae45cabd3f86beb546833ef156f255c4726732238adaf984eee81d90791959f4 done
+#7 naming to docker.io/aws_beanstalk/staging-app 0.0s done
+#7 DONE 0.0s
+
+2025/09/09 19:30:24.592716 [INFO] successfully execute command: docker build -t aws_beanstalk/staging-app /var/app/staging/
+2025/09/09 19:30:24.592725 [INFO] successfully build docker image
+2025/09/09 19:30:24.592730 [INFO] save staging docker image id
+2025/09/09 19:30:24.594913 [INFO] Running command: docker images aws_beanstalk/staging-app -q
+2025/09/09 19:30:24.675149 [INFO] ae45cabd3f86
+
+2025/09/09 19:30:24.675318 [INFO] Executing instruction: configure X-Ray
+2025/09/09 19:30:24.675326 [INFO] X-Ray is not enabled.
+2025/09/09 19:30:24.675329 [INFO] Executing instruction: configure proxy Nginx
+2025/09/09 19:30:24.675345 [INFO] Recreating /var/proxy/staging/nginx
+2025/09/09 19:30:24.688852 [INFO] Executing instruction: configure healthd specific proxy conf
+2025/09/09 19:30:24.691624 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/09 19:30:24.747737 [INFO] Running command: systemctl daemon-reload
+2025/09/09 19:30:25.027475 [INFO] Running command: systemctl reset-failed
+2025/09/09 19:30:25.036069 [INFO] Running command: systemctl is-enabled aws-eb.target
+2025/09/09 19:30:25.044750 [INFO] Running command: systemctl enable aws-eb.target
+2025/09/09 19:30:25.312072 [INFO] Running command: systemctl start aws-eb.target
+2025/09/09 19:30:25.321712 [INFO] Running command: systemctl enable healthd.service
+2025/09/09 19:30:25.593468 [INFO] Created symlink /etc/systemd/system/multi-user.target.wants/healthd.service → /etc/systemd/system/healthd.service.
+
+2025/09/09 19:30:25.593500 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/09 19:30:25.605083 [INFO] Running command: systemctl is-active healthd.service
+2025/09/09 19:30:25.612716 [INFO] Running command: systemctl start healthd.service
+2025/09/09 19:30:25.689978 [INFO] Copying file /opt/elasticbeanstalk/config/private/healthd/healthd_logformat.conf to /var/proxy/staging/nginx/conf.d/healthd_logformat.conf
+2025/09/09 19:30:25.691708 [INFO] Copying file /opt/elasticbeanstalk/config/private/healthd/healthd_nginx.conf to /var/proxy/staging/nginx/conf.d/elasticbeanstalk/healthd.conf
+2025/09/09 19:30:25.692905 [INFO] Executing instruction: configure log streaming
+2025/09/09 19:30:25.692922 [INFO] log streaming is not enabled
+2025/09/09 19:30:25.692927 [INFO] disable log stream
+2025/09/09 19:30:25.692936 [INFO] Running command: systemctl show -p PartOf amazon-cloudwatch-agent.service
+2025/09/09 19:30:25.707693 [INFO] Running command: systemctl stop amazon-cloudwatch-agent.service
+2025/09/09 19:30:25.720006 [INFO] Executing instruction: GetToggleForceRotate
+2025/09/09 19:30:25.720028 [INFO] Checking if logs need forced rotation
+2025/09/09 19:30:25.720798 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1
+2025/09/09 19:30:26.339967 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBBeanstalkMetadata --region eu-north-1
+2025/09/09 19:30:26.691179 [INFO] Procfile not found. Generating default rsyslog config
+2025/09/09 19:30:26.694059 [INFO] Running command: systemctl restart rsyslog.service
+2025/09/09 19:30:27.327773 [INFO] Executing instruction: Configure Docker Logging
+2025/09/09 19:30:27.349488 [INFO] Executing instruction: PostBuildEbExtension
+2025/09/09 19:30:27.349507 [INFO] Starting executing the config set Infra-EmbeddedPostBuild.
+2025/09/09 19:30:27.349518 [INFO] Running command: /opt/aws/bin/cfn-init -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1 --configsets Infra-EmbeddedPostBuild
+2025/09/09 19:30:27.694975 [INFO] Finished executing the config set Infra-EmbeddedPostBuild.
+
+2025/09/09 19:30:27.694996 [INFO] Executing instruction: CleanEbExtensions
+2025/09/09 19:30:27.695020 [INFO] Cleaned ebextensions subdirectories from app staging directory.
+2025/09/09 19:30:27.695023 [INFO] Executing instruction: RunAppDeployPreDeployHooks
+2025/09/09 19:30:27.695044 [INFO] Executing platform hooks in .platform/hooks/predeploy/
+2025/09/09 19:30:27.695054 [INFO] The dir .platform/hooks/predeploy/ does not exist
+2025/09/09 19:30:27.695056 [INFO] Finished running scripts in /var/app/staging/.platform/hooks/predeploy
+2025/09/09 19:30:27.695061 [INFO] Executing instruction: stop X-Ray
+2025/09/09 19:30:27.695063 [INFO] stop X-Ray ...
+2025/09/09 19:30:27.695072 [INFO] Running command: systemctl show -p PartOf xray.service
+2025/09/09 19:30:27.709441 [WARN] stopProcess Warning: process xray is not registered 
+2025/09/09 19:30:27.709468 [INFO] Running command: systemctl stop xray.service
+2025/09/09 19:30:27.721972 [INFO] Executing instruction: Run Docker Container
+2025/09/09 19:30:27.722002 [INFO] this is the first time deploying app...
+2025/09/09 19:30:27.722005 [INFO] Removing /var/app/current/ if it exists
+2025/09/09 19:30:27.722013 [INFO] Renaming /var/app/staging/ to /var/app/current/
+2025/09/09 19:30:27.722035 [INFO] detected new app is not docker compose app
+2025/09/09 19:30:27.722095 [INFO] Running command: docker run -d --env-file /opt/elasticbeanstalk/deployment/env.list  -v /var/log/eb-docker/containers/eb-current-app:/tmp/sample-app  ae45cabd3f86 
+2025/09/09 19:30:28.705160 [INFO] 9b7e65943944b21e326267fe8da10dcd46090936f844393fb6d92af03231ef34
+
+2025/09/09 19:30:33.710048 [INFO] Running command: docker ps | grep -q 9b7e65943944
+2025/09/09 19:30:33.738551 [INFO] Clear existing beanstalk iptables rules...
+2025/09/09 19:30:33.738579 [INFO] Running command: iptables-save | grep -v added_by_elasticbeanstalk | iptables-restore
+2025/09/09 19:30:33.856353 [INFO] Getting container info...
+2025/09/09 19:30:33.856383 [INFO] Running command: docker inspect 9b7e65943944b21e326267fe8da10dcd46090936f844393fb6d92af03231ef34
+
+2025/09/09 19:30:33.896080 [INFO] Running command: ip route show default | awk '{print $5}'
+2025/09/09 19:30:33.917440 [INFO] ens5
+
+2025/09/09 19:30:33.917487 [INFO] Writing nginx upstream config...
+2025/09/09 19:30:33.922011 [INFO] Running command: /usr/sbin/nginx -t -c /var/proxy/staging/nginx/nginx.conf
+2025/09/09 19:30:33.976637 [INFO] nginx: [warn] could not build optimal types_hash, you should increase either types_hash_max_size: 1024 or types_hash_bucket_size: 64; ignoring types_hash_bucket_size
+nginx: the configuration file /var/proxy/staging/nginx/nginx.conf syntax is ok
+nginx: configuration file /var/proxy/staging/nginx/nginx.conf test is successful
+
+2025/09/09 19:30:33.976741 [INFO] Running command: cp -rp /var/proxy/staging/nginx/* /etc/nginx
+2025/09/09 19:30:33.982442 [INFO] Running command: systemctl show -p PartOf nginx.service
+2025/09/09 19:30:33.997601 [INFO] register process nginx
+2025/09/09 19:30:33.997628 [INFO] Running command: systemctl show -p PartOf nginx.service
+2025/09/09 19:30:34.014162 [INFO] Running command: systemctl daemon-reload
+2025/09/09 19:30:34.265408 [INFO] Running command: systemctl reset-failed
+2025/09/09 19:30:34.274731 [INFO] Running command: systemctl enable nginx.service
+2025/09/09 19:30:34.509645 [INFO] Created symlink /etc/systemd/system/multi-user.target.wants/nginx.service → /usr/lib/systemd/system/nginx.service.
+
+2025/09/09 19:30:34.509679 [INFO] Running command: systemctl show -p PartOf nginx.service
+2025/09/09 19:30:34.521232 [INFO] Running command: systemctl restart nginx.service
+2025/09/09 19:30:34.628132 [INFO] Running command: service iptables save
+2025/09/09 19:30:34.700158 [INFO] iptables: Saving firewall rules to /etc/sysconfig/iptables: [  OK  ]
+
+2025/09/09 19:30:34.700178 [INFO] Traffic forward set-up completed.
+2025/09/09 19:30:34.700182 [INFO] making STAGING app container current...
+2025/09/09 19:30:34.700198 [INFO] Running command: docker tag ae45cabd3f86 aws_beanstalk/current-app
+2025/09/09 19:30:34.732181 [INFO] Running command: docker rmi aws_beanstalk/staging-app
+2025/09/09 19:30:34.750470 [INFO] Untagged: aws_beanstalk/staging-app:latest
+
+2025/09/09 19:30:34.750605 [INFO] Running command: systemctl show -p PartOf eb-docker.service
+2025/09/09 19:30:34.769428 [INFO] Running command: systemctl daemon-reload
+2025/09/09 19:30:35.060317 [INFO] Running command: systemctl reset-failed
+2025/09/09 19:30:35.069604 [INFO] Running command: systemctl enable eb-docker.service
+2025/09/09 19:30:35.360886 [INFO] The unit files have no installation config (WantedBy=, RequiredBy=, Also=,
+Alias= settings in the [Install] section, and DefaultInstance= for template
+units). This means they are not meant to be enabled using systemctl.
+ 
+Possible reasons for having this kind of units are:
+• A unit may be statically enabled by being symlinked from another unit's
+  .wants/ or .requires/ directory.
+• A unit's purpose may be to act as a helper for some other unit which has
+  a requirement dependency on it.
+• A unit may be started when needed via activation (socket, path, timer,
+  D-Bus, udev, scripted systemctl call, ...).
+• In case of template units, the unit is meant to be enabled with some
+  instance name specified.
+
+2025/09/09 19:30:35.360924 [INFO] Running command: systemctl show -p PartOf eb-docker.service
+2025/09/09 19:30:35.375423 [INFO] Running command: systemctl is-active eb-docker.service
+2025/09/09 19:30:35.384235 [INFO] Running command: systemctl start eb-docker.service
+2025/09/09 19:30:35.456538 [INFO] Running command: systemctl show -p PartOf eb-docker-log.service
+2025/09/09 19:30:35.473942 [INFO] Running command: systemctl daemon-reload
+2025/09/09 19:30:35.805330 [INFO] Running command: systemctl reset-failed
+2025/09/09 19:30:35.822546 [INFO] Running command: systemctl enable eb-docker-log.service
+2025/09/09 19:30:36.236309 [INFO] Created symlink /etc/systemd/system/eb-docker.service.wants/eb-docker-log.service → /etc/systemd/system/eb-docker-log.service.
+
+2025/09/09 19:30:36.236346 [INFO] Running command: systemctl show -p PartOf eb-docker-log.service
+2025/09/09 19:30:36.254978 [INFO] Running command: systemctl is-active eb-docker-log.service
+2025/09/09 19:30:36.266802 [INFO] Running command: systemctl start eb-docker-log.service
+2025/09/09 19:30:36.340343 [INFO] docker container 9b7e65943944 is running aws_beanstalk/current-app
+2025/09/09 19:30:36.340361 [INFO] Cleanup images ...
+2025/09/09 19:30:36.340371 [INFO] Running command: docker images -a
+2025/09/09 19:30:36.376875 [INFO] REPOSITORY                  TAG       IMAGE ID       CREATED          SIZE
+aws_beanstalk/current-app   latest    ae45cabd3f86   12 seconds ago   1.11GB
+
+2025/09/09 19:30:36.376918 [INFO] Running command: docker rmi `docker images -aq`
+2025/09/09 19:30:36.420657 [INFO] Error response from daemon: conflict: unable to delete ae45cabd3f86 (cannot be forced) - image is being used by running container 9b7e65943944
+
+2025/09/09 19:30:36.420688 [INFO] Running command: docker images -a
+2025/09/09 19:30:36.435465 [INFO] REPOSITORY                  TAG       IMAGE ID       CREATED          SIZE
+aws_beanstalk/current-app   latest    ae45cabd3f86   12 seconds ago   1.11GB
+
+2025/09/09 19:30:36.435486 [INFO] Pruning build cache ...
+2025/09/09 19:30:36.435494 [INFO] Running command: docker builder prune -f
+2025/09/09 19:30:36.754451 [INFO] ID						RECLAIMABLE	SIZE		LAST ACCESSED
+ju2asolefbk9y7k51tflqf7q1*              	true 		21.83kB   	12 seconds ago
+eha65ttkmybvicjkply8gjcxw*              	true 	180B      	12 seconds ago
+0kaco64ff7bxa6k397ex6ppfl*              	true 	0B        	12 seconds ago
+Total:	22.01kB
+
+2025/09/09 19:30:36.754481 [INFO] Executing instruction: start X-Ray
+2025/09/09 19:30:36.754487 [INFO] X-Ray is not enabled.
+2025/09/09 19:30:36.754491 [INFO] Executing instruction: configureSqsd
+2025/09/09 19:30:36.754494 [INFO] This is a web server environment instance, skip configure sqsd daemon ...
+2025/09/09 19:30:36.754497 [INFO] Executing instruction: startSqsd
+2025/09/09 19:30:36.754500 [INFO] This is a web server environment instance, skip start sqsd daemon ...
+2025/09/09 19:30:36.754502 [INFO] Executing instruction: Track pids in healthd
+2025/09/09 19:30:36.754506 [INFO] This is an enhanced health env...
+2025/09/09 19:30:36.754517 [INFO] Running command: systemctl show -p ConsistsOf aws-eb.target | cut -d= -f2
+2025/09/09 19:30:36.765804 [INFO] eb-docker-events.service cfn-hup.service healthd.service eb-docker-log.service docker.service nginx.service eb-docker.service
+
+2025/09/09 19:30:36.765831 [INFO] Running command: systemctl show -p ConsistsOf eb-app.target | cut -d= -f2
+2025/09/09 19:30:36.780100 [INFO] 
+
+2025/09/09 19:30:36.782484 [INFO] Executing instruction: RunAppDeployPostDeployHooks
+2025/09/09 19:30:36.782601 [INFO] Executing platform hooks in .platform/hooks/postdeploy/
+2025/09/09 19:30:36.783146 [INFO] The dir .platform/hooks/postdeploy/ does not exist
+2025/09/09 19:30:36.783155 [INFO] Finished running scripts in /var/app/current/.platform/hooks/postdeploy
+2025/09/09 19:30:36.783171 [INFO] Executing cleanup logic
+2025/09/09 19:30:36.789380 [INFO] Platform Engine finished execution on command: self-startup
+
+2025/09/10 00:23:18.216012 [INFO] Starting...
+2025/09/10 00:23:18.216056 [INFO] Starting EBPlatform-PlatformEngine
+2025/09/10 00:23:18.216085 [INFO] reading event message file
+2025/09/10 00:23:18.223735 [INFO] Engine received EB command cfn-hup-exec
+
+2025/09/10 00:23:18.390314 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1
+2025/09/10 00:23:18.674050 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBBeanstalkMetadata --region eu-north-1
+2025/09/10 00:23:18.962255 [INFO] checking whether command app-deploy is applicable to this instance...
+2025/09/10 00:23:18.962272 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/09/10 00:23:18.962275 [INFO] Engine command: (app-deploy)
+
+2025/09/10 00:23:18.962280 [INFO] Downloading EB Application...
+2025/09/10 00:23:18.962283 [INFO] Region: eu-north-1
+2025/09/10 00:23:18.962285 [INFO] envID: e-bjbuat2emk
+2025/09/10 00:23:18.962288 [INFO] envBucket: elasticbeanstalk-eu-north-1-777842694475
+2025/09/10 00:23:18.962290 [INFO] accountID: 777842694475
+2025/09/10 00:23:18.962292 [INFO] Using manifest file name from command request
+2025/09/10 00:23:18.962298 [INFO] Manifest name is : manifest_1757463776987
+2025/09/10 00:23:18.962305 [INFO] Download app version manifest
+2025/09/10 00:23:18.962480 [INFO] Downloading: bucket: elasticbeanstalk-eu-north-1-777842694475, object: resources/environments/e-bjbuat2emk/_runtime/versions/manifest_1757463776987, expected bucket owner: 777842694475
+2025/09/10 00:23:19.007650 [INFO] Download successful115bytes downloaded
+2025/09/10 00:23:19.007789 [INFO] Trying to read and parse version manifest...
+2025/09/10 00:23:19.007854 [INFO] Downloading: bucket: elasticbeanstalk-eu-north-1-777842694475, object: resources/environments/e-bjbuat2emk/_runtime/_versions/Ieuniversitydocker/app-733a-250910_002249395097, expected bucket owner: 777842694475
+2025/09/10 00:23:19.038777 [INFO] Download successful434140bytes downloaded
+2025/09/10 00:23:19.040428 [INFO] Executing instruction: ElectLeader
+2025/09/10 00:23:19.040437 [INFO] Running leader election for instance i-0de7f5345a0faac28...
+2025/09/10 00:23:19.040441 [INFO] Calling the cfn-elect-cmd-leader to elect the command leader.
+2025/09/10 00:23:19.040451 [INFO] Running command: /opt/aws/bin/cfn-elect-cmd-leader --stack arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 --command-name ElasticBeanstalkCommand-AWSEBAutoScalingGroup --invocation-id 5385aada-b6a9-4648-a148-283886b1e2af --listener-id i-0de7f5345a0faac28 --region eu-north-1
+2025/09/10 00:23:19.329585 [INFO] Instance is Leader.
+2025/09/10 00:23:19.329630 [INFO] Executing instruction: stopSqsd
+2025/09/10 00:23:19.329634 [INFO] This is a web server environment instance, skip stop sqsd daemon ...
+2025/09/10 00:23:19.329638 [INFO] Executing instruction: PreBuildEbExtension
+2025/09/10 00:23:19.329640 [INFO] Starting executing the config set Infra-EmbeddedPreBuild.
+2025/09/10 00:23:19.329652 [INFO] Running command: /opt/aws/bin/cfn-init -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1 --configsets Infra-EmbeddedPreBuild
+2025/09/10 00:23:19.655615 [INFO] Finished executing the config set Infra-EmbeddedPreBuild.
+
+2025/09/10 00:23:19.655652 [INFO] Executing instruction: StagedockerApplication
+2025/09/10 00:23:19.655661 [INFO] Running command: docker ps -a -q -f status=running
+2025/09/10 00:23:19.672670 [INFO] 9b7e65943944
+
+2025/09/10 00:23:19.672713 [INFO] Pruning containers ...
+2025/09/10 00:23:19.672727 [INFO] Running command: docker ps -a
+2025/09/10 00:23:19.687678 [INFO] CONTAINER ID   IMAGE          COMMAND                  CREATED       STATUS       PORTS      NAMES
+9b7e65943944   ae45cabd3f86   "python /tmp/applica…"   5 hours ago   Up 5 hours   8000/tcp   funny_dirac
+
+2025/09/10 00:23:19.687713 [INFO] Running command: docker container prune -f
+2025/09/10 00:23:19.702030 [INFO] Total reclaimed space: 0B
+
+2025/09/10 00:23:19.702060 [INFO] Running command: docker ps -a
+2025/09/10 00:23:19.717147 [INFO] CONTAINER ID   IMAGE          COMMAND                  CREATED       STATUS       PORTS      NAMES
+9b7e65943944   ae45cabd3f86   "python /tmp/applica…"   5 hours ago   Up 5 hours   8000/tcp   funny_dirac
+
+2025/09/10 00:23:19.717183 [INFO] Cleanup images ...
+2025/09/10 00:23:19.717194 [INFO] Running command: docker images -a
+2025/09/10 00:23:19.732029 [INFO] REPOSITORY                  TAG       IMAGE ID       CREATED       SIZE
+aws_beanstalk/current-app   latest    ae45cabd3f86   5 hours ago   1.11GB
+
+2025/09/10 00:23:19.732068 [INFO] Running command: docker rmi `docker images -aq`
+2025/09/10 00:23:19.760000 [INFO] Error response from daemon: conflict: unable to delete ae45cabd3f86 (cannot be forced) - image is being used by running container 9b7e65943944
+
+2025/09/10 00:23:19.760024 [INFO] Running command: docker images -a
+2025/09/10 00:23:19.775093 [INFO] REPOSITORY                  TAG       IMAGE ID       CREATED       SIZE
+aws_beanstalk/current-app   latest    ae45cabd3f86   5 hours ago   1.11GB
+
+2025/09/10 00:23:19.775116 [INFO] Recreating /var/app/staging/
+2025/09/10 00:23:19.775191 [INFO] Recreating /var/log/eb-docker/containers/eb-current-app
+2025/09/10 00:23:19.775416 [INFO] Running command: /bin/file -m /opt/elasticbeanstalk/config/private/beanstalk-magic -b --mime-type /opt/elasticbeanstalk/deployment/app_source_bundle
+2025/09/10 00:23:19.783417 [INFO] application/zip
+
+2025/09/10 00:23:19.783430 [INFO] app source bundle is zip file ...
+2025/09/10 00:23:19.783436 [INFO] extracting /opt/elasticbeanstalk/deployment/app_source_bundle to /var/app/staging/
+2025/09/10 00:23:19.783446 [INFO] Running command: /usr/bin/unzip -q -o /opt/elasticbeanstalk/deployment/app_source_bundle -d /var/app/staging/
+2025/09/10 00:23:19.810543 [INFO] finished extracting /opt/elasticbeanstalk/deployment/app_source_bundle to /var/app/staging/ successfully
+2025/09/10 00:23:19.810561 [INFO] Executing instruction: RunAppDeployPreBuildHooks
+2025/09/10 00:23:19.810648 [INFO] Executing platform hooks in .platform/hooks/prebuild/
+2025/09/10 00:23:19.810664 [INFO] The dir .platform/hooks/prebuild/ does not exist
+2025/09/10 00:23:19.810667 [INFO] Finished running scripts in /var/app/staging/.platform/hooks/prebuild
+2025/09/10 00:23:19.810672 [INFO] Executing instruction: Generate environment file
+2025/09/10 00:23:19.810705 [INFO] Executing instruction: Docker Specific Build Application
+2025/09/10 00:23:19.810708 [INFO] start build docker app
+2025/09/10 00:23:19.810718 [INFO] fetching image names from Dockerfile /var/app/staging/Dockerfile
+2025/09/10 00:23:19.810812 [INFO] found images [python:3.12-slim] in Dockerfile /var/app/staging/Dockerfile
+2025/09/10 00:23:19.810817 [INFO] pull docker image if update is not false in Dockerrun.aws.json
+2025/09/10 00:23:19.810832 [INFO] Running command: docker pull python:3.12-slim
+2025/09/10 00:23:24.768071 [INFO] 3.12-slim: Pulling from library/python
+ce1261c6d567: Pulling fs layer
+ae44614ad59a: Pulling fs layer
+48b120ca37b5: Pulling fs layer
+debe34bebc01: Pulling fs layer
+debe34bebc01: Waiting
+ae44614ad59a: Verifying Checksum
+ae44614ad59a: Download complete
+48b120ca37b5: Verifying Checksum
+48b120ca37b5: Download complete
+ce1261c6d567: Download complete
+debe34bebc01: Verifying Checksum
+debe34bebc01: Download complete
+ce1261c6d567: Pull complete
+ae44614ad59a: Pull complete
+48b120ca37b5: Pull complete
+debe34bebc01: Pull complete
+Digest: sha256:31551bd80310d95ed82a4a14dba8c908c85098f07457e8a5b6a946385cfd86c8
+Status: Downloaded newer image for python:3.12-slim
+docker.io/library/python:3.12-slim
+
+2025/09/10 00:23:24.768099 [INFO] successfully execute command: docker pull python:3.12-slim
+2025/09/10 00:23:24.768104 [INFO] successfully pulled docker image python:3.12-slim
+2025/09/10 00:23:24.768107 [INFO] start to build docker image
+2025/09/10 00:23:24.768125 [INFO] Running command: docker build -t aws_beanstalk/staging-app /var/app/staging/
+2025/09/10 00:24:10.360925 [INFO] #0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.90kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 296.02kB 0.1s done
+#4 DONE 0.1s
+
+#5 [ 1/10] FROM docker.io/library/python:3.12-slim
+#5 DONE 0.1s
+
+#6 [ 2/10] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     libpq-dev     gcc     curl     netcat-traditional     && rm -rf /var/lib/apt/lists/*
+#6 0.597 Hit:1 http://deb.debian.org/debian trixie InRelease
+#6 0.607 Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.1 kB]
+#6 0.612 Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+#6 0.646 Get:4 http://deb.debian.org/debian trixie/main amd64 Packages [9669 kB]
+#6 0.720 Get:5 http://deb.debian.org/debian trixie-updates/main amd64 Packages [2432 B]
+#6 0.721 Get:6 http://deb.debian.org/debian-security trixie-security/main amd64 Packages [34.0 kB]
+#6 1.651 Fetched 9796 kB in 1s (9026 kB/s)
+#6 1.651 Reading package lists...
+#6 2.397 Reading package lists...
+#6 3.104 Building dependency tree...
+#6 3.289 Reading state information...
+#6 3.557 The following additional packages will be installed:
+#6 3.557   binutils binutils-common binutils-x86-64-linux-gnu bzip2 cpp cpp-14
+#6 3.557   cpp-14-x86-64-linux-gnu cpp-x86-64-linux-gnu dpkg-dev g++ g++-14
+#6 3.557   g++-14-x86-64-linux-gnu g++-x86-64-linux-gnu gcc-14 gcc-14-x86-64-linux-gnu
+#6 3.558   gcc-x86-64-linux-gnu libasan8 libatomic1 libbinutils libbrotli1 libc-dev-bin
+#6 3.558   libc6-dev libcc1-0 libcom-err2 libcrypt-dev libctf-nobfd0 libctf0
+#6 3.558   libcurl4t64 libdpkg-perl libgcc-14-dev libgdbm-compat4t64 libgnutls30t64
+#6 3.558   libgomp1 libgprofng0 libgssapi-krb5-2 libhwasan0 libidn2-0 libisl23 libitm1
+#6 3.558   libjansson4 libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0 libldap2
+#6 3.558   liblsan0 libmpc3 libmpfr6 libnghttp2-14 libnghttp3-9 libp11-kit0 libperl5.40
+#6 3.559   libpq5 libpsl5t64 libquadmath0 librtmp1 libsasl2-2 libsasl2-modules-db
+#6 3.559   libsframe1 libssh2-1t64 libssl-dev libstdc++-14-dev libtasn1-6 libtsan2
+#6 3.559   libubsan1 libunistring5 linux-libc-dev make patch perl perl-modules-5.40
+#6 3.559   rpcsvc-proto xz-utils
+#6 3.561 Suggested packages:
+#6 3.561   binutils-doc gprofng-gui binutils-gold bzip2-doc cpp-doc gcc-14-locales
+#6 3.561   cpp-14-doc debian-keyring debian-tag2upload-keyring g++-multilib
+#6 3.561   g++-14-multilib gcc-14-doc gcc-multilib manpages-dev autoconf automake
+#6 3.561   libtool flex bison gdb gcc-doc gcc-14-multilib gdb-x86-64-linux-gnu
+#6 3.561   libc-devtools glibc-doc sq | sqop | rsop | gosop | pgpainless-cli | gpg-sq
+#6 3.561   | gnupg sensible-utils git bzr gnutls-bin krb5-doc krb5-user
+#6 3.561   postgresql-doc-17 libssl-doc libstdc++-14-doc make-doc ed diffutils-doc
+#6 3.561   perl-doc libterm-readline-gnu-perl | libterm-readline-perl-perl
+#6 3.561   libtap-harness-archive-perl
+#6 3.561 Recommended packages:
+#6 3.561   bash-completion fakeroot sq | sqop | rsop | gosop | pgpainless-cli | gpg-sq
+#6 3.561   | gnupg libalgorithm-merge-perl manpages manpages-dev libfile-fcntllock-perl
+#6 3.561   liblocale-gettext-perl krb5-locales libldap-common publicsuffix
+#6 3.561   libsasl2-modules
+#6 4.002 The following NEW packages will be installed:
+#6 4.002   binutils binutils-common binutils-x86-64-linux-gnu build-essential bzip2 cpp
+#6 4.003   cpp-14 cpp-14-x86-64-linux-gnu cpp-x86-64-linux-gnu curl dpkg-dev g++ g++-14
+#6 4.003   g++-14-x86-64-linux-gnu g++-x86-64-linux-gnu gcc gcc-14
+#6 4.003   gcc-14-x86-64-linux-gnu gcc-x86-64-linux-gnu libasan8 libatomic1 libbinutils
+#6 4.003   libbrotli1 libc-dev-bin libc6-dev libcc1-0 libcom-err2 libcrypt-dev
+#6 4.003   libctf-nobfd0 libctf0 libcurl4t64 libdpkg-perl libgcc-14-dev
+#6 4.003   libgdbm-compat4t64 libgnutls30t64 libgomp1 libgprofng0 libgssapi-krb5-2
+#6 4.003   libhwasan0 libidn2-0 libisl23 libitm1 libjansson4 libk5crypto3 libkeyutils1
+#6 4.003   libkrb5-3 libkrb5support0 libldap2 liblsan0 libmpc3 libmpfr6 libnghttp2-14
+#6 4.003   libnghttp3-9 libp11-kit0 libperl5.40 libpq-dev libpq5 libpsl5t64
+#6 4.004   libquadmath0 librtmp1 libsasl2-2 libsasl2-modules-db libsframe1 libssh2-1t64
+#6 4.004   libssl-dev libstdc++-14-dev libtasn1-6 libtsan2 libubsan1 libunistring5
+#6 4.005   linux-libc-dev make netcat-traditional patch perl perl-modules-5.40
+#6 4.005   rpcsvc-proto xz-utils
+#6 4.043 0 upgraded, 78 newly installed, 0 to remove and 0 not upgraded.
+#6 4.043 Need to get 90.6 MB of archives.
+#6 4.043 After this operation, 369 MB of additional disk space will be used.
+#6 4.043 Get:1 http://deb.debian.org/debian trixie/main amd64 bzip2 amd64 1.0.8-6 [40.5 kB]
+#6 4.048 Get:2 http://deb.debian.org/debian trixie/main amd64 netcat-traditional amd64 1.10-50 [63.2 kB]
+#6 4.052 Get:3 http://deb.debian.org/debian trixie/main amd64 perl-modules-5.40 all 5.40.1-6 [3019 kB]
+#6 4.073 Get:4 http://deb.debian.org/debian trixie/main amd64 libgdbm-compat4t64 amd64 1.24-2 [50.3 kB]
+#6 4.075 Get:5 http://deb.debian.org/debian trixie/main amd64 libperl5.40 amd64 5.40.1-6 [4341 kB]
+#6 4.096 Get:6 http://deb.debian.org/debian trixie/main amd64 perl amd64 5.40.1-6 [267 kB]
+#6 4.098 Get:7 http://deb.debian.org/debian trixie/main amd64 xz-utils amd64 5.8.1-1 [660 kB]
+#6 4.102 Get:8 http://deb.debian.org/debian trixie/main amd64 libsframe1 amd64 2.44-3 [78.4 kB]
+#6 4.102 Get:9 http://deb.debian.org/debian trixie/main amd64 binutils-common amd64 2.44-3 [2509 kB]
+#6 4.116 Get:10 http://deb.debian.org/debian trixie/main amd64 libbinutils amd64 2.44-3 [534 kB]
+#6 4.118 Get:11 http://deb.debian.org/debian trixie/main amd64 libgprofng0 amd64 2.44-3 [808 kB]
+#6 4.123 Get:12 http://deb.debian.org/debian trixie/main amd64 libctf-nobfd0 amd64 2.44-3 [156 kB]
+#6 4.124 Get:13 http://deb.debian.org/debian trixie/main amd64 libctf0 amd64 2.44-3 [88.6 kB]
+#6 4.125 Get:14 http://deb.debian.org/debian trixie/main amd64 libjansson4 amd64 2.14-2+b3 [39.8 kB]
+#6 4.126 Get:15 http://deb.debian.org/debian trixie/main amd64 binutils-x86-64-linux-gnu amd64 2.44-3 [1014 kB]
+#6 4.131 Get:16 http://deb.debian.org/debian trixie/main amd64 binutils amd64 2.44-3 [265 kB]
+#6 4.133 Get:17 http://deb.debian.org/debian trixie/main amd64 libc-dev-bin amd64 2.41-12 [58.2 kB]
+#6 4.133 Get:18 http://deb.debian.org/debian trixie/main amd64 linux-libc-dev all 6.12.43-1 [2654 kB]
+#6 4.148 Get:19 http://deb.debian.org/debian trixie/main amd64 libcrypt-dev amd64 1:4.4.38-1 [119 kB]
+#6 4.150 Get:20 http://deb.debian.org/debian trixie/main amd64 rpcsvc-proto amd64 1.4.3-1 [63.3 kB]
+#6 4.151 Get:21 http://deb.debian.org/debian trixie/main amd64 libc6-dev amd64 2.41-12 [1991 kB]
+#6 4.162 Get:22 http://deb.debian.org/debian trixie/main amd64 libisl23 amd64 0.27-1 [659 kB]
+#6 4.167 Get:23 http://deb.debian.org/debian trixie/main amd64 libmpfr6 amd64 4.2.2-1 [729 kB]
+#6 4.171 Get:24 http://deb.debian.org/debian trixie/main amd64 libmpc3 amd64 1.3.1-1+b3 [52.2 kB]
+#6 4.173 Get:25 http://deb.debian.org/debian trixie/main amd64 cpp-14-x86-64-linux-gnu amd64 14.2.0-19 [11.0 MB]
+#6 4.238 Get:26 http://deb.debian.org/debian trixie/main amd64 cpp-14 amd64 14.2.0-19 [1280 B]
+#6 4.241 Get:27 http://deb.debian.org/debian trixie/main amd64 cpp-x86-64-linux-gnu amd64 4:14.2.0-1 [4840 B]
+#6 4.242 Get:28 http://deb.debian.org/debian trixie/main amd64 cpp amd64 4:14.2.0-1 [1568 B]
+#6 4.242 Get:29 http://deb.debian.org/debian trixie/main amd64 libcc1-0 amd64 14.2.0-19 [42.8 kB]
+#6 4.243 Get:30 http://deb.debian.org/debian trixie/main amd64 libgomp1 amd64 14.2.0-19 [137 kB]
+#6 4.244 Get:31 http://deb.debian.org/debian trixie/main amd64 libitm1 amd64 14.2.0-19 [26.0 kB]
+#6 4.245 Get:32 http://deb.debian.org/debian trixie/main amd64 libatomic1 amd64 14.2.0-19 [9308 B]
+#6 4.246 Get:33 http://deb.debian.org/debian trixie/main amd64 libasan8 amd64 14.2.0-19 [2725 kB]
+#6 4.259 Get:34 http://deb.debian.org/debian trixie/main amd64 liblsan0 amd64 14.2.0-19 [1204 kB]
+#6 4.266 Get:35 http://deb.debian.org/debian trixie/main amd64 libtsan2 amd64 14.2.0-19 [2460 kB]
+#6 4.280 Get:36 http://deb.debian.org/debian trixie/main amd64 libubsan1 amd64 14.2.0-19 [1074 kB]
+#6 4.287 Get:37 http://deb.debian.org/debian trixie/main amd64 libhwasan0 amd64 14.2.0-19 [1488 kB]
+#6 4.296 Get:38 http://deb.debian.org/debian trixie/main amd64 libquadmath0 amd64 14.2.0-19 [145 kB]
+#6 4.297 Get:39 http://deb.debian.org/debian trixie/main amd64 libgcc-14-dev amd64 14.2.0-19 [2672 kB]
+#6 4.313 Get:40 http://deb.debian.org/debian trixie/main amd64 gcc-14-x86-64-linux-gnu amd64 14.2.0-19 [21.4 MB]
+#6 4.437 Get:41 http://deb.debian.org/debian trixie/main amd64 gcc-14 amd64 14.2.0-19 [540 kB]
+#6 4.441 Get:42 http://deb.debian.org/debian trixie/main amd64 gcc-x86-64-linux-gnu amd64 4:14.2.0-1 [1436 B]
+#6 4.442 Get:43 http://deb.debian.org/debian trixie/main amd64 gcc amd64 4:14.2.0-1 [5136 B]
+#6 4.443 Get:44 http://deb.debian.org/debian trixie/main amd64 libstdc++-14-dev amd64 14.2.0-19 [2376 kB]
+#6 4.456 Get:45 http://deb.debian.org/debian trixie/main amd64 g++-14-x86-64-linux-gnu amd64 14.2.0-19 [12.1 MB]
+#6 4.523 Get:46 http://deb.debian.org/debian trixie/main amd64 g++-14 amd64 14.2.0-19 [22.5 kB]
+#6 4.525 Get:47 http://deb.debian.org/debian trixie/main amd64 g++-x86-64-linux-gnu amd64 4:14.2.0-1 [1200 B]
+#6 4.525 Get:48 http://deb.debian.org/debian trixie/main amd64 g++ amd64 4:14.2.0-1 [1344 B]
+#6 4.526 Get:49 http://deb.debian.org/debian trixie/main amd64 make amd64 4.4.1-2 [463 kB]
+#6 4.527 Get:50 http://deb.debian.org/debian trixie/main amd64 libdpkg-perl all 1.22.21 [650 kB]
+#6 4.531 Get:51 http://deb.debian.org/debian trixie/main amd64 patch amd64 2.8-2 [134 kB]
+#6 4.535 Get:52 http://deb.debian.org/debian trixie/main amd64 dpkg-dev all 1.22.21 [1338 kB]
+#6 4.540 Get:53 http://deb.debian.org/debian trixie/main amd64 build-essential amd64 12.12 [4624 B]
+#6 4.542 Get:54 http://deb.debian.org/debian trixie/main amd64 libbrotli1 amd64 1.1.0-2+b7 [307 kB]
+#6 4.543 Get:55 http://deb.debian.org/debian trixie/main amd64 libkrb5support0 amd64 1.21.3-5 [33.0 kB]
+#6 4.544 Get:56 http://deb.debian.org/debian trixie/main amd64 libcom-err2 amd64 1.47.2-3+b3 [25.0 kB]
+#6 4.545 Get:57 http://deb.debian.org/debian trixie/main amd64 libk5crypto3 amd64 1.21.3-5 [81.5 kB]
+#6 4.546 Get:58 http://deb.debian.org/debian trixie/main amd64 libkeyutils1 amd64 1.6.3-6 [9456 B]
+#6 4.547 Get:59 http://deb.debian.org/debian trixie/main amd64 libkrb5-3 amd64 1.21.3-5 [326 kB]
+#6 4.548 Get:60 http://deb.debian.org/debian trixie/main amd64 libgssapi-krb5-2 amd64 1.21.3-5 [138 kB]
+#6 4.549 Get:61 http://deb.debian.org/debian trixie/main amd64 libunistring5 amd64 1.3-2 [477 kB]
+#6 4.552 Get:62 http://deb.debian.org/debian trixie/main amd64 libidn2-0 amd64 2.3.8-2 [109 kB]
+#6 4.554 Get:63 http://deb.debian.org/debian trixie/main amd64 libsasl2-modules-db amd64 2.1.28+dfsg1-9 [19.8 kB]
+#6 4.555 Get:64 http://deb.debian.org/debian trixie/main amd64 libsasl2-2 amd64 2.1.28+dfsg1-9 [57.5 kB]
+#6 4.557 Get:65 http://deb.debian.org/debian trixie/main amd64 libldap2 amd64 2.6.10+dfsg-1 [194 kB]
+#6 4.558 Get:66 http://deb.debian.org/debian trixie/main amd64 libnghttp2-14 amd64 1.64.0-1.1 [76.0 kB]
+#6 4.560 Get:67 http://deb.debian.org/debian trixie/main amd64 libnghttp3-9 amd64 1.8.0-1 [67.7 kB]
+#6 4.562 Get:68 http://deb.debian.org/debian trixie/main amd64 libpsl5t64 amd64 0.21.2-1.1+b1 [57.2 kB]
+#6 4.563 Get:69 http://deb.debian.org/debian trixie/main amd64 libp11-kit0 amd64 0.25.5-3 [425 kB]
+#6 4.564 Get:70 http://deb.debian.org/debian trixie/main amd64 libtasn1-6 amd64 4.20.0-2 [49.9 kB]
+#6 4.564 Get:71 http://deb.debian.org/debian trixie/main amd64 libgnutls30t64 amd64 3.8.9-3 [1465 kB]
+#6 4.571 Get:72 http://deb.debian.org/debian trixie/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d.1-2+b5 [58.8 kB]
+#6 4.572 Get:73 http://deb.debian.org/debian trixie/main amd64 libssh2-1t64 amd64 1.11.1-1 [245 kB]
+#6 4.575 Get:74 http://deb.debian.org/debian trixie/main amd64 libcurl4t64 amd64 8.14.1-2 [391 kB]
+#6 4.579 Get:75 http://deb.debian.org/debian trixie/main amd64 curl amd64 8.14.1-2 [269 kB]
+#6 4.580 Get:76 http://deb.debian.org/debian trixie/main amd64 libpq5 amd64 17.6-0+deb13u1 [228 kB]
+#6 4.583 Get:77 http://deb.debian.org/debian trixie/main amd64 libssl-dev amd64 3.5.1-1 [2954 kB]
+#6 4.600 Get:78 http://deb.debian.org/debian trixie/main amd64 libpq-dev amd64 17.6-0+deb13u1 [150 kB]
+#6 4.877 debconf: unable to initialize frontend: Dialog
+#6 4.877 debconf: (TERM is not set, so the dialog frontend is not usable.)
+#6 4.877 debconf: falling back to frontend: Readline
+#6 4.878 debconf: unable to initialize frontend: Readline
+#6 4.878 debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC entries checked: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.40.1 /usr/local/share/perl/5.40.1 /usr/lib/x86_64-linux-gnu/perl5/5.40 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.40 /usr/share/perl/5.40 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 8, <STDIN> line 78.)
+#6 4.878 debconf: falling back to frontend: Teletype
+#6 4.884 debconf: unable to initialize frontend: Teletype
+#6 4.884 debconf: (This frontend requires a controlling tty.)
+#6 4.884 debconf: falling back to frontend: Noninteractive
+#6 7.077 Fetched 90.6 MB in 1s (157 MB/s)
+#6 7.109 Selecting previously unselected package bzip2.
+#6 7.109 (Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 5644 files and directories currently installed.)
+#6 7.164 Preparing to unpack .../00-bzip2_1.0.8-6_amd64.deb ...
+#6 7.169 Unpacking bzip2 (1.0.8-6) ...
+#6 7.203 Selecting previously unselected package netcat-traditional.
+#6 7.204 Preparing to unpack .../01-netcat-traditional_1.10-50_amd64.deb ...
+#6 7.208 Unpacking netcat-traditional (1.10-50) ...
+#6 7.239 Selecting previously unselected package perl-modules-5.40.
+#6 7.241 Preparing to unpack .../02-perl-modules-5.40_5.40.1-6_all.deb ...
+#6 7.245 Unpacking perl-modules-5.40 (5.40.1-6) ...
+#6 7.525 Selecting previously unselected package libgdbm-compat4t64:amd64.
+#6 7.527 Preparing to unpack .../03-libgdbm-compat4t64_1.24-2_amd64.deb ...
+#6 7.542 Unpacking libgdbm-compat4t64:amd64 (1.24-2) ...
+#6 7.576 Selecting previously unselected package libperl5.40:amd64.
+#6 7.578 Preparing to unpack .../04-libperl5.40_5.40.1-6_amd64.deb ...
+#6 7.582 Unpacking libperl5.40:amd64 (5.40.1-6) ...
+#6 7.868 Selecting previously unselected package perl.
+#6 7.870 Preparing to unpack .../05-perl_5.40.1-6_amd64.deb ...
+#6 7.875 Unpacking perl (5.40.1-6) ...
+#6 7.922 Selecting previously unselected package xz-utils.
+#6 7.924 Preparing to unpack .../06-xz-utils_5.8.1-1_amd64.deb ...
+#6 7.928 Unpacking xz-utils (5.8.1-1) ...
+#6 7.987 Selecting previously unselected package libsframe1:amd64.
+#6 7.989 Preparing to unpack .../07-libsframe1_2.44-3_amd64.deb ...
+#6 7.993 Unpacking libsframe1:amd64 (2.44-3) ...
+#6 8.026 Selecting previously unselected package binutils-common:amd64.
+#6 8.028 Preparing to unpack .../08-binutils-common_2.44-3_amd64.deb ...
+#6 8.032 Unpacking binutils-common:amd64 (2.44-3) ...
+#6 8.203 Selecting previously unselected package libbinutils:amd64.
+#6 8.204 Preparing to unpack .../09-libbinutils_2.44-3_amd64.deb ...
+#6 8.209 Unpacking libbinutils:amd64 (2.44-3) ...
+#6 8.276 Selecting previously unselected package libgprofng0:amd64.
+#6 8.277 Preparing to unpack .../10-libgprofng0_2.44-3_amd64.deb ...
+#6 8.282 Unpacking libgprofng0:amd64 (2.44-3) ...
+#6 8.361 Selecting previously unselected package libctf-nobfd0:amd64.
+#6 8.362 Preparing to unpack .../11-libctf-nobfd0_2.44-3_amd64.deb ...
+#6 8.366 Unpacking libctf-nobfd0:amd64 (2.44-3) ...
+#6 8.408 Selecting previously unselected package libctf0:amd64.
+#6 8.409 Preparing to unpack .../12-libctf0_2.44-3_amd64.deb ...
+#6 8.414 Unpacking libctf0:amd64 (2.44-3) ...
+#6 8.452 Selecting previously unselected package libjansson4:amd64.
+#6 8.454 Preparing to unpack .../13-libjansson4_2.14-2+b3_amd64.deb ...
+#6 8.458 Unpacking libjansson4:amd64 (2.14-2+b3) ...
+#6 8.489 Selecting previously unselected package binutils-x86-64-linux-gnu.
+#6 8.490 Preparing to unpack .../14-binutils-x86-64-linux-gnu_2.44-3_amd64.deb ...
+#6 8.498 Unpacking binutils-x86-64-linux-gnu (2.44-3) ...
+#6 8.603 Selecting previously unselected package binutils.
+#6 8.605 Preparing to unpack .../15-binutils_2.44-3_amd64.deb ...
+#6 8.611 Unpacking binutils (2.44-3) ...
+#6 8.657 Selecting previously unselected package libc-dev-bin.
+#6 8.659 Preparing to unpack .../16-libc-dev-bin_2.41-12_amd64.deb ...
+#6 8.665 Unpacking libc-dev-bin (2.41-12) ...
+#6 8.702 Selecting previously unselected package linux-libc-dev.
+#6 8.704 Preparing to unpack .../17-linux-libc-dev_6.12.43-1_all.deb ...
+#6 8.709 Unpacking linux-libc-dev (6.12.43-1) ...
+#6 9.024 Selecting previously unselected package libcrypt-dev:amd64.
+#6 9.027 Preparing to unpack .../18-libcrypt-dev_1%3a4.4.38-1_amd64.deb ...
+#6 9.040 Unpacking libcrypt-dev:amd64 (1:4.4.38-1) ...
+#6 9.073 Selecting previously unselected package rpcsvc-proto.
+#6 9.075 Preparing to unpack .../19-rpcsvc-proto_1.4.3-1_amd64.deb ...
+#6 9.079 Unpacking rpcsvc-proto (1.4.3-1) ...
+#6 9.116 Selecting previously unselected package libc6-dev:amd64.
+#6 9.117 Preparing to unpack .../20-libc6-dev_2.41-12_amd64.deb ...
+#6 9.122 Unpacking libc6-dev:amd64 (2.41-12) ...
+#6 9.278 Selecting previously unselected package libisl23:amd64.
+#6 9.280 Preparing to unpack .../21-libisl23_0.27-1_amd64.deb ...
+#6 9.285 Unpacking libisl23:amd64 (0.27-1) ...
+#6 9.366 Selecting previously unselected package libmpfr6:amd64.
+#6 9.368 Preparing to unpack .../22-libmpfr6_4.2.2-1_amd64.deb ...
+#6 9.373 Unpacking libmpfr6:amd64 (4.2.2-1) ...
+#6 9.432 Selecting previously unselected package libmpc3:amd64.
+#6 9.433 Preparing to unpack .../23-libmpc3_1.3.1-1+b3_amd64.deb ...
+#6 9.438 Unpacking libmpc3:amd64 (1.3.1-1+b3) ...
+#6 9.470 Selecting previously unselected package cpp-14-x86-64-linux-gnu.
+#6 9.472 Preparing to unpack .../24-cpp-14-x86-64-linux-gnu_14.2.0-19_amd64.deb ...
+#6 9.476 Unpacking cpp-14-x86-64-linux-gnu (14.2.0-19) ...
+#6 10.04 Selecting previously unselected package cpp-14.
+#6 10.04 Preparing to unpack .../25-cpp-14_14.2.0-19_amd64.deb ...
+#6 10.05 Unpacking cpp-14 (14.2.0-19) ...
+#6 10.07 Selecting previously unselected package cpp-x86-64-linux-gnu.
+#6 10.08 Preparing to unpack .../26-cpp-x86-64-linux-gnu_4%3a14.2.0-1_amd64.deb ...
+#6 10.08 Unpacking cpp-x86-64-linux-gnu (4:14.2.0-1) ...
+#6 10.12 Selecting previously unselected package cpp.
+#6 10.12 Preparing to unpack .../27-cpp_4%3a14.2.0-1_amd64.deb ...
+#6 10.13 Unpacking cpp (4:14.2.0-1) ...
+#6 10.16 Selecting previously unselected package libcc1-0:amd64.
+#6 10.17 Preparing to unpack .../28-libcc1-0_14.2.0-19_amd64.deb ...
+#6 10.17 Unpacking libcc1-0:amd64 (14.2.0-19) ...
+#6 10.21 Selecting previously unselected package libgomp1:amd64.
+#6 10.21 Preparing to unpack .../29-libgomp1_14.2.0-19_amd64.deb ...
+#6 10.21 Unpacking libgomp1:amd64 (14.2.0-19) ...
+#6 10.26 Selecting previously unselected package libitm1:amd64.
+#6 10.26 Preparing to unpack .../30-libitm1_14.2.0-19_amd64.deb ...
+#6 10.26 Unpacking libitm1:amd64 (14.2.0-19) ...
+#6 10.30 Selecting previously unselected package libatomic1:amd64.
+#6 10.30 Preparing to unpack .../31-libatomic1_14.2.0-19_amd64.deb ...
+#6 10.30 Unpacking libatomic1:amd64 (14.2.0-19) ...
+#6 10.34 Selecting previously unselected package libasan8:amd64.
+#6 10.34 Preparing to unpack .../32-libasan8_14.2.0-19_amd64.deb ...
+#6 10.34 Unpacking libasan8:amd64 (14.2.0-19) ...
+#6 10.53 Selecting previously unselected package liblsan0:amd64.
+#6 10.53 Preparing to unpack .../33-liblsan0_14.2.0-19_amd64.deb ...
+#6 10.54 Unpacking liblsan0:amd64 (14.2.0-19) ...
+#6 10.64 Selecting previously unselected package libtsan2:amd64.
+#6 10.65 Preparing to unpack .../34-libtsan2_14.2.0-19_amd64.deb ...
+#6 10.65 Unpacking libtsan2:amd64 (14.2.0-19) ...
+#6 10.84 Selecting previously unselected package libubsan1:amd64.
+#6 10.84 Preparing to unpack .../35-libubsan1_14.2.0-19_amd64.deb ...
+#6 10.85 Unpacking libubsan1:amd64 (14.2.0-19) ...
+#6 10.94 Selecting previously unselected package libhwasan0:amd64.
+#6 10.94 Preparing to unpack .../36-libhwasan0_14.2.0-19_amd64.deb ...
+#6 10.95 Unpacking libhwasan0:amd64 (14.2.0-19) ...
+#6 11.07 Selecting previously unselected package libquadmath0:amd64.
+#6 11.08 Preparing to unpack .../37-libquadmath0_14.2.0-19_amd64.deb ...
+#6 11.08 Unpacking libquadmath0:amd64 (14.2.0-19) ...
+#6 11.12 Selecting previously unselected package libgcc-14-dev:amd64.
+#6 11.12 Preparing to unpack .../38-libgcc-14-dev_14.2.0-19_amd64.deb ...
+#6 11.12 Unpacking libgcc-14-dev:amd64 (14.2.0-19) ...
+#6 11.29 Selecting previously unselected package gcc-14-x86-64-linux-gnu.
+#6 11.29 Preparing to unpack .../39-gcc-14-x86-64-linux-gnu_14.2.0-19_amd64.deb ...
+#6 11.29 Unpacking gcc-14-x86-64-linux-gnu (14.2.0-19) ...
+#6 12.12 Selecting previously unselected package gcc-14.
+#6 12.12 Preparing to unpack .../40-gcc-14_14.2.0-19_amd64.deb ...
+#6 12.13 Unpacking gcc-14 (14.2.0-19) ...
+#6 12.17 Selecting previously unselected package gcc-x86-64-linux-gnu.
+#6 12.17 Preparing to unpack .../41-gcc-x86-64-linux-gnu_4%3a14.2.0-1_amd64.deb ...
+#6 12.17 Unpacking gcc-x86-64-linux-gnu (4:14.2.0-1) ...
+#6 12.21 Selecting previously unselected package gcc.
+#6 12.21 Preparing to unpack .../42-gcc_4%3a14.2.0-1_amd64.deb ...
+#6 12.21 Unpacking gcc (4:14.2.0-1) ...
+#6 12.24 Selecting previously unselected package libstdc++-14-dev:amd64.
+#6 12.24 Preparing to unpack .../43-libstdc++-14-dev_14.2.0-19_amd64.deb ...
+#6 12.25 Unpacking libstdc++-14-dev:amd64 (14.2.0-19) ...
+#6 12.44 Selecting previously unselected package g++-14-x86-64-linux-gnu.
+#6 12.44 Preparing to unpack .../44-g++-14-x86-64-linux-gnu_14.2.0-19_amd64.deb ...
+#6 12.45 Unpacking g++-14-x86-64-linux-gnu (14.2.0-19) ...
+#6 12.99 Selecting previously unselected package g++-14.
+#6 12.99 Preparing to unpack .../45-g++-14_14.2.0-19_amd64.deb ...
+#6 13.00 Unpacking g++-14 (14.2.0-19) ...
+#6 13.03 Selecting previously unselected package g++-x86-64-linux-gnu.
+#6 13.03 Preparing to unpack .../46-g++-x86-64-linux-gnu_4%3a14.2.0-1_amd64.deb ...
+#6 13.04 Unpacking g++-x86-64-linux-gnu (4:14.2.0-1) ...
+#6 13.07 Selecting previously unselected package g++.
+#6 13.07 Preparing to unpack .../47-g++_4%3a14.2.0-1_amd64.deb ...
+#6 13.08 Unpacking g++ (4:14.2.0-1) ...
+#6 13.11 Selecting previously unselected package make.
+#6 13.11 Preparing to unpack .../48-make_4.4.1-2_amd64.deb ...
+#6 13.11 Unpacking make (4.4.1-2) ...
+#6 13.16 Selecting previously unselected package libdpkg-perl.
+#6 13.16 Preparing to unpack .../49-libdpkg-perl_1.22.21_all.deb ...
+#6 13.17 Unpacking libdpkg-perl (1.22.21) ...
+#6 13.23 Selecting previously unselected package patch.
+#6 13.23 Preparing to unpack .../50-patch_2.8-2_amd64.deb ...
+#6 13.23 Unpacking patch (2.8-2) ...
+#6 13.28 Selecting previously unselected package dpkg-dev.
+#6 13.28 Preparing to unpack .../51-dpkg-dev_1.22.21_all.deb ...
+#6 13.28 Unpacking dpkg-dev (1.22.21) ...
+#6 13.35 Selecting previously unselected package build-essential.
+#6 13.36 Preparing to unpack .../52-build-essential_12.12_amd64.deb ...
+#6 13.36 Unpacking build-essential (12.12) ...
+#6 13.39 Selecting previously unselected package libbrotli1:amd64.
+#6 13.40 Preparing to unpack .../53-libbrotli1_1.1.0-2+b7_amd64.deb ...
+#6 13.40 Unpacking libbrotli1:amd64 (1.1.0-2+b7) ...
+#6 13.45 Selecting previously unselected package libkrb5support0:amd64.
+#6 13.46 Preparing to unpack .../54-libkrb5support0_1.21.3-5_amd64.deb ...
+#6 13.46 Unpacking libkrb5support0:amd64 (1.21.3-5) ...
+#6 13.50 Selecting previously unselected package libcom-err2:amd64.
+#6 13.50 Preparing to unpack .../55-libcom-err2_1.47.2-3+b3_amd64.deb ...
+#6 13.51 Unpacking libcom-err2:amd64 (1.47.2-3+b3) ...
+#6 13.55 Selecting previously unselected package libk5crypto3:amd64.
+#6 13.55 Preparing to unpack .../56-libk5crypto3_1.21.3-5_amd64.deb ...
+#6 13.55 Unpacking libk5crypto3:amd64 (1.21.3-5) ...
+#6 13.59 Selecting previously unselected package libkeyutils1:amd64.
+#6 13.59 Preparing to unpack .../57-libkeyutils1_1.6.3-6_amd64.deb ...
+#6 13.60 Unpacking libkeyutils1:amd64 (1.6.3-6) ...
+#6 13.63 Selecting previously unselected package libkrb5-3:amd64.
+#6 13.63 Preparing to unpack .../58-libkrb5-3_1.21.3-5_amd64.deb ...
+#6 13.64 Unpacking libkrb5-3:amd64 (1.21.3-5) ...
+#6 13.70 Selecting previously unselected package libgssapi-krb5-2:amd64.
+#6 13.70 Preparing to unpack .../59-libgssapi-krb5-2_1.21.3-5_amd64.deb ...
+#6 13.70 Unpacking libgssapi-krb5-2:amd64 (1.21.3-5) ...
+#6 13.75 Selecting previously unselected package libunistring5:amd64.
+#6 13.75 Preparing to unpack .../60-libunistring5_1.3-2_amd64.deb ...
+#6 13.75 Unpacking libunistring5:amd64 (1.3-2) ...
+#6 13.82 Selecting previously unselected package libidn2-0:amd64.
+#6 13.82 Preparing to unpack .../61-libidn2-0_2.3.8-2_amd64.deb ...
+#6 13.83 Unpacking libidn2-0:amd64 (2.3.8-2) ...
+#6 13.87 Selecting previously unselected package libsasl2-modules-db:amd64.
+#6 13.87 Preparing to unpack .../62-libsasl2-modules-db_2.1.28+dfsg1-9_amd64.deb ...
+#6 13.87 Unpacking libsasl2-modules-db:amd64 (2.1.28+dfsg1-9) ...
+#6 13.91 Selecting previously unselected package libsasl2-2:amd64.
+#6 13.91 Preparing to unpack .../63-libsasl2-2_2.1.28+dfsg1-9_amd64.deb ...
+#6 13.92 Unpacking libsasl2-2:amd64 (2.1.28+dfsg1-9) ...
+#6 13.96 Selecting previously unselected package libldap2:amd64.
+#6 13.96 Preparing to unpack .../64-libldap2_2.6.10+dfsg-1_amd64.deb ...
+#6 13.96 Unpacking libldap2:amd64 (2.6.10+dfsg-1) ...
+#6 14.01 Selecting previously unselected package libnghttp2-14:amd64.
+#6 14.01 Preparing to unpack .../65-libnghttp2-14_1.64.0-1.1_amd64.deb ...
+#6 14.02 Unpacking libnghttp2-14:amd64 (1.64.0-1.1) ...
+#6 14.06 Selecting previously unselected package libnghttp3-9:amd64.
+#6 14.06 Preparing to unpack .../66-libnghttp3-9_1.8.0-1_amd64.deb ...
+#6 14.07 Unpacking libnghttp3-9:amd64 (1.8.0-1) ...
+#6 14.11 Selecting previously unselected package libpsl5t64:amd64.
+#6 14.11 Preparing to unpack .../67-libpsl5t64_0.21.2-1.1+b1_amd64.deb ...
+#6 14.12 Unpacking libpsl5t64:amd64 (0.21.2-1.1+b1) ...
+#6 14.16 Selecting previously unselected package libp11-kit0:amd64.
+#6 14.16 Preparing to unpack .../68-libp11-kit0_0.25.5-3_amd64.deb ...
+#6 14.16 Unpacking libp11-kit0:amd64 (0.25.5-3) ...
+#6 14.22 Selecting previously unselected package libtasn1-6:amd64.
+#6 14.22 Preparing to unpack .../69-libtasn1-6_4.20.0-2_amd64.deb ...
+#6 14.23 Unpacking libtasn1-6:amd64 (4.20.0-2) ...
+#6 14.27 Selecting previously unselected package libgnutls30t64:amd64.
+#6 14.27 Preparing to unpack .../70-libgnutls30t64_3.8.9-3_amd64.deb ...
+#6 14.27 Unpacking libgnutls30t64:amd64 (3.8.9-3) ...
+#6 14.37 Selecting previously unselected package librtmp1:amd64.
+#6 14.37 Preparing to unpack .../71-librtmp1_2.4+20151223.gitfa8646d.1-2+b5_amd64.deb ...
+#6 14.37 Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b5) ...
+#6 14.41 Selecting previously unselected package libssh2-1t64:amd64.
+#6 14.41 Preparing to unpack .../72-libssh2-1t64_1.11.1-1_amd64.deb ...
+#6 14.41 Unpacking libssh2-1t64:amd64 (1.11.1-1) ...
+#6 14.46 Selecting previously unselected package libcurl4t64:amd64.
+#6 14.46 Preparing to unpack .../73-libcurl4t64_8.14.1-2_amd64.deb ...
+#6 14.46 Unpacking libcurl4t64:amd64 (8.14.1-2) ...
+#6 14.51 Selecting previously unselected package curl.
+#6 14.51 Preparing to unpack .../74-curl_8.14.1-2_amd64.deb ...
+#6 14.52 Unpacking curl (8.14.1-2) ...
+#6 14.57 Selecting previously unselected package libpq5:amd64.
+#6 14.57 Preparing to unpack .../75-libpq5_17.6-0+deb13u1_amd64.deb ...
+#6 14.57 Unpacking libpq5:amd64 (17.6-0+deb13u1) ...
+#6 14.62 Selecting previously unselected package libssl-dev:amd64.
+#6 14.62 Preparing to unpack .../76-libssl-dev_3.5.1-1_amd64.deb ...
+#6 14.62 Unpacking libssl-dev:amd64 (3.5.1-1) ...
+#6 14.81 Selecting previously unselected package libpq-dev.
+#6 14.82 Preparing to unpack .../77-libpq-dev_17.6-0+deb13u1_amd64.deb ...
+#6 14.82 Unpacking libpq-dev (17.6-0+deb13u1) ...
+#6 14.88 Setting up libkeyutils1:amd64 (1.6.3-6) ...
+#6 14.90 Setting up netcat-traditional (1.10-50) ...
+#6 14.92 update-alternatives: using /bin/nc.traditional to provide /bin/nc (nc) in auto mode
+#6 14.92 update-alternatives: warning: skip creation of /usr/share/man/man1/nc.1.gz because associated file /usr/share/man/man1/nc.traditional.1.gz (of link group nc) doesn't exist
+#6 14.92 update-alternatives: warning: skip creation of /usr/share/man/man1/netcat.1.gz because associated file /usr/share/man/man1/nc.traditional.1.gz (of link group nc) doesn't exist
+#6 14.93 Setting up libgdbm-compat4t64:amd64 (1.24-2) ...
+#6 14.94 Setting up libbrotli1:amd64 (1.1.0-2+b7) ...
+#6 14.95 Setting up binutils-common:amd64 (2.44-3) ...
+#6 14.97 Setting up libnghttp2-14:amd64 (1.64.0-1.1) ...
+#6 14.98 Setting up linux-libc-dev (6.12.43-1) ...
+#6 14.99 Setting up libctf-nobfd0:amd64 (2.44-3) ...
+#6 15.00 Setting up libcom-err2:amd64 (1.47.2-3+b3) ...
+#6 15.02 Setting up libgomp1:amd64 (14.2.0-19) ...
+#6 15.03 Setting up bzip2 (1.0.8-6) ...
+#6 15.04 Setting up libsframe1:amd64 (2.44-3) ...
+#6 15.06 Setting up libjansson4:amd64 (2.14-2+b3) ...
+#6 15.07 Setting up libkrb5support0:amd64 (1.21.3-5) ...
+#6 15.08 Setting up libsasl2-modules-db:amd64 (2.1.28+dfsg1-9) ...
+#6 15.09 Setting up rpcsvc-proto (1.4.3-1) ...
+#6 15.11 Setting up make (4.4.1-2) ...
+#6 15.12 Setting up libmpfr6:amd64 (4.2.2-1) ...
+#6 15.13 Setting up xz-utils (5.8.1-1) ...
+#6 15.14 update-alternatives: using /usr/bin/xz to provide /usr/bin/lzma (lzma) in auto mode
+#6 15.14 update-alternatives: warning: skip creation of /usr/share/man/man1/lzma.1.gz because associated file /usr/share/man/man1/xz.1.gz (of link group lzma) doesn't exist
+#6 15.14 update-alternatives: warning: skip creation of /usr/share/man/man1/unlzma.1.gz because associated file /usr/share/man/man1/unxz.1.gz (of link group lzma) doesn't exist
+#6 15.14 update-alternatives: warning: skip creation of /usr/share/man/man1/lzcat.1.gz because associated file /usr/share/man/man1/xzcat.1.gz (of link group lzma) doesn't exist
+#6 15.14 update-alternatives: warning: skip creation of /usr/share/man/man1/lzmore.1.gz because associated file /usr/share/man/man1/xzmore.1.gz (of link group lzma) doesn't exist
+#6 15.14 update-alternatives: warning: skip creation of /usr/share/man/man1/lzless.1.gz because associated file /usr/share/man/man1/xzless.1.gz (of link group lzma) doesn't exist
+#6 15.14 update-alternatives: warning: skip creation of /usr/share/man/man1/lzdiff.1.gz because associated file /usr/share/man/man1/xzdiff.1.gz (of link group lzma) doesn't exist
+#6 15.14 update-alternatives: warning: skip creation of /usr/share/man/man1/lzcmp.1.gz because associated file /usr/share/man/man1/xzcmp.1.gz (of link group lzma) doesn't exist
+#6 15.14 update-alternatives: warning: skip creation of /usr/share/man/man1/lzgrep.1.gz because associated file /usr/share/man/man1/xzgrep.1.gz (of link group lzma) doesn't exist
+#6 15.14 update-alternatives: warning: skip creation of /usr/share/man/man1/lzegrep.1.gz because associated file /usr/share/man/man1/xzegrep.1.gz (of link group lzma) doesn't exist
+#6 15.14 update-alternatives: warning: skip creation of /usr/share/man/man1/lzfgrep.1.gz because associated file /usr/share/man/man1/xzfgrep.1.gz (of link group lzma) doesn't exist
+#6 15.15 Setting up libquadmath0:amd64 (14.2.0-19) ...
+#6 15.16 Setting up libp11-kit0:amd64 (0.25.5-3) ...
+#6 15.18 Setting up libunistring5:amd64 (1.3-2) ...
+#6 15.19 Setting up libssl-dev:amd64 (3.5.1-1) ...
+#6 15.20 Setting up libmpc3:amd64 (1.3.1-1+b3) ...
+#6 15.21 Setting up libatomic1:amd64 (14.2.0-19) ...
+#6 15.23 Setting up patch (2.8-2) ...
+#6 15.24 Setting up libk5crypto3:amd64 (1.21.3-5) ...
+#6 15.25 Setting up libsasl2-2:amd64 (2.1.28+dfsg1-9) ...
+#6 15.26 Setting up libnghttp3-9:amd64 (1.8.0-1) ...
+#6 15.28 Setting up libubsan1:amd64 (14.2.0-19) ...
+#6 15.29 Setting up perl-modules-5.40 (5.40.1-6) ...
+#6 15.30 Setting up libhwasan0:amd64 (14.2.0-19) ...
+#6 15.31 Setting up libcrypt-dev:amd64 (1:4.4.38-1) ...
+#6 15.33 Setting up libasan8:amd64 (14.2.0-19) ...
+#6 15.35 Setting up libtasn1-6:amd64 (4.20.0-2) ...
+#6 15.36 Setting up libkrb5-3:amd64 (1.21.3-5) ...
+#6 15.37 Setting up libssh2-1t64:amd64 (1.11.1-1) ...
+#6 15.38 Setting up libtsan2:amd64 (14.2.0-19) ...
+#6 15.39 Setting up libbinutils:amd64 (2.44-3) ...
+#6 15.41 Setting up libisl23:amd64 (0.27-1) ...
+#6 15.42 Setting up libc-dev-bin (2.41-12) ...
+#6 15.43 Setting up libcc1-0:amd64 (14.2.0-19) ...
+#6 15.44 Setting up libldap2:amd64 (2.6.10+dfsg-1) ...
+#6 15.46 Setting up liblsan0:amd64 (14.2.0-19) ...
+#6 15.47 Setting up libitm1:amd64 (14.2.0-19) ...
+#6 15.48 Setting up libctf0:amd64 (2.44-3) ...
+#6 15.49 Setting up libidn2-0:amd64 (2.3.8-2) ...
+#6 15.51 Setting up libperl5.40:amd64 (5.40.1-6) ...
+#6 15.52 Setting up perl (5.40.1-6) ...
+#6 15.54 Setting up libgprofng0:amd64 (2.44-3) ...
+#6 15.56 Setting up libgssapi-krb5-2:amd64 (1.21.3-5) ...
+#6 15.57 Setting up cpp-14-x86-64-linux-gnu (14.2.0-19) ...
+#6 15.58 Setting up libdpkg-perl (1.22.21) ...
+#6 15.59 Setting up cpp-14 (14.2.0-19) ...
+#6 15.61 Setting up libc6-dev:amd64 (2.41-12) ...
+#6 15.62 Setting up libgcc-14-dev:amd64 (14.2.0-19) ...
+#6 15.63 Setting up libstdc++-14-dev:amd64 (14.2.0-19) ...
+#6 15.65 Setting up binutils-x86-64-linux-gnu (2.44-3) ...
+#6 15.66 Setting up cpp-x86-64-linux-gnu (4:14.2.0-1) ...
+#6 15.67 Setting up libgnutls30t64:amd64 (3.8.9-3) ...
+#6 15.69 Setting up libpsl5t64:amd64 (0.21.2-1.1+b1) ...
+#6 15.70 Setting up libpq5:amd64 (17.6-0+deb13u1) ...
+#6 15.71 Setting up libpq-dev (17.6-0+deb13u1) ...
+#6 15.73 Setting up binutils (2.44-3) ...
+#6 15.75 Setting up dpkg-dev (1.22.21) ...
+#6 15.77 Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b5) ...
+#6 15.78 Setting up cpp (4:14.2.0-1) ...
+#6 15.80 Setting up gcc-14-x86-64-linux-gnu (14.2.0-19) ...
+#6 15.81 Setting up gcc-x86-64-linux-gnu (4:14.2.0-1) ...
+#6 15.83 Setting up libcurl4t64:amd64 (8.14.1-2) ...
+#6 15.84 Setting up gcc-14 (14.2.0-19) ...
+#6 15.85 Setting up g++-14-x86-64-linux-gnu (14.2.0-19) ...
+#6 15.87 Setting up g++-x86-64-linux-gnu (4:14.2.0-1) ...
+#6 15.88 Setting up curl (8.14.1-2) ...
+#6 15.89 Setting up g++-14 (14.2.0-19) ...
+#6 15.91 Setting up gcc (4:14.2.0-1) ...
+#6 15.93 Setting up g++ (4:14.2.0-1) ...
+#6 15.94 update-alternatives: using /usr/bin/g++ to provide /usr/bin/c++ (c++) in auto mode
+#6 15.95 Setting up build-essential (12.12) ...
+#6 15.97 Processing triggers for libc-bin (2.41-12) ...
+#6 DONE 16.2s
+
+#7 [ 3/10] RUN pip install poetry==1.8.3
+#7 2.757 Collecting poetry==1.8.3
+#7 2.786   Downloading poetry-1.8.3-py3-none-any.whl.metadata (6.8 kB)
+#7 2.809 Collecting build<2.0.0,>=1.0.3 (from poetry==1.8.3)
+#7 2.815   Downloading build-1.3.0-py3-none-any.whl.metadata (5.6 kB)
+#7 2.832 Collecting cachecontrol<0.15.0,>=0.14.0 (from cachecontrol[filecache]<0.15.0,>=0.14.0->poetry==1.8.3)
+#7 2.838   Downloading cachecontrol-0.14.3-py3-none-any.whl.metadata (3.1 kB)
+#7 2.854 Collecting cleo<3.0.0,>=2.1.0 (from poetry==1.8.3)
+#7 2.860   Downloading cleo-2.1.0-py3-none-any.whl.metadata (12 kB)
+#7 2.872 Collecting crashtest<0.5.0,>=0.4.1 (from poetry==1.8.3)
+#7 2.877   Downloading crashtest-0.4.1-py3-none-any.whl.metadata (1.1 kB)
+#7 2.988 Collecting dulwich<0.22.0,>=0.21.2 (from poetry==1.8.3)
+#7 2.994   Downloading dulwich-0.21.7-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.3 kB)
+#7 3.010 Collecting fastjsonschema<3.0.0,>=2.18.0 (from poetry==1.8.3)
+#7 3.015   Downloading fastjsonschema-2.21.2-py3-none-any.whl.metadata (2.3 kB)
+#7 3.027 Collecting installer<0.8.0,>=0.7.0 (from poetry==1.8.3)
+#7 3.033   Downloading installer-0.7.0-py3-none-any.whl.metadata (936 bytes)
+#7 3.072 Collecting keyring<25.0.0,>=24.0.0 (from poetry==1.8.3)
+#7 3.078   Downloading keyring-24.3.1-py3-none-any.whl.metadata (20 kB)
+#7 3.099 Collecting packaging>=23.1 (from poetry==1.8.3)
+#7 3.104   Downloading packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+#7 3.116 Collecting pexpect<5.0.0,>=4.7.0 (from poetry==1.8.3)
+#7 3.121   Downloading pexpect-4.9.0-py2.py3-none-any.whl.metadata (2.5 kB)
+#7 3.163 Collecting pkginfo<2.0,>=1.10 (from poetry==1.8.3)
+#7 3.169   Downloading pkginfo-1.12.1.2-py3-none-any.whl.metadata (13 kB)
+#7 3.189 Collecting platformdirs<5,>=3.0.0 (from poetry==1.8.3)
+#7 3.195   Downloading platformdirs-4.4.0-py3-none-any.whl.metadata (12 kB)
+#7 3.215 Collecting poetry-core==1.9.0 (from poetry==1.8.3)
+#7 3.221   Downloading poetry_core-1.9.0-py3-none-any.whl.metadata (3.5 kB)
+#7 3.236 Collecting poetry-plugin-export<2.0.0,>=1.6.0 (from poetry==1.8.3)
+#7 3.241   Downloading poetry_plugin_export-1.9.0-py3-none-any.whl.metadata (3.1 kB)
+#7 3.251 Collecting pyproject-hooks<2.0.0,>=1.0.0 (from poetry==1.8.3)
+#7 3.257   Downloading pyproject_hooks-1.2.0-py3-none-any.whl.metadata (1.3 kB)
+#7 3.285 Collecting requests<3.0,>=2.26 (from poetry==1.8.3)
+#7 3.291   Downloading requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
+#7 3.305 Collecting requests-toolbelt<2.0.0,>=1.0.0 (from poetry==1.8.3)
+#7 3.311   Downloading requests_toolbelt-1.0.0-py2.py3-none-any.whl.metadata (14 kB)
+#7 3.326 Collecting shellingham<2.0,>=1.5 (from poetry==1.8.3)
+#7 3.332   Downloading shellingham-1.5.4-py2.py3-none-any.whl.metadata (3.5 kB)
+#7 3.351 Collecting tomlkit<1.0.0,>=0.11.4 (from poetry==1.8.3)
+#7 3.357   Downloading tomlkit-0.13.3-py3-none-any.whl.metadata (2.8 kB)
+#7 3.387 Collecting trove-classifiers>=2022.5.19 (from poetry==1.8.3)
+#7 3.392   Downloading trove_classifiers-2025.9.9.12-py3-none-any.whl.metadata (2.3 kB)
+#7 3.438 Collecting virtualenv<21.0.0,>=20.23.0 (from poetry==1.8.3)
+#7 3.444   Downloading virtualenv-20.34.0-py3-none-any.whl.metadata (4.6 kB)
+#7 3.524 Collecting msgpack<2.0.0,>=0.5.2 (from cachecontrol<0.15.0,>=0.14.0->cachecontrol[filecache]<0.15.0,>=0.14.0->poetry==1.8.3)
+#7 3.530   Downloading msgpack-1.1.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (8.4 kB)
+#7 3.556 Collecting filelock>=3.8.0 (from cachecontrol[filecache]<0.15.0,>=0.14.0->poetry==1.8.3)
+#7 3.562   Downloading filelock-3.19.1-py3-none-any.whl.metadata (2.1 kB)
+#7 4.044 Collecting rapidfuzz<4.0.0,>=3.0.0 (from cleo<3.0.0,>=2.1.0->poetry==1.8.3)
+#7 4.050   Downloading rapidfuzz-3.14.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (12 kB)
+#7 4.078 Collecting urllib3>=1.25 (from dulwich<0.22.0,>=0.21.2->poetry==1.8.3)
+#7 4.083   Downloading urllib3-2.5.0-py3-none-any.whl.metadata (6.5 kB)
+#7 4.099 Collecting jaraco.classes (from keyring<25.0.0,>=24.0.0->poetry==1.8.3)
+#7 4.105   Downloading jaraco.classes-3.4.0-py3-none-any.whl.metadata (2.6 kB)
+#7 4.116 Collecting SecretStorage>=3.2 (from keyring<25.0.0,>=24.0.0->poetry==1.8.3)
+#7 4.154   Downloading secretstorage-3.4.0-py3-none-any.whl.metadata (3.9 kB)
+#7 4.316 Collecting jeepney>=0.4.2 (from keyring<25.0.0,>=24.0.0->poetry==1.8.3)
+#7 4.321   Downloading jeepney-0.9.0-py3-none-any.whl.metadata (1.2 kB)
+#7 4.335 Collecting ptyprocess>=0.5 (from pexpect<5.0.0,>=4.7.0->poetry==1.8.3)
+#7 4.340   Downloading ptyprocess-0.7.0-py2.py3-none-any.whl.metadata (1.3 kB)
+#7 4.354 INFO: pip is looking at multiple versions of poetry-plugin-export to determine which version is compatible with other requirements. This could take a while.
+#7 4.354 Collecting poetry-plugin-export<2.0.0,>=1.6.0 (from poetry==1.8.3)
+#7 4.360   Downloading poetry_plugin_export-1.8.0-py3-none-any.whl.metadata (2.8 kB)
+#7 4.446 Collecting charset_normalizer<4,>=2 (from requests<3.0,>=2.26->poetry==1.8.3)
+#7 4.452   Downloading charset_normalizer-3.4.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (36 kB)
+#7 4.468 Collecting idna<4,>=2.5 (from requests<3.0,>=2.26->poetry==1.8.3)
+#7 4.473   Downloading idna-3.10-py3-none-any.whl.metadata (10 kB)
+#7 4.506 Collecting certifi>=2017.4.17 (from requests<3.0,>=2.26->poetry==1.8.3)
+#7 4.511   Downloading certifi-2025.8.3-py3-none-any.whl.metadata (2.4 kB)
+#7 4.538 Collecting distlib<1,>=0.3.7 (from virtualenv<21.0.0,>=20.23.0->poetry==1.8.3)
+#7 4.543   Downloading distlib-0.4.0-py2.py3-none-any.whl.metadata (5.2 kB)
+#7 4.735 Collecting cryptography>=2.0 (from SecretStorage>=3.2->keyring<25.0.0,>=24.0.0->poetry==1.8.3)
+#7 4.741   Downloading cryptography-45.0.7-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (5.7 kB)
+#7 4.767 Collecting more-itertools (from jaraco.classes->keyring<25.0.0,>=24.0.0->poetry==1.8.3)
+#7 4.773   Downloading more_itertools-10.8.0-py3-none-any.whl.metadata (39 kB)
+#7 4.870 Collecting cffi>=1.14 (from cryptography>=2.0->SecretStorage>=3.2->keyring<25.0.0,>=24.0.0->poetry==1.8.3)
+#7 4.875   Downloading cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
+#7 4.888 Collecting pycparser (from cffi>=1.14->cryptography>=2.0->SecretStorage>=3.2->keyring<25.0.0,>=24.0.0->poetry==1.8.3)
+#7 4.894   Downloading pycparser-2.23-py3-none-any.whl.metadata (993 bytes)
+#7 4.905 Downloading poetry-1.8.3-py3-none-any.whl (249 kB)
+#7 4.915 Downloading poetry_core-1.9.0-py3-none-any.whl (309 kB)
+#7 4.921 Downloading build-1.3.0-py3-none-any.whl (23 kB)
+#7 4.927 Downloading cachecontrol-0.14.3-py3-none-any.whl (21 kB)
+#7 4.932 Downloading cleo-2.1.0-py3-none-any.whl (78 kB)
+#7 4.938 Downloading crashtest-0.4.1-py3-none-any.whl (7.6 kB)
+#7 4.944 Downloading dulwich-0.21.7-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (519 kB)
+#7 4.950 Downloading fastjsonschema-2.21.2-py3-none-any.whl (24 kB)
+#7 4.956 Downloading installer-0.7.0-py3-none-any.whl (453 kB)
+#7 4.964 Downloading keyring-24.3.1-py3-none-any.whl (38 kB)
+#7 4.971 Downloading packaging-25.0-py3-none-any.whl (66 kB)
+#7 4.976 Downloading pexpect-4.9.0-py2.py3-none-any.whl (63 kB)
+#7 4.982 Downloading pkginfo-1.12.1.2-py3-none-any.whl (32 kB)
+#7 4.988 Downloading platformdirs-4.4.0-py3-none-any.whl (18 kB)
+#7 4.994 Downloading poetry_plugin_export-1.8.0-py3-none-any.whl (10 kB)
+#7 4.999 Downloading pyproject_hooks-1.2.0-py3-none-any.whl (10 kB)
+#7 5.005 Downloading requests-2.32.5-py3-none-any.whl (64 kB)
+#7 5.011 Downloading requests_toolbelt-1.0.0-py2.py3-none-any.whl (54 kB)
+#7 5.016 Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+#7 5.021 Downloading tomlkit-0.13.3-py3-none-any.whl (38 kB)
+#7 5.027 Downloading trove_classifiers-2025.9.9.12-py3-none-any.whl (14 kB)
+#7 5.032 Downloading virtualenv-20.34.0-py3-none-any.whl (6.0 MB)
+#7 5.054    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.0/6.0 MB 346.5 MB/s eta 0:00:00
+#7 5.058 Downloading certifi-2025.8.3-py3-none-any.whl (161 kB)
+#7 5.064 Downloading charset_normalizer-3.4.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (151 kB)
+#7 5.070 Downloading distlib-0.4.0-py2.py3-none-any.whl (469 kB)
+#7 5.076 Downloading filelock-3.19.1-py3-none-any.whl (15 kB)
+#7 5.081 Downloading idna-3.10-py3-none-any.whl (70 kB)
+#7 5.086 Downloading jeepney-0.9.0-py3-none-any.whl (49 kB)
+#7 5.093 Downloading msgpack-1.1.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (426 kB)
+#7 5.099 Downloading ptyprocess-0.7.0-py2.py3-none-any.whl (13 kB)
+#7 5.106 Downloading rapidfuzz-3.14.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (3.2 MB)
+#7 5.114    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 617.4 MB/s eta 0:00:00
+#7 5.120 Downloading secretstorage-3.4.0-py3-none-any.whl (15 kB)
+#7 5.125 Downloading urllib3-2.5.0-py3-none-any.whl (129 kB)
+#7 5.131 Downloading jaraco.classes-3.4.0-py3-none-any.whl (6.8 kB)
+#7 5.139 Downloading cryptography-45.0.7-cp311-abi3-manylinux_2_34_x86_64.whl (4.5 MB)
+#7 5.150    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 493.3 MB/s eta 0:00:00
+#7 5.156 Downloading more_itertools-10.8.0-py3-none-any.whl (69 kB)
+#7 5.162 Downloading cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (219 kB)
+#7 5.168 Downloading pycparser-2.23-py3-none-any.whl (118 kB)
+#7 5.322 Installing collected packages: trove-classifiers, ptyprocess, fastjsonschema, distlib, urllib3, tomlkit, shellingham, rapidfuzz, pyproject-hooks, pycparser, poetry-core, platformdirs, pkginfo, pexpect, packaging, msgpack, more-itertools, jeepney, installer, idna, filelock, crashtest, charset_normalizer, certifi, virtualenv, requests, jaraco.classes, dulwich, cleo, cffi, build, requests-toolbelt, cryptography, cachecontrol, SecretStorage, keyring, poetry-plugin-export, poetry
+#7 8.185 Successfully installed SecretStorage-3.4.0 build-1.3.0 cachecontrol-0.14.3 certifi-2025.8.3 cffi-2.0.0 charset_normalizer-3.4.3 cleo-2.1.0 crashtest-0.4.1 cryptography-45.0.7 distlib-0.4.0 dulwich-0.21.7 fastjsonschema-2.21.2 filelock-3.19.1 idna-3.10 installer-0.7.0 jaraco.classes-3.4.0 jeepney-0.9.0 keyring-24.3.1 more-itertools-10.8.0 msgpack-1.1.1 packaging-25.0 pexpect-4.9.0 pkginfo-1.12.1.2 platformdirs-4.4.0 poetry-1.8.3 poetry-core-1.9.0 poetry-plugin-export-1.8.0 ptyprocess-0.7.0 pycparser-2.23 pyproject-hooks-1.2.0 rapidfuzz-3.14.1 requests-2.32.5 requests-toolbelt-1.0.0 shellingham-1.5.4 tomlkit-0.13.3 trove-classifiers-2025.9.9.12 urllib3-2.5.0 virtualenv-20.34.0
+#7 8.186 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#7 DONE 8.5s
+
+#8 [ 4/10] WORKDIR /app
+#8 DONE 0.0s
+
+#9 [ 5/10] COPY ie_professors_database/pyproject.toml ie_professors_database/poetry.lock* ./
+#9 DONE 0.0s
+
+#10 [ 6/10] RUN if [ ! -f poetry.lock ] || ! poetry check; then         echo "Regenerating poetry.lock file..." &&         poetry lock;     fi &&     poetry install --only=main --no-root &&     rm -rf /tmp/poetry_cache
+#10 0.424 Regenerating poetry.lock file...
+#10 1.783 Creating virtualenv ie-professor-management-9TtSrW0h-py3.12 in /tmp/poetry_cache/virtualenvs
+#10 2.302 Updating dependencies
+#10 2.303 Resolving dependencies...
+#10 5.895 
+#10 5.895 Writing lock file
+#10 7.261 Installing dependencies from lock file
+#10 7.371 
+#10 7.371 Package operations: 25 installs, 0 updates, 0 removals
+#10 7.371 
+#10 7.371   - Installing asgiref (3.9.1)
+#10 7.372   - Installing sqlparse (0.5.3)
+#10 7.703   - Installing django (5.2.6)
+#10 7.703   - Installing fields (5.0.0)
+#10 8.892   - Installing aspectlib (2.0.0)
+#10 8.892   - Installing djangorestframework (3.16.1)
+#10 8.893   - Installing diff-match-patch (20241021)
+#10 8.898   - Installing packaging (25.0)
+#10 8.900   - Installing pyjwt (2.10.1)
+#10 8.903   - Installing tablib (3.8.0)
+#10 8.933   - Installing typing-extensions (4.15.0)
+#10 9.107   - Installing dj-database-url (2.3.0)
+#10 9.107   - Installing django-cors-headers (4.8.0)
+#10 9.108   - Installing django-countries (7.6.1)
+#10 9.109   - Installing django-extensions (4.1)
+#10 9.110   - Installing django-filter (25.1)
+#10 9.112   - Installing django-import-export (4.3.9)
+#10 9.177   - Installing django-modeltranslation (0.19.16)
+#10 9.187   - Installing django-simple-history (3.10.1)
+#10 9.309   - Installing django-timestampable (1.1.4)
+#10 9.344   - Installing django-unfold (0.60.0)
+#10 9.376   - Installing djangorestframework-simplejwt (5.5.1)
+#10 9.393   - Installing gunicorn (22.0.0)
+#10 9.518   - Installing psycopg2-binary (2.9.10)
+#10 9.628   - Installing python-dotenv (1.1.1)
+#10 DONE 12.4s
+
+#11 [ 7/10] RUN mkdir -p /vol/static /vol/media /app/staticfiles &&     groupadd -r django && useradd -r -g django django &&     chown -R django:django /app /vol
+#11 DONE 0.6s
+
+#12 [ 8/10] COPY ie_professors_database/infra/entrypoint.sh /app/entrypoint.sh
+#12 DONE 0.1s
+
+#13 [ 9/10] RUN chmod +x /app/entrypoint.sh
+#13 DONE 0.4s
+
+#14 [10/10] COPY ie_professors_database/ ./
+#14 DONE 0.1s
+
+#15 exporting to image
+#15 exporting layers
+#15 exporting layers 6.5s done
+#15 writing image sha256:ee0eacfb39bedc1b3ec0813212fcfcaa6e2a347d13fe055db0914309e6e0792a done
+#15 naming to docker.io/aws_beanstalk/staging-app 0.0s done
+#15 DONE 6.5s
+
+2025/09/10 00:24:10.364064 [INFO] successfully execute command: docker build -t aws_beanstalk/staging-app /var/app/staging/
+2025/09/10 00:24:10.364082 [INFO] successfully build docker image
+2025/09/10 00:24:10.364087 [INFO] save staging docker image id
+2025/09/10 00:24:10.377667 [INFO] Running command: docker images aws_beanstalk/staging-app -q
+2025/09/10 00:24:10.520188 [INFO] ee0eacfb39be
+
+2025/09/10 00:24:10.523132 [INFO] Executing instruction: configure X-Ray
+2025/09/10 00:24:10.524135 [INFO] X-Ray is not enabled.
+2025/09/10 00:24:10.524141 [INFO] Executing instruction: configure proxy Nginx
+2025/09/10 00:24:10.524160 [INFO] Recreating /var/proxy/staging/nginx
+2025/09/10 00:24:10.535574 [INFO] Running command: cp -rp /var/app/staging/.platform/nginx/. /var/proxy/staging/nginx
+2025/09/10 00:24:10.552079 [INFO] Executing instruction: configure healthd specific proxy conf
+2025/09/10 00:24:10.554836 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/10 00:24:10.587440 [WARN] Warning: process healthd is already registered...
+Deregistering the process ...
+2025/09/10 00:24:10.587467 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/10 00:24:10.596295 [INFO] Running command: systemctl is-active healthd.service
+2025/09/10 00:24:10.603254 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/10 00:24:10.611618 [INFO] Running command: systemctl stop healthd.service
+2025/09/10 00:24:10.765995 [INFO] Running command: systemctl disable healthd.service
+2025/09/10 00:24:11.178253 [INFO] Removed "/etc/systemd/system/multi-user.target.wants/healthd.service".
+
+2025/09/10 00:24:11.179089 [INFO] Running command: systemctl daemon-reload
+2025/09/10 00:24:11.399264 [INFO] Running command: systemctl reset-failed
+2025/09/10 00:24:11.410448 [INFO] Running command: systemctl daemon-reload
+2025/09/10 00:24:11.686517 [INFO] Running command: systemctl reset-failed
+2025/09/10 00:24:11.694942 [INFO] Running command: systemctl is-enabled aws-eb.target
+2025/09/10 00:24:11.702620 [INFO] Running command: systemctl enable aws-eb.target
+2025/09/10 00:24:11.995287 [INFO] Running command: systemctl start aws-eb.target
+2025/09/10 00:24:12.004179 [INFO] Running command: systemctl enable healthd.service
+2025/09/10 00:24:12.247811 [INFO] Created symlink /etc/systemd/system/multi-user.target.wants/healthd.service → /etc/systemd/system/healthd.service.
+
+2025/09/10 00:24:12.247841 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/10 00:24:12.258812 [INFO] Running command: systemctl is-active healthd.service
+2025/09/10 00:24:12.266107 [INFO] Running command: systemctl start healthd.service
+2025/09/10 00:24:12.330759 [INFO] Copying file /opt/elasticbeanstalk/config/private/healthd/healthd_logformat.conf to /var/proxy/staging/nginx/conf.d/healthd_logformat.conf
+2025/09/10 00:24:12.331887 [INFO] Copying file /opt/elasticbeanstalk/config/private/healthd/healthd_nginx.conf to /var/proxy/staging/nginx/conf.d/elasticbeanstalk/healthd.conf
+2025/09/10 00:24:12.333834 [INFO] Executing instruction: configure log streaming
+2025/09/10 00:24:12.333846 [INFO] log streaming is not enabled
+2025/09/10 00:24:12.333850 [INFO] disable log stream
+2025/09/10 00:24:12.333862 [INFO] Running command: systemctl show -p PartOf amazon-cloudwatch-agent.service
+2025/09/10 00:24:12.350636 [INFO] Running command: systemctl stop amazon-cloudwatch-agent.service
+2025/09/10 00:24:12.367076 [INFO] Executing instruction: GetToggleForceRotate
+2025/09/10 00:24:12.367101 [INFO] Checking if logs need forced rotation
+2025/09/10 00:24:12.367128 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1
+2025/09/10 00:24:13.056001 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBBeanstalkMetadata --region eu-north-1
+2025/09/10 00:24:13.367754 [INFO] Procfile not found. Generating default rsyslog config
+2025/09/10 00:24:13.371281 [INFO] Running command: systemctl restart rsyslog.service
+2025/09/10 00:24:13.656887 [INFO] Executing instruction: Configure Docker Logging
+2025/09/10 00:24:13.680756 [INFO] Executing instruction: PostBuildEbExtension
+2025/09/10 00:24:13.680773 [INFO] Starting executing the config set Infra-EmbeddedPostBuild.
+2025/09/10 00:24:13.680782 [INFO] Running command: /opt/aws/bin/cfn-init -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1 --configsets Infra-EmbeddedPostBuild
+2025/09/10 00:24:14.008095 [INFO] Finished executing the config set Infra-EmbeddedPostBuild.
+
+2025/09/10 00:24:14.008121 [INFO] Executing instruction: CleanEbExtensions
+2025/09/10 00:24:14.008269 [INFO] Cleaned ebextensions subdirectories from app staging directory.
+2025/09/10 00:24:14.008275 [INFO] Executing instruction: RunAppDeployPreDeployHooks
+2025/09/10 00:24:14.008301 [INFO] Executing platform hooks in .platform/hooks/predeploy/
+2025/09/10 00:24:14.008317 [INFO] The dir .platform/hooks/predeploy/ does not exist
+2025/09/10 00:24:14.008321 [INFO] Finished running scripts in /var/app/staging/.platform/hooks/predeploy
+2025/09/10 00:24:14.008327 [INFO] Executing instruction: stop X-Ray
+2025/09/10 00:24:14.008329 [INFO] stop X-Ray ...
+2025/09/10 00:24:14.008339 [INFO] Running command: systemctl show -p PartOf xray.service
+2025/09/10 00:24:14.024793 [WARN] stopProcess Warning: process xray is not registered 
+2025/09/10 00:24:14.024838 [INFO] Running command: systemctl stop xray.service
+2025/09/10 00:24:14.039644 [INFO] Executing instruction: Run Docker Container
+2025/09/10 00:24:14.039685 [INFO] stop currently running containers...
+2025/09/10 00:24:14.039700 [INFO] detected old app is not docker compose app
+2025/09/10 00:24:14.039712 [INFO] Running command: iptables-save | grep -v added_by_elasticbeanstalk | iptables-restore
+2025/09/10 00:24:14.184994 [INFO] Running command: systemctl show -p PartOf nginx.service
+2025/09/10 00:24:14.195640 [INFO] Running command: systemctl is-active nginx.service
+2025/09/10 00:24:14.202724 [INFO] Running command: systemctl show -p PartOf nginx.service
+2025/09/10 00:24:14.211555 [INFO] Running command: systemctl stop nginx.service
+2025/09/10 00:24:14.446672 [INFO] Running command: systemctl disable nginx.service
+2025/09/10 00:24:14.682169 [INFO] Removed "/etc/systemd/system/multi-user.target.wants/nginx.service".
+
+2025/09/10 00:24:14.682331 [INFO] Running command: systemctl daemon-reload
+2025/09/10 00:24:14.948997 [INFO] Running command: systemctl reset-failed
+2025/09/10 00:24:14.956209 [INFO] Running command: systemctl show -p PartOf eb-docker.service
+2025/09/10 00:24:14.967892 [INFO] Running command: systemctl is-active eb-docker.service
+2025/09/10 00:24:14.975055 [INFO] Running command: systemctl show -p PartOf eb-docker.service
+2025/09/10 00:24:14.984354 [INFO] Running command: systemctl stop eb-docker.service
+2025/09/10 00:24:25.649108 [INFO] Running command: systemctl disable eb-docker.service
+2025/09/10 00:24:25.888206 [INFO] Running command: systemctl daemon-reload
+2025/09/10 00:24:26.178248 [INFO] Running command: systemctl reset-failed
+2025/09/10 00:24:26.187420 [INFO] Running command: systemctl show -p PartOf eb-docker-log.service
+2025/09/10 00:24:26.199281 [INFO] Running command: systemctl is-active eb-docker-log.service
+2025/09/10 00:24:26.207550 [INFO] Running command: systemctl disable eb-docker-log.service
+2025/09/10 00:24:26.483215 [INFO] Removed "/etc/systemd/system/eb-docker.service.wants/eb-docker-log.service".
+
+2025/09/10 00:24:26.483338 [INFO] Running command: systemctl daemon-reload
+2025/09/10 00:24:26.770940 [INFO] Running command: systemctl reset-failed
+2025/09/10 00:24:26.779737 [INFO] stopping current container: 9b7e65943944
+2025/09/10 00:24:26.779767 [INFO] Running command: docker ps | grep -q 9b7e65943944
+2025/09/10 00:24:26.795876 [INFO] Running command: docker ps | grep -q 9b7e65943944
+2025/09/10 00:24:26.811877 [INFO] Pruning containers ...
+2025/09/10 00:24:26.811910 [INFO] Running command: docker ps -a
+2025/09/10 00:24:26.827085 [INFO] CONTAINER ID   IMAGE          COMMAND                  CREATED       STATUS                      PORTS     NAMES
+9b7e65943944   ae45cabd3f86   "python /tmp/applica…"   5 hours ago   Exited (137) 1 second ago             funny_dirac
+
+2025/09/10 00:24:26.827113 [INFO] Running command: docker container prune -f
+2025/09/10 00:24:26.858241 [INFO] Deleted Containers:
+9b7e65943944b21e326267fe8da10dcd46090936f844393fb6d92af03231ef34
+
+Total reclaimed space: 2.107MB
+
+2025/09/10 00:24:26.858260 [INFO] Running command: docker ps -a
+2025/09/10 00:24:26.871734 [INFO] CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+2025/09/10 00:24:26.871762 [INFO] Running command: docker rmi aws_beanstalk/current-app
+2025/09/10 00:24:26.890485 [INFO] Untagged: aws_beanstalk/current-app:latest
+Deleted: sha256:ae45cabd3f86beb546833ef156f255c4726732238adaf984eee81d90791959f4
+
+2025/09/10 00:24:26.890502 [INFO] Removing /var/app/current/ if it exists
+2025/09/10 00:24:26.891235 [INFO] Renaming /var/app/staging/ to /var/app/current/
+2025/09/10 00:24:26.891256 [INFO] detected new app is not docker compose app
+2025/09/10 00:24:26.893092 [INFO] Running command: docker run -d --env-file /opt/elasticbeanstalk/deployment/env.list    ee0eacfb39be 
+2025/09/10 00:24:27.647600 [INFO] e28e66739c75dac976bc95f5f200ac3f5fa73204069085d27ae3ee7e0b9a6b93
+
+2025/09/10 00:24:27.647621 [INFO] docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: exec: "/app/entrypoint.sh": permission denied: unknown.
+
+2025/09/10 00:24:27.647639 [ERROR] An error occurred during execution of command [app-deploy] - [Run Docker Container]. Stop running the command. Error: failed to run docker container: Command docker run -d --env-file /opt/elasticbeanstalk/deployment/env.list    ee0eacfb39be  failed with error exit status 126. Stderr:docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: exec: "/app/entrypoint.sh": permission denied: unknown.
+ 
+
+2025/09/10 00:24:27.647642 [INFO] Executing cleanup logic
+2025/09/10 00:24:27.648602 [INFO] CommandService Response: {"status":"FAILURE","api_version":"1.0","results":[{"status":"FAILURE","msg":"Engine execution has encountered an error.","returncode":1,"events":[{"msg":"Instance deployment failed to start the Docker container. The deployment failed.","timestamp":1757463867647,"severity":"ERROR"},{"msg":"Instance deployment failed. For details, see 'eb-engine.log'.","timestamp":1757463867647,"severity":"ERROR"}]}]}
+
+2025/09/10 00:24:27.649489 [INFO] Platform Engine finished execution on command: app-deploy
+
+2025/09/10 00:27:26.158425 [INFO] Starting...
+2025/09/10 00:27:26.158489 [INFO] Starting EBPlatform-PlatformEngine
+2025/09/10 00:27:26.159139 [INFO] reading event message file
+2025/09/10 00:27:26.172384 [INFO] Engine received EB command cfn-hup-exec
+
+2025/09/10 00:27:26.342441 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1
+2025/09/10 00:27:26.642080 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBBeanstalkMetadata --region eu-north-1
+2025/09/10 00:27:26.932242 [INFO] checking whether command bundle-log is applicable to this instance...
+2025/09/10 00:27:26.932259 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/09/10 00:27:26.932264 [INFO] Engine command: (bundle-log)
+
+2025/09/10 00:27:26.933434 [INFO] Executing instruction: GetBundleLogs
+2025/09/10 00:27:26.933440 [INFO] Bundle Logs...
+2025/09/10 00:27:27.132017 [INFO] Executing cleanup logic
+2025/09/10 00:27:27.132090 [INFO] CommandService Response: {"status":"SUCCESS","api_version":"1.0","results":[{"status":"SUCCESS","msg":"Engine execution has succeeded.","returncode":0,"events":[{"msg":"Instance deployment completed successfully.","timestamp":1757464047132,"severity":"INFO"}]}]}
+
+2025/09/10 00:27:27.132106 [INFO] Platform Engine finished execution on command: bundle-log
+
+2025/09/10 00:37:32.828846 [INFO] Starting...
+2025/09/10 00:37:32.828891 [INFO] Starting EBPlatform-PlatformEngine
+2025/09/10 00:37:32.828916 [INFO] reading event message file
+2025/09/10 00:37:32.829251 [INFO] Engine received EB command cfn-hup-exec
+
+2025/09/10 00:37:32.891572 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1
+2025/09/10 00:37:33.188979 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBBeanstalkMetadata --region eu-north-1
+2025/09/10 00:37:33.473605 [INFO] checking whether command app-deploy is applicable to this instance...
+2025/09/10 00:37:33.473620 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/09/10 00:37:33.473624 [INFO] Engine command: (app-deploy)
+
+2025/09/10 00:37:33.473628 [INFO] Downloading EB Application...
+2025/09/10 00:37:33.473630 [INFO] Region: eu-north-1
+2025/09/10 00:37:33.473633 [INFO] envID: e-bjbuat2emk
+2025/09/10 00:37:33.473635 [INFO] envBucket: elasticbeanstalk-eu-north-1-777842694475
+2025/09/10 00:37:33.473638 [INFO] accountID: 777842694475
+2025/09/10 00:37:33.473640 [INFO] Using manifest file name from command request
+2025/09/10 00:37:33.473646 [INFO] Manifest name is : manifest_1757464630201
+2025/09/10 00:37:33.473648 [INFO] Download app version manifest
+2025/09/10 00:37:33.473868 [INFO] Downloading: bucket: elasticbeanstalk-eu-north-1-777842694475, object: resources/environments/e-bjbuat2emk/_runtime/versions/manifest_1757464630201, expected bucket owner: 777842694475
+2025/09/10 00:37:33.521714 [INFO] Download successful115bytes downloaded
+2025/09/10 00:37:33.521884 [INFO] Trying to read and parse version manifest...
+2025/09/10 00:37:33.521988 [INFO] Downloading: bucket: elasticbeanstalk-eu-north-1-777842694475, object: resources/environments/e-bjbuat2emk/_runtime/_versions/Ieuniversitydocker/app-4976-250910_003700979914, expected bucket owner: 777842694475
+2025/09/10 00:37:33.545473 [INFO] Download successful434133bytes downloaded
+2025/09/10 00:37:33.545838 [INFO] Executing instruction: ElectLeader
+2025/09/10 00:37:33.545844 [INFO] Running leader election for instance i-0de7f5345a0faac28...
+2025/09/10 00:37:33.545847 [INFO] Calling the cfn-elect-cmd-leader to elect the command leader.
+2025/09/10 00:37:33.545858 [INFO] Running command: /opt/aws/bin/cfn-elect-cmd-leader --stack arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 --command-name ElasticBeanstalkCommand-AWSEBAutoScalingGroup --invocation-id 64a4a893-3a39-4f7f-8762-4176e22ad034 --listener-id i-0de7f5345a0faac28 --region eu-north-1
+2025/09/10 00:37:33.848806 [INFO] Instance is Leader.
+2025/09/10 00:37:33.848846 [INFO] Executing instruction: stopSqsd
+2025/09/10 00:37:33.848853 [INFO] This is a web server environment instance, skip stop sqsd daemon ...
+2025/09/10 00:37:33.848858 [INFO] Executing instruction: PreBuildEbExtension
+2025/09/10 00:37:33.848862 [INFO] Starting executing the config set Infra-EmbeddedPreBuild.
+2025/09/10 00:37:33.848877 [INFO] Running command: /opt/aws/bin/cfn-init -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1 --configsets Infra-EmbeddedPreBuild
+2025/09/10 00:37:34.151452 [INFO] Finished executing the config set Infra-EmbeddedPreBuild.
+
+2025/09/10 00:37:34.151493 [INFO] Executing instruction: StagedockerApplication
+2025/09/10 00:37:34.151503 [INFO] Running command: docker ps -a -q -f status=running
+2025/09/10 00:37:34.166214 [INFO] Pruning containers ...
+2025/09/10 00:37:34.166257 [INFO] Running command: docker ps -a
+2025/09/10 00:37:34.180387 [INFO] CONTAINER ID   IMAGE          COMMAND                CREATED          STATUS    PORTS      NAMES
+e28e66739c75   ee0eacfb39be   "/app/entrypoint.sh"   13 minutes ago   Created   8000/tcp   condescending_wilson
+
+2025/09/10 00:37:34.180418 [INFO] Running command: docker container prune -f
+2025/09/10 00:37:34.200519 [INFO] Deleted Containers:
+e28e66739c75dac976bc95f5f200ac3f5fa73204069085d27ae3ee7e0b9a6b93
+
+Total reclaimed space: 0B
+
+2025/09/10 00:37:34.200543 [INFO] Running command: docker ps -a
+2025/09/10 00:37:34.215196 [INFO] CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+2025/09/10 00:37:34.215214 [INFO] Recreating /var/app/staging/
+2025/09/10 00:37:34.215289 [INFO] Recreating /var/log/eb-docker/containers/eb-current-app
+2025/09/10 00:37:34.215464 [INFO] Running command: /bin/file -m /opt/elasticbeanstalk/config/private/beanstalk-magic -b --mime-type /opt/elasticbeanstalk/deployment/app_source_bundle
+2025/09/10 00:37:34.223688 [INFO] application/zip
+
+2025/09/10 00:37:34.223701 [INFO] app source bundle is zip file ...
+2025/09/10 00:37:34.223706 [INFO] extracting /opt/elasticbeanstalk/deployment/app_source_bundle to /var/app/staging/
+2025/09/10 00:37:34.223715 [INFO] Running command: /usr/bin/unzip -q -o /opt/elasticbeanstalk/deployment/app_source_bundle -d /var/app/staging/
+2025/09/10 00:37:34.250419 [INFO] finished extracting /opt/elasticbeanstalk/deployment/app_source_bundle to /var/app/staging/ successfully
+2025/09/10 00:37:34.250438 [INFO] Executing instruction: RunAppDeployPreBuildHooks
+2025/09/10 00:37:34.250467 [INFO] Executing platform hooks in .platform/hooks/prebuild/
+2025/09/10 00:37:34.250485 [INFO] The dir .platform/hooks/prebuild/ does not exist
+2025/09/10 00:37:34.250488 [INFO] Finished running scripts in /var/app/staging/.platform/hooks/prebuild
+2025/09/10 00:37:34.250493 [INFO] Executing instruction: Generate environment file
+2025/09/10 00:37:34.250525 [INFO] Executing instruction: Docker Specific Build Application
+2025/09/10 00:37:34.250529 [INFO] start build docker app
+2025/09/10 00:37:34.250538 [INFO] fetching image names from Dockerfile /var/app/staging/Dockerfile
+2025/09/10 00:37:34.250618 [INFO] found images [python:3.12-slim] in Dockerfile /var/app/staging/Dockerfile
+2025/09/10 00:37:34.250623 [INFO] pull docker image if update is not false in Dockerrun.aws.json
+2025/09/10 00:37:34.250634 [INFO] Running command: docker pull python:3.12-slim
+2025/09/10 00:37:35.398461 [INFO] 3.12-slim: Pulling from library/python
+Digest: sha256:31551bd80310d95ed82a4a14dba8c908c85098f07457e8a5b6a946385cfd86c8
+Status: Image is up to date for python:3.12-slim
+docker.io/library/python:3.12-slim
+
+2025/09/10 00:37:35.398481 [INFO] successfully execute command: docker pull python:3.12-slim
+2025/09/10 00:37:35.398485 [INFO] successfully pulled docker image python:3.12-slim
+2025/09/10 00:37:35.398487 [INFO] start to build docker image
+2025/09/10 00:37:35.398500 [INFO] Running command: docker build -t aws_beanstalk/staging-app /var/app/staging/
+2025/09/10 00:37:36.467299 [INFO] #0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.84kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/9] FROM docker.io/library/python:3.12-slim
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 296.02kB 0.0s done
+#5 DONE 0.0s
+
+#6 [2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     libpq-dev     gcc     curl     netcat-traditional     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [3/9] RUN pip install poetry==1.8.3
+#7 CACHED
+
+#8 [5/9] COPY ie_professors_database/pyproject.toml ie_professors_database/poetry.lock* ./
+#8 CACHED
+
+#9 [6/9] RUN if [ ! -f poetry.lock ] || ! poetry check; then         echo "Regenerating poetry.lock file..." &&         poetry lock;     fi &&     poetry install --only=main --no-root &&     rm -rf /tmp/poetry_cache
+#9 CACHED
+
+#10 [4/9] WORKDIR /app
+#10 CACHED
+
+#11 [7/9] RUN mkdir -p /vol/static /vol/media /app/staticfiles &&     groupadd -r django && useradd -r -g django django &&     chown -R django:django /app /vol
+#11 CACHED
+
+#12 [8/9] COPY ie_professors_database/ ./
+#12 DONE 0.1s
+
+#13 [9/9] RUN chmod +x /app/entrypoint.sh
+#13 DONE 0.3s
+
+#14 exporting to image
+#14 exporting layers 0.0s done
+#14 writing image sha256:b4033d6ed85ee95488486ff3dc1639b586e20611031a02d7ee016a61a0f0afc5 done
+#14 naming to docker.io/aws_beanstalk/staging-app done
+#14 DONE 0.1s
+
+2025/09/10 00:37:36.467329 [INFO] successfully execute command: docker build -t aws_beanstalk/staging-app /var/app/staging/
+2025/09/10 00:37:36.467332 [INFO] successfully build docker image
+2025/09/10 00:37:36.467335 [INFO] save staging docker image id
+2025/09/10 00:37:36.467344 [INFO] Running command: docker images aws_beanstalk/staging-app -q
+2025/09/10 00:37:36.501282 [INFO] b4033d6ed85e
+
+2025/09/10 00:37:36.501415 [INFO] Executing instruction: configure X-Ray
+2025/09/10 00:37:36.501422 [INFO] X-Ray is not enabled.
+2025/09/10 00:37:36.501425 [INFO] Executing instruction: configure proxy Nginx
+2025/09/10 00:37:36.501497 [INFO] Recreating /var/proxy/staging/nginx
+2025/09/10 00:37:36.504626 [INFO] Running command: cp -rp /var/app/staging/.platform/nginx/. /var/proxy/staging/nginx
+2025/09/10 00:37:36.512637 [INFO] Executing instruction: configure healthd specific proxy conf
+2025/09/10 00:37:36.515152 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/10 00:37:36.550875 [WARN] Warning: process healthd is already registered...
+Deregistering the process ...
+2025/09/10 00:37:36.550907 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/10 00:37:36.559869 [INFO] Running command: systemctl is-active healthd.service
+2025/09/10 00:37:36.566896 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/10 00:37:36.575241 [INFO] Running command: systemctl stop healthd.service
+2025/09/10 00:37:36.666783 [INFO] Running command: systemctl disable healthd.service
+2025/09/10 00:37:36.897678 [INFO] Removed "/etc/systemd/system/multi-user.target.wants/healthd.service".
+
+2025/09/10 00:37:36.897795 [INFO] Running command: systemctl daemon-reload
+2025/09/10 00:37:37.115971 [INFO] Running command: systemctl reset-failed
+2025/09/10 00:37:37.126558 [INFO] Running command: systemctl daemon-reload
+2025/09/10 00:37:37.380483 [INFO] Running command: systemctl reset-failed
+2025/09/10 00:37:37.388778 [INFO] Running command: systemctl is-enabled aws-eb.target
+2025/09/10 00:37:37.396344 [INFO] Running command: systemctl enable aws-eb.target
+2025/09/10 00:37:37.630318 [INFO] Running command: systemctl start aws-eb.target
+2025/09/10 00:37:37.639260 [INFO] Running command: systemctl enable healthd.service
+2025/09/10 00:37:37.908958 [INFO] Created symlink /etc/systemd/system/multi-user.target.wants/healthd.service → /etc/systemd/system/healthd.service.
+
+2025/09/10 00:37:37.909002 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/10 00:37:37.919961 [INFO] Running command: systemctl is-active healthd.service
+2025/09/10 00:37:37.927432 [INFO] Running command: systemctl start healthd.service
+2025/09/10 00:37:37.986119 [INFO] Copying file /opt/elasticbeanstalk/config/private/healthd/healthd_logformat.conf to /var/proxy/staging/nginx/conf.d/healthd_logformat.conf
+2025/09/10 00:37:37.987326 [INFO] Copying file /opt/elasticbeanstalk/config/private/healthd/healthd_nginx.conf to /var/proxy/staging/nginx/conf.d/elasticbeanstalk/healthd.conf
+2025/09/10 00:37:37.988454 [INFO] Executing instruction: configure log streaming
+2025/09/10 00:37:37.988464 [INFO] log streaming is not enabled
+2025/09/10 00:37:37.988468 [INFO] disable log stream
+2025/09/10 00:37:37.988478 [INFO] Running command: systemctl show -p PartOf amazon-cloudwatch-agent.service
+2025/09/10 00:37:38.005066 [INFO] Running command: systemctl stop amazon-cloudwatch-agent.service
+2025/09/10 00:37:38.020922 [INFO] Executing instruction: GetToggleForceRotate
+2025/09/10 00:37:38.020947 [INFO] Checking if logs need forced rotation
+2025/09/10 00:37:38.020962 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1
+2025/09/10 00:37:38.363791 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBBeanstalkMetadata --region eu-north-1
+2025/09/10 00:37:38.671156 [INFO] Procfile not found. Generating default rsyslog config
+2025/09/10 00:37:38.673840 [INFO] Running command: systemctl restart rsyslog.service
+2025/09/10 00:37:39.182072 [INFO] Executing instruction: Configure Docker Logging
+2025/09/10 00:37:39.205191 [INFO] Executing instruction: PostBuildEbExtension
+2025/09/10 00:37:39.205210 [INFO] Starting executing the config set Infra-EmbeddedPostBuild.
+2025/09/10 00:37:39.205222 [INFO] Running command: /opt/aws/bin/cfn-init -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1 --configsets Infra-EmbeddedPostBuild
+2025/09/10 00:37:39.516974 [INFO] Finished executing the config set Infra-EmbeddedPostBuild.
+
+2025/09/10 00:37:39.517012 [INFO] Executing instruction: CleanEbExtensions
+2025/09/10 00:37:39.517119 [INFO] Cleaned ebextensions subdirectories from app staging directory.
+2025/09/10 00:37:39.517123 [INFO] Executing instruction: RunAppDeployPreDeployHooks
+2025/09/10 00:37:39.517139 [INFO] Executing platform hooks in .platform/hooks/predeploy/
+2025/09/10 00:37:39.517151 [INFO] The dir .platform/hooks/predeploy/ does not exist
+2025/09/10 00:37:39.517154 [INFO] Finished running scripts in /var/app/staging/.platform/hooks/predeploy
+2025/09/10 00:37:39.517158 [INFO] Executing instruction: stop X-Ray
+2025/09/10 00:37:39.517161 [INFO] stop X-Ray ...
+2025/09/10 00:37:39.517170 [INFO] Running command: systemctl show -p PartOf xray.service
+2025/09/10 00:37:39.529690 [WARN] stopProcess Warning: process xray is not registered 
+2025/09/10 00:37:39.529716 [INFO] Running command: systemctl stop xray.service
+2025/09/10 00:37:39.541562 [INFO] Executing instruction: Run Docker Container
+2025/09/10 00:37:39.541599 [INFO] stop currently running containers...
+2025/09/10 00:37:39.541609 [INFO] detected old app is not docker compose app
+2025/09/10 00:37:39.541619 [INFO] Running command: iptables-save | grep -v added_by_elasticbeanstalk | iptables-restore
+2025/09/10 00:37:39.624954 [INFO] Running command: systemctl show -p PartOf nginx.service
+2025/09/10 00:37:39.639048 [WARN] deregisterProcess Warning: process nginx is not registered, skipping...
+
+2025/09/10 00:37:39.639078 [INFO] Running command: systemctl show -p PartOf eb-docker.service
+2025/09/10 00:37:39.651132 [WARN] deregisterProcess Warning: process eb-docker is not registered, skipping...
+
+2025/09/10 00:37:39.651163 [INFO] Running command: systemctl show -p PartOf eb-docker-log.service
+2025/09/10 00:37:39.663943 [WARN] deregisterProcess Warning: process eb-docker-log is not registered, skipping...
+
+2025/09/10 00:37:39.664615 [INFO] stopping current container: 9b7e65943944
+2025/09/10 00:37:39.664634 [INFO] Running command: docker ps | grep -q 9b7e65943944
+2025/09/10 00:37:39.681512 [INFO] Running command: docker ps | grep -q 9b7e65943944
+2025/09/10 00:37:39.696754 [INFO] Pruning containers ...
+2025/09/10 00:37:39.696778 [INFO] Running command: docker ps -a
+2025/09/10 00:37:39.710901 [INFO] CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+2025/09/10 00:37:39.710929 [INFO] Running command: docker container prune -f
+2025/09/10 00:37:39.725127 [INFO] Total reclaimed space: 0B
+
+2025/09/10 00:37:39.725165 [INFO] Running command: docker ps -a
+2025/09/10 00:37:39.739924 [INFO] CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+2025/09/10 00:37:39.739949 [INFO] Running command: docker rmi aws_beanstalk/current-app
+2025/09/10 00:37:39.753741 [INFO] Error response from daemon: No such image: aws_beanstalk/current-app:latest
+
+2025/09/10 00:37:39.753762 [INFO] Removing /var/app/current/ if it exists
+2025/09/10 00:37:39.771352 [INFO] Renaming /var/app/staging/ to /var/app/current/
+2025/09/10 00:37:39.771383 [INFO] detected new app is not docker compose app
+2025/09/10 00:37:39.771539 [INFO] Running command: docker run -d --env-file /opt/elasticbeanstalk/deployment/env.list    b4033d6ed85e 
+2025/09/10 00:37:40.223137 [INFO] acbf52ffea8d8756c59f2725118bbc40b91fb1035c37799f76482c8b09d1d71d
+
+2025/09/10 00:37:45.227374 [INFO] Running command: docker ps | grep -q acbf52ffea8d
+2025/09/10 00:37:45.244014 [ERROR] docker container quit unexpectedly on 2025-09-10 00:37:45.243992794 +0000 UTC: Command docker ps | grep -q acbf52ffea8d failed with error exit status 1
+2025/09/10 00:37:45.244046 [INFO] Running command: docker logs acbf52ffea8d
+2025/09/10 00:37:45.264698 [ERROR] An error occurred during execution of command [app-deploy] - [Run Docker Container]. Stop running the command. Error: failed to run the docker container acbf52ffea8d: Command docker ps | grep -q acbf52ffea8d failed with error exit status 1 
+
+2025/09/10 00:37:45.264710 [INFO] Executing cleanup logic
+2025/09/10 00:37:45.264790 [INFO] CommandService Response: {"status":"FAILURE","api_version":"1.0","results":[{"status":"FAILURE","msg":"Engine execution has encountered an error.","returncode":1,"events":[{"msg":"Instance deployment: The Docker container unexpectedly ended after it was started.","timestamp":1757464665244,"severity":"ERROR"},{"msg":"Instance deployment failed. For details, see 'eb-engine.log'.","timestamp":1757464665264,"severity":"ERROR"}]}]}
+
+2025/09/10 00:37:45.264967 [INFO] Platform Engine finished execution on command: app-deploy
+
+2025/09/10 00:38:27.728192 [INFO] Starting...
+2025/09/10 00:38:27.728231 [INFO] Starting EBPlatform-PlatformEngine
+2025/09/10 00:38:27.728254 [INFO] reading event message file
+2025/09/10 00:38:27.728589 [INFO] Engine received EB command cfn-hup-exec
+
+2025/09/10 00:38:27.799153 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1
+2025/09/10 00:38:28.090155 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBBeanstalkMetadata --region eu-north-1
+2025/09/10 00:38:28.380136 [INFO] checking whether command bundle-log is applicable to this instance...
+2025/09/10 00:38:28.380149 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/09/10 00:38:28.380151 [INFO] Engine command: (bundle-log)
+
+2025/09/10 00:38:28.380192 [INFO] Executing instruction: GetBundleLogs
+2025/09/10 00:38:28.380195 [INFO] Bundle Logs...
+2025/09/10 00:38:28.534293 [INFO] Executing cleanup logic
+2025/09/10 00:38:28.534363 [INFO] CommandService Response: {"status":"SUCCESS","api_version":"1.0","results":[{"status":"SUCCESS","msg":"Engine execution has succeeded.","returncode":0,"events":[{"msg":"Instance deployment completed successfully.","timestamp":1757464708534,"severity":"INFO"}]}]}
+
+2025/09/10 00:38:28.534379 [INFO] Platform Engine finished execution on command: bundle-log
+
+2025/09/10 00:47:56.016582 [INFO] Starting...
+2025/09/10 00:47:56.016630 [INFO] Starting EBPlatform-PlatformEngine
+2025/09/10 00:47:56.016656 [INFO] reading event message file
+2025/09/10 00:47:56.017023 [INFO] Engine received EB command cfn-hup-exec
+
+2025/09/10 00:47:56.087856 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1
+2025/09/10 00:47:56.378862 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBBeanstalkMetadata --region eu-north-1
+2025/09/10 00:47:56.669473 [INFO] checking whether command app-deploy is applicable to this instance...
+2025/09/10 00:47:56.669485 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/09/10 00:47:56.669487 [INFO] Engine command: (app-deploy)
+
+2025/09/10 00:47:56.669491 [INFO] Downloading EB Application...
+2025/09/10 00:47:56.669493 [INFO] Region: eu-north-1
+2025/09/10 00:47:56.669495 [INFO] envID: e-bjbuat2emk
+2025/09/10 00:47:56.669501 [INFO] envBucket: elasticbeanstalk-eu-north-1-777842694475
+2025/09/10 00:47:56.669504 [INFO] accountID: 777842694475
+2025/09/10 00:47:56.669506 [INFO] Using manifest file name from command request
+2025/09/10 00:47:56.669511 [INFO] Manifest name is : manifest_1757465254976
+2025/09/10 00:47:56.669513 [INFO] Download app version manifest
+2025/09/10 00:47:56.669677 [INFO] Downloading: bucket: elasticbeanstalk-eu-north-1-777842694475, object: resources/environments/e-bjbuat2emk/_runtime/versions/manifest_1757465254976, expected bucket owner: 777842694475
+2025/09/10 00:47:56.725345 [INFO] Download successful116bytes downloaded
+2025/09/10 00:47:56.725471 [INFO] Trying to read and parse version manifest...
+2025/09/10 00:47:56.725575 [INFO] Downloading: bucket: elasticbeanstalk-eu-north-1-777842694475, object: resources/environments/e-bjbuat2emk/_runtime/_versions/Ieuniversitydocker/app-cb5f-250910_004728759395, expected bucket owner: 777842694475
+2025/09/10 00:47:56.755708 [INFO] Download successful434133bytes downloaded
+2025/09/10 00:47:56.756001 [INFO] Executing instruction: ElectLeader
+2025/09/10 00:47:56.756007 [INFO] Running leader election for instance i-0de7f5345a0faac28...
+2025/09/10 00:47:56.756010 [INFO] Calling the cfn-elect-cmd-leader to elect the command leader.
+2025/09/10 00:47:56.756020 [INFO] Running command: /opt/aws/bin/cfn-elect-cmd-leader --stack arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 --command-name ElasticBeanstalkCommand-AWSEBAutoScalingGroup --invocation-id 8ab6f75a-a5d1-4108-a34b-d81164f48b03 --listener-id i-0de7f5345a0faac28 --region eu-north-1
+2025/09/10 00:47:57.041969 [INFO] Instance is Leader.
+2025/09/10 00:47:57.042008 [INFO] Executing instruction: stopSqsd
+2025/09/10 00:47:57.042013 [INFO] This is a web server environment instance, skip stop sqsd daemon ...
+2025/09/10 00:47:57.042015 [INFO] Executing instruction: PreBuildEbExtension
+2025/09/10 00:47:57.042018 [INFO] Starting executing the config set Infra-EmbeddedPreBuild.
+2025/09/10 00:47:57.042029 [INFO] Running command: /opt/aws/bin/cfn-init -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1 --configsets Infra-EmbeddedPreBuild
+2025/09/10 00:47:57.349614 [INFO] Finished executing the config set Infra-EmbeddedPreBuild.
+
+2025/09/10 00:47:57.349636 [INFO] Executing instruction: StagedockerApplication
+2025/09/10 00:47:57.349645 [INFO] Running command: docker ps -a -q -f status=running
+2025/09/10 00:47:57.364015 [INFO] Pruning containers ...
+2025/09/10 00:47:57.364055 [INFO] Running command: docker ps -a
+2025/09/10 00:47:57.379599 [INFO] CONTAINER ID   IMAGE          COMMAND                CREATED          STATUS                      PORTS     NAMES
+acbf52ffea8d   b4033d6ed85e   "/app/entrypoint.sh"   10 minutes ago   Exited (1) 10 minutes ago             confident_mcclintock
+
+2025/09/10 00:47:57.379629 [INFO] Running command: docker container prune -f
+2025/09/10 00:47:57.400217 [INFO] Deleted Containers:
+acbf52ffea8d8756c59f2725118bbc40b91fb1035c37799f76482c8b09d1d71d
+
+Total reclaimed space: 0B
+
+2025/09/10 00:47:57.400238 [INFO] Running command: docker ps -a
+2025/09/10 00:47:57.413719 [INFO] CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+2025/09/10 00:47:57.413742 [INFO] Recreating /var/app/staging/
+2025/09/10 00:47:57.413804 [INFO] Recreating /var/log/eb-docker/containers/eb-current-app
+2025/09/10 00:47:57.413986 [INFO] Running command: /bin/file -m /opt/elasticbeanstalk/config/private/beanstalk-magic -b --mime-type /opt/elasticbeanstalk/deployment/app_source_bundle
+2025/09/10 00:47:57.417191 [INFO] application/zip
+
+2025/09/10 00:47:57.417208 [INFO] app source bundle is zip file ...
+2025/09/10 00:47:57.417212 [INFO] extracting /opt/elasticbeanstalk/deployment/app_source_bundle to /var/app/staging/
+2025/09/10 00:47:57.417220 [INFO] Running command: /usr/bin/unzip -q -o /opt/elasticbeanstalk/deployment/app_source_bundle -d /var/app/staging/
+2025/09/10 00:47:57.441171 [INFO] finished extracting /opt/elasticbeanstalk/deployment/app_source_bundle to /var/app/staging/ successfully
+2025/09/10 00:47:57.441187 [INFO] Executing instruction: RunAppDeployPreBuildHooks
+2025/09/10 00:47:57.441212 [INFO] Executing platform hooks in .platform/hooks/prebuild/
+2025/09/10 00:47:57.441229 [INFO] The dir .platform/hooks/prebuild/ does not exist
+2025/09/10 00:47:57.441231 [INFO] Finished running scripts in /var/app/staging/.platform/hooks/prebuild
+2025/09/10 00:47:57.441236 [INFO] Executing instruction: Generate environment file
+2025/09/10 00:47:57.441263 [INFO] Executing instruction: Docker Specific Build Application
+2025/09/10 00:47:57.441267 [INFO] start build docker app
+2025/09/10 00:47:57.441275 [INFO] fetching image names from Dockerfile /var/app/staging/Dockerfile
+2025/09/10 00:47:57.441351 [INFO] found images [python:3.12-slim] in Dockerfile /var/app/staging/Dockerfile
+2025/09/10 00:47:57.441355 [INFO] pull docker image if update is not false in Dockerrun.aws.json
+2025/09/10 00:47:57.441366 [INFO] Running command: docker pull python:3.12-slim
+2025/09/10 00:47:58.546585 [INFO] 3.12-slim: Pulling from library/python
+Digest: sha256:31551bd80310d95ed82a4a14dba8c908c85098f07457e8a5b6a946385cfd86c8
+Status: Image is up to date for python:3.12-slim
+docker.io/library/python:3.12-slim
+
+2025/09/10 00:47:58.546602 [INFO] successfully execute command: docker pull python:3.12-slim
+2025/09/10 00:47:58.546606 [INFO] successfully pulled docker image python:3.12-slim
+2025/09/10 00:47:58.546608 [INFO] start to build docker image
+2025/09/10 00:47:58.546624 [INFO] Running command: docker build -t aws_beanstalk/staging-app /var/app/staging/
+2025/09/10 00:47:58.896152 [INFO] #0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.84kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/9] FROM docker.io/library/python:3.12-slim
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 296.02kB 0.1s done
+#5 DONE 0.1s
+
+#6 [7/9] RUN mkdir -p /vol/static /vol/media /app/staticfiles &&     groupadd -r django && useradd -r -g django django &&     chown -R django:django /app /vol
+#6 CACHED
+
+#7 [3/9] RUN pip install poetry==1.8.3
+#7 CACHED
+
+#8 [2/9] RUN apt-get update && apt-get install -y --no-install-recommends     build-essential     libpq-dev     gcc     curl     netcat-traditional     && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [6/9] RUN if [ ! -f poetry.lock ] || ! poetry check; then         echo "Regenerating poetry.lock file..." &&         poetry lock;     fi &&     poetry install --only=main --no-root &&     rm -rf /tmp/poetry_cache
+#9 CACHED
+
+#10 [8/9] COPY ie_professors_database/ ./
+#10 CACHED
+
+#11 [5/9] COPY ie_professors_database/pyproject.toml ie_professors_database/poetry.lock* ./
+#11 CACHED
+
+#12 [4/9] WORKDIR /app
+#12 CACHED
+
+#13 [9/9] RUN chmod +x /app/entrypoint.sh
+#13 CACHED
+
+#14 exporting to image
+#14 exporting layers done
+#14 writing image sha256:b4033d6ed85ee95488486ff3dc1639b586e20611031a02d7ee016a61a0f0afc5 done
+#14 naming to docker.io/aws_beanstalk/staging-app
+#14 naming to docker.io/aws_beanstalk/staging-app done
+#14 DONE 0.0s
+
+2025/09/10 00:47:58.896176 [INFO] successfully execute command: docker build -t aws_beanstalk/staging-app /var/app/staging/
+2025/09/10 00:47:58.896180 [INFO] successfully build docker image
+2025/09/10 00:47:58.896183 [INFO] save staging docker image id
+2025/09/10 00:47:58.896194 [INFO] Running command: docker images aws_beanstalk/staging-app -q
+2025/09/10 00:47:58.919221 [INFO] b4033d6ed85e
+
+2025/09/10 00:47:58.919367 [INFO] Executing instruction: configure X-Ray
+2025/09/10 00:47:58.919375 [INFO] X-Ray is not enabled.
+2025/09/10 00:47:58.919379 [INFO] Executing instruction: configure proxy Nginx
+2025/09/10 00:47:58.919396 [INFO] Recreating /var/proxy/staging/nginx
+2025/09/10 00:47:58.921831 [INFO] Running command: cp -rp /var/app/staging/.platform/nginx/. /var/proxy/staging/nginx
+2025/09/10 00:47:58.930712 [INFO] Executing instruction: configure healthd specific proxy conf
+2025/09/10 00:47:58.932824 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/10 00:47:59.009951 [WARN] Warning: process healthd is already registered...
+Deregistering the process ...
+2025/09/10 00:47:59.009988 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/10 00:47:59.018746 [INFO] Running command: systemctl is-active healthd.service
+2025/09/10 00:47:59.025983 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/10 00:47:59.034567 [INFO] Running command: systemctl stop healthd.service
+2025/09/10 00:47:59.125999 [INFO] Running command: systemctl disable healthd.service
+2025/09/10 00:47:59.346354 [INFO] Removed "/etc/systemd/system/multi-user.target.wants/healthd.service".
+
+2025/09/10 00:47:59.346475 [INFO] Running command: systemctl daemon-reload
+2025/09/10 00:47:59.624162 [INFO] Running command: systemctl reset-failed
+2025/09/10 00:47:59.635353 [INFO] Running command: systemctl daemon-reload
+2025/09/10 00:47:59.849339 [INFO] Running command: systemctl reset-failed
+2025/09/10 00:47:59.856871 [INFO] Running command: systemctl is-enabled aws-eb.target
+2025/09/10 00:47:59.864437 [INFO] Running command: systemctl enable aws-eb.target
+2025/09/10 00:48:00.157965 [INFO] Running command: systemctl start aws-eb.target
+2025/09/10 00:48:00.166881 [INFO] Running command: systemctl enable healthd.service
+2025/09/10 00:48:00.402733 [INFO] Created symlink /etc/systemd/system/multi-user.target.wants/healthd.service → /etc/systemd/system/healthd.service.
+
+2025/09/10 00:48:00.402766 [INFO] Running command: systemctl show -p PartOf healthd.service
+2025/09/10 00:48:00.413617 [INFO] Running command: systemctl is-active healthd.service
+2025/09/10 00:48:00.421079 [INFO] Running command: systemctl start healthd.service
+2025/09/10 00:48:00.473486 [INFO] Copying file /opt/elasticbeanstalk/config/private/healthd/healthd_logformat.conf to /var/proxy/staging/nginx/conf.d/healthd_logformat.conf
+2025/09/10 00:48:00.474652 [INFO] Copying file /opt/elasticbeanstalk/config/private/healthd/healthd_nginx.conf to /var/proxy/staging/nginx/conf.d/elasticbeanstalk/healthd.conf
+2025/09/10 00:48:00.475808 [INFO] Executing instruction: configure log streaming
+2025/09/10 00:48:00.475818 [INFO] log streaming is not enabled
+2025/09/10 00:48:00.475822 [INFO] disable log stream
+2025/09/10 00:48:00.475834 [INFO] Running command: systemctl show -p PartOf amazon-cloudwatch-agent.service
+2025/09/10 00:48:00.494878 [INFO] Running command: systemctl stop amazon-cloudwatch-agent.service
+2025/09/10 00:48:00.512142 [INFO] Executing instruction: GetToggleForceRotate
+2025/09/10 00:48:00.512176 [INFO] Checking if logs need forced rotation
+2025/09/10 00:48:00.512192 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1
+2025/09/10 00:48:00.947793 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBBeanstalkMetadata --region eu-north-1
+2025/09/10 00:48:01.349564 [INFO] Procfile not found. Generating default rsyslog config
+2025/09/10 00:48:01.351783 [INFO] Running command: systemctl restart rsyslog.service
+2025/09/10 00:48:01.506810 [INFO] Executing instruction: Configure Docker Logging
+2025/09/10 00:48:01.529089 [INFO] Executing instruction: PostBuildEbExtension
+2025/09/10 00:48:01.529108 [INFO] Starting executing the config set Infra-EmbeddedPostBuild.
+2025/09/10 00:48:01.529122 [INFO] Running command: /opt/aws/bin/cfn-init -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1 --configsets Infra-EmbeddedPostBuild
+2025/09/10 00:48:01.869161 [INFO] Finished executing the config set Infra-EmbeddedPostBuild.
+
+2025/09/10 00:48:01.869189 [INFO] Executing instruction: CleanEbExtensions
+2025/09/10 00:48:01.869306 [INFO] Cleaned ebextensions subdirectories from app staging directory.
+2025/09/10 00:48:01.869310 [INFO] Executing instruction: RunAppDeployPreDeployHooks
+2025/09/10 00:48:01.869322 [INFO] Executing platform hooks in .platform/hooks/predeploy/
+2025/09/10 00:48:01.869336 [INFO] The dir .platform/hooks/predeploy/ does not exist
+2025/09/10 00:48:01.869339 [INFO] Finished running scripts in /var/app/staging/.platform/hooks/predeploy
+2025/09/10 00:48:01.869343 [INFO] Executing instruction: stop X-Ray
+2025/09/10 00:48:01.869345 [INFO] stop X-Ray ...
+2025/09/10 00:48:01.869355 [INFO] Running command: systemctl show -p PartOf xray.service
+2025/09/10 00:48:01.888047 [WARN] stopProcess Warning: process xray is not registered 
+2025/09/10 00:48:01.888073 [INFO] Running command: systemctl stop xray.service
+2025/09/10 00:48:01.906892 [INFO] Executing instruction: Run Docker Container
+2025/09/10 00:48:01.906926 [INFO] stop currently running containers...
+2025/09/10 00:48:01.906938 [INFO] detected old app is not docker compose app
+2025/09/10 00:48:01.906950 [INFO] Running command: iptables-save | grep -v added_by_elasticbeanstalk | iptables-restore
+2025/09/10 00:48:01.984964 [INFO] Running command: systemctl show -p PartOf nginx.service
+2025/09/10 00:48:01.999178 [WARN] deregisterProcess Warning: process nginx is not registered, skipping...
+
+2025/09/10 00:48:01.999212 [INFO] Running command: systemctl show -p PartOf eb-docker.service
+2025/09/10 00:48:02.012102 [WARN] deregisterProcess Warning: process eb-docker is not registered, skipping...
+
+2025/09/10 00:48:02.012133 [INFO] Running command: systemctl show -p PartOf eb-docker-log.service
+2025/09/10 00:48:02.025478 [WARN] deregisterProcess Warning: process eb-docker-log is not registered, skipping...
+
+2025/09/10 00:48:02.025534 [INFO] stopping current container: acbf52ffea8d
+2025/09/10 00:48:02.025545 [INFO] Running command: docker ps | grep -q acbf52ffea8d
+2025/09/10 00:48:02.042594 [INFO] Running command: docker ps | grep -q acbf52ffea8d
+2025/09/10 00:48:02.058300 [INFO] Pruning containers ...
+2025/09/10 00:48:02.058324 [INFO] Running command: docker ps -a
+2025/09/10 00:48:02.072903 [INFO] CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+2025/09/10 00:48:02.072935 [INFO] Running command: docker container prune -f
+2025/09/10 00:48:02.087489 [INFO] Total reclaimed space: 0B
+
+2025/09/10 00:48:02.087583 [INFO] Running command: docker ps -a
+2025/09/10 00:48:02.102477 [INFO] CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+2025/09/10 00:48:02.102504 [INFO] Running command: docker rmi aws_beanstalk/current-app
+2025/09/10 00:48:02.117106 [INFO] Error response from daemon: No such image: aws_beanstalk/current-app:latest
+
+2025/09/10 00:48:02.117127 [INFO] Removing /var/app/current/ if it exists
+2025/09/10 00:48:02.123841 [INFO] Renaming /var/app/staging/ to /var/app/current/
+2025/09/10 00:48:02.123872 [INFO] detected new app is not docker compose app
+2025/09/10 00:48:02.123962 [INFO] Running command: docker run -d --env-file /opt/elasticbeanstalk/deployment/env.list    b4033d6ed85e 
+2025/09/10 00:48:02.494027 [INFO] 06dad2132a02a271acd0f8ddf1335d58bafa474454889c7e440978dbd71bd3ad
+
+2025/09/10 00:48:07.498381 [INFO] Running command: docker ps | grep -q 06dad2132a02
+2025/09/10 00:48:07.514670 [ERROR] docker container quit unexpectedly on 2025-09-10 00:48:07.514658389 +0000 UTC: Command docker ps | grep -q 06dad2132a02 failed with error exit status 1
+2025/09/10 00:48:07.514695 [INFO] Running command: docker logs 06dad2132a02
+2025/09/10 00:48:07.533643 [ERROR] An error occurred during execution of command [app-deploy] - [Run Docker Container]. Stop running the command. Error: failed to run the docker container 06dad2132a02: Command docker ps | grep -q 06dad2132a02 failed with error exit status 1 
+
+2025/09/10 00:48:07.533652 [INFO] Executing cleanup logic
+2025/09/10 00:48:07.533738 [INFO] CommandService Response: {"status":"FAILURE","api_version":"1.0","results":[{"status":"FAILURE","msg":"Engine execution has encountered an error.","returncode":1,"events":[{"msg":"Instance deployment: The Docker container unexpectedly ended after it was started.","timestamp":1757465287514,"severity":"ERROR"},{"msg":"Instance deployment failed. For details, see 'eb-engine.log'.","timestamp":1757465287533,"severity":"ERROR"}]}]}
+
+2025/09/10 00:48:07.533904 [INFO] Platform Engine finished execution on command: app-deploy
+
+2025/09/10 00:49:29.191601 [INFO] Starting...
+2025/09/10 00:49:29.191651 [INFO] Starting EBPlatform-PlatformEngine
+2025/09/10 00:49:29.191677 [INFO] reading event message file
+2025/09/10 00:49:29.192054 [INFO] Engine received EB command cfn-hup-exec
+
+2025/09/10 00:49:29.257354 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBAutoScalingGroup --region eu-north-1
+2025/09/10 00:49:29.550710 [INFO] Running command: /opt/aws/bin/cfn-get-metadata -s arn:aws:cloudformation:eu-north-1:777842694475:stack/awseb-e-bjbuat2emk-stack/f09d2120-8d8d-11f0-a282-0ab7cfd59be5 -r AWSEBBeanstalkMetadata --region eu-north-1
+2025/09/10 00:49:29.838084 [INFO] checking whether command bundle-log is applicable to this instance...
+2025/09/10 00:49:29.838097 [INFO] this command is applicable to the instance, thus instance should execute command
+2025/09/10 00:49:29.838100 [INFO] Engine command: (bundle-log)
+
+2025/09/10 00:49:29.838148 [INFO] Executing instruction: GetBundleLogs
+2025/09/10 00:49:29.838150 [INFO] Bundle Logs...

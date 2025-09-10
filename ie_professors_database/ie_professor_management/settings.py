@@ -98,16 +98,28 @@ WSGI_APPLICATION = 'ie_professor_management.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("DB_NAME", "ie_professors_db"),       
-        'USER': os.getenv("DB_USER", "postgres"),           
-        'PASSWORD': os.getenv("DB_PASSWORD", "password"),   
-        'HOST': os.getenv("DB_HOST", "localhost"),
-        'PORT': os.getenv("DB_PORT", "5432"),
+# Use SQLite as fallback if PostgreSQL is not configured
+DB_HOST = os.getenv("DB_HOST")
+if DB_HOST:
+    # PostgreSQL configuration
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv("DB_NAME", "ie_professors_db"),       
+            'USER': os.getenv("DB_USER", "postgres"),           
+            'PASSWORD': os.getenv("DB_PASSWORD", "password"),   
+            'HOST': DB_HOST,
+            'PORT': os.getenv("DB_PORT", "5432"),
+        }
     }
-}
+else:
+    # SQLite fallback for testing/development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
