@@ -19,17 +19,14 @@ WORKDIR /app
 # Cache-busting arg for dependable rebuilds on EB
 ARG POETRY_CACHE_BUSTER=0
 
-# Copy ONLY backend dependency manifests first for layer caching
-COPY ie_professors_database/pyproject.toml ie_professors_database/poetry.lock* ./
+# Copy the entire backend project first (needed for poetry install without --no-root)
+COPY ie_professors_database/ ./
 
-# Install deps into system site-packages (no venv)
+# Install deps AND the local project into system site-packages (no venv)
 RUN poetry config virtualenvs.create false \
- && poetry install --only=main --no-root --no-interaction --no-ansi \
+ && poetry install --only=main --no-interaction --no-ansi \
  && python -c "import sys; print('site-packages:', next(p for p in sys.path if 'site-packages' in p))" \
  && poetry show | sed -n '1,120p'
-
-# Copy the rest of the app AFTER installing deps
-COPY ie_professors_database/ ./ie_professors_database/
 
 # Create required directories and user
 RUN mkdir -p /vol/static /vol/media /app/staticfiles && \
@@ -37,15 +34,19 @@ RUN mkdir -p /vol/static /vol/media /app/staticfiles && \
     chown -R django:django /app /vol
 
 # Set proper ownership and permissions for entrypoint
-RUN chown django:django /app/ie_professors_database/entrypoint.sh && \
-    chmod +x /app/ie_professors_database/entrypoint.sh
+RUN chown django:django /app/entrypoint.sh && \
+    chmod +x /app/entrypoint.sh
 
 # Verify critical packages are installed (fail fast)
 RUN python - <<'PY'
 import importlib, shutil
+# Check core dependencies
 for m in ("django", "gunicorn"):
     assert importlib.util.find_spec(m), f"{m} not installed"
+# Check that our Django project can be imported
+assert importlib.util.find_spec("ie_professor_management"), "ie_professor_management package not installed"
 print("✅ Django & Gunicorn installed")
+print("✅ IE Professor Management package installed")
 print("✅ gunicorn path:", shutil.which("gunicorn"))
 PY
 
@@ -54,7 +55,7 @@ USER django
 
 # Set Django settings module and Python path
 ENV DJANGO_SETTINGS_MODULE=ie_professor_management.settings
-ENV PYTHONPATH=/app/ie_professors_database
+ENV PYTHONPATH=/app
 
 ENV PORT=8000
 EXPOSE 8000
@@ -63,4 +64,4 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=60s \
   CMD curl -fsS http://127.0.0.1:8000/health/ || exit 1
 
-ENTRYPOINT ["/app/ie_professors_database/entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
