@@ -1,6 +1,9 @@
 # syntax=docker/dockerfile:1
 FROM python:3.12-slim
 
+# Cache buster for EB deployments
+ARG APP_BUILD_ID=dev
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
@@ -16,21 +19,20 @@ RUN pip install --no-cache-dir poetry==1.8.3
 
 WORKDIR /app
 
-# Cache-busting arg for dependable rebuilds on EB
-ARG POETRY_CACHE_BUSTER=0
+# Copy dependency manifests explicitly for cache busting
+COPY ie_professors_database/pyproject.toml ./pyproject.toml
+COPY ie_professors_database/poetry.lock ./poetry.lock
 
-# Copy the entire backend project first (needed for poetry install without --no-root)
+# Install dependencies with verbose output and cache busting
+RUN poetry config virtualenvs.create false \
+ && (poetry check || poetry lock) \
+ && poetry install --only=main --no-root --no-interaction --no-ansi -vvv
+
+# Copy the entire backend project
 COPY ie_professors_database/ ./ie_professors_database/
 
-# Change to backend directory and install deps AND the local project
-WORKDIR /app/ie_professors_database
-RUN poetry config virtualenvs.create false \
- && poetry install --only=main --no-interaction --no-ansi \
- && python -c "import sys; print('site-packages:', next(p for p in sys.path if 'site-packages' in p))" \
- && poetry show | sed -n '1,120p'
-
-# Return to app root
-WORKDIR /app
+# Add build label for cache busting
+LABEL build-id=${APP_BUILD_ID}
 
 # Create required directories and user
 RUN mkdir -p /vol/static /vol/media /app/staticfiles && \
@@ -59,7 +61,7 @@ USER django
 
 # Set Django settings module and Python path
 ENV DJANGO_SETTINGS_MODULE=ie_professor_management.settings
-ENV PYTHONPATH=/app/ie_professors_database
+ENV PYTHONPATH=/app
 
 ENV PORT=8000
 EXPOSE 8000

@@ -1,4 +1,4 @@
-# Root .dockerignore for nginx build context
+# Root .dockerignore for Django build context
 
 # Git
 .git/
@@ -12,12 +12,16 @@ README*.md
 .vscode/
 .idea/
 
-# Application directories (not needed for nginx)
-ie_professors_database/
+# Frontend (not needed for backend container)
 ie-professors-frontend/
 
-# Keep only infra directory
+# Keep backend and infra directories
+!ie_professors_database/
 !infra/
+
+# Ensure dependency manifests are included
+!ie_professors_database/pyproject.toml
+!ie_professors_database/poetry.lock
 
 # OS
 .DS_Store
