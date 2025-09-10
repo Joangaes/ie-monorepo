@@ -1,62 +1,33 @@
-# Production Django container with Poetry and Gunicorn
 FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    PYTHONUNBUFFERED=1
 
-# Install system dependencies including netcat for health checks
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    gcc \
-    curl \
-    netcat-traditional \
-    && rm -rf /var/lib/apt/lists/*
+    build-essential libpq-dev gcc curl netcat-traditional \
+ && rm -rf /var/lib/apt/lists/*
 
-# Install Poetry
-RUN pip install poetry==1.8.3
-
-# Configure Poetry for production
-ENV POETRY_NO_INTERACTION=1 \
-    POETRY_VENV_IN_PROJECT=1 \
-    POETRY_CACHE_DIR=/tmp/poetry_cache
+RUN pip install --no-cache-dir poetry==1.8.3
 
 WORKDIR /app
 
-# Copy Poetry configuration files
-COPY pyproject.toml poetry.lock* ./
+# Copy dependency files first for better caching
+COPY pyproject.toml poetry.lock* /app/
 
-# Install dependencies (production only)
-# Generate lock file if missing or out of sync, then install
-RUN if [ ! -f poetry.lock ] || ! poetry check; then \
-        echo "Regenerating poetry.lock file..." && \
-        poetry lock; \
-    fi && \
-    poetry install --only=main --no-root && \
-    rm -rf $POETRY_CACHE_DIR
+# Install deps (install all groups to ensure gunicorn is present)
+RUN poetry config virtualenvs.create false \
+ && poetry install --no-root
 
-# Create required directories and non-root user first
-RUN mkdir -p /vol/static /vol/media /app/staticfiles && \
-    groupadd -r django && useradd -r -g django django && \
-    chown -R django:django /app /vol
+# Copy source
+COPY . /app/
 
-# Copy entrypoint script and make executable
-COPY --chown=django:django infra/entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+# Sanity check
+RUN python -c "import django, gunicorn; print('deps ok')"
 
-# Copy application code (do this last for better caching)
-COPY --chown=django:django . .
-
-# Switch to non-root user
-USER django
-
-ENV PORT=8000
 EXPOSE 8000
 
-# Health check - check Django admin login page
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=60s \
   CMD curl -fsS http://127.0.0.1:8000/admin/login/ || exit 1
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["gunicorn", "ie_professor_management.wsgi:application", "--bind", "0.0.0.0:8000"]
