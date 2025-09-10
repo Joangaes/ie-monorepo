@@ -59,7 +59,7 @@ Your EB instance role needs these additional policies for CloudWatch Logs:
 }
 ```
 
-#### Security Groups
+#### Security Groups 
 - **Load Balancer SG**: Allow HTTP (80) and HTTPS (443) from 0.0.0.0/0
 - **Instance SG**: Allow HTTP (80) from Load Balancer SG
 - **RDS SG**: Allow PostgreSQL (5432) from Instance SG
