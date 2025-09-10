@@ -1,48 +1,32 @@
 FROM python:3.12-slim
-
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    POETRY_VIRTUALENVS_CREATE=false \
+    POETRY_NO_INTERACTION=1
 
-# OS deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential libpq-dev gcc curl netcat-traditional \
  && rm -rf /var/lib/apt/lists/*
 
-# Poetry
-RUN pip install --no-cache-dir poetry==1.8.3
-
-# Work in /app BEFORE copying deps
 WORKDIR /app
+COPY ie_professors_database/pyproject.toml /app/pyproject.toml
+COPY ie_professors_database/poetry.lock /app/poetry.lock
 
-# Copy only dependency files first (from backend folder) into /app
-COPY ie_professors_database/pyproject.toml ie_professors_database/poetry.lock* /app/
-
-# Sanity: prove files exist where Poetry runs (helps diagnose on EB)
-RUN ls -la /app && grep -E "^\[tool\.poetry\]" -n /app/pyproject.toml
-
-# Bust any stale cache on EB (bump this value when you redeploy)
-ARG CACHE_BUST=2025-09-10-13-40
+# Cache buster for EB deployments (update timestamp on each deploy)
+ARG CACHE_BUST=2025-09-10-15-35
 RUN echo "CACHE_BUST=$CACHE_BUST"
 
-# Install ALL groups so django/gunicorn aren't skipped
-RUN poetry config virtualenvs.create false \
- && poetry install --no-root \
- && rm -rf /tmp/poetry_cache
+RUN pip install --no-cache-dir poetry==1.8.3 \
+ && poetry lock --no-update \
+ && poetry install --no-root --no-ansi
 
-# Now copy the backend source
-COPY ie_professors_database/ /app/
-
-# Verify imports fail-fast during build if deps aren’t present
+# Sanity: fail-fast if deps missing
 RUN python - <<'PY'
-import sys
-try:
-    import django, gunicorn
-    import django.conf
-    print("OK: django & gunicorn import")
-except Exception as e:
-    print("IMPORT ERROR:", e, file=sys.stderr)
-    raise
+import django, gunicorn
+print("OK:", django.get_version())
 PY
 
+COPY ie_professors_database/ /app/
+
 EXPOSE 8000
-CMD ["gunicorn", "ie_professors_database.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+CMD ["gunicorn", "ie_professor_management.wsgi:application", "--bind", "0.0.0.0:8000"]
