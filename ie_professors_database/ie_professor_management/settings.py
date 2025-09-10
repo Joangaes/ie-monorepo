@@ -14,6 +14,10 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
+def env_list(name: str, default: str = "") -> list[str]:
+    v = os.getenv(name, default)
+    return [x.strip() for x in v.split(",") if x.strip()]
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,7 +34,13 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-ksi3jyeswauq*u(*-5en&&egkq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "ie-university-professors.scalewave.es,localhost,127.0.0.1,*").split(",")
+ALLOWED_HOSTS = env_list(
+    "DJANGO_ALLOWED_HOSTS",
+    "localhost,127.0.0.1,.elasticbeanstalk.com",
+)
+
+if os.getenv("DJANGO_ALLOW_ALL_HOSTS", "0") == "1":
+    ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -63,6 +73,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'ie_professor_management.middleware.DebugHostMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -195,12 +206,10 @@ LOCALE_PATHS = [
 ]
 
 
-# CSRF trusted origins
-CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "")
-if CSRF_TRUSTED_ORIGINS:
-    CSRF_TRUSTED_ORIGINS = [o.strip() for o in CSRF_TRUSTED_ORIGINS.split(",") if o.strip()]
-else:
-    CSRF_TRUSTED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS = env_list(
+    "DJANGO_CSRF_TRUSTED_ORIGINS",
+    "https://*.elasticbeanstalk.com,http://*.elasticbeanstalk.com",
+)
 
 # CORS configuration
 CORS_ALLOWED_ORIGINS = [o.strip() for o in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",") if o.strip()]
@@ -213,7 +222,7 @@ STATIC_ROOT = os.getenv("STATIC_ROOT", "/vol/static")
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.getenv("MEDIA_ROOT", "/vol/media")
 
-# Security settings for proxy
+USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Default primary key field type
