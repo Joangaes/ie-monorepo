@@ -21,8 +21,9 @@ RUN pip install --no-cache-dir "poetry==${POETRY_VERSION}" \
  && poetry config virtualenvs.create false \
  && poetry install --only=main --no-interaction --no-ansi
 
-# Collect static (safe if STATIC_ROOT is set in settings; otherwise this no-ops)
-RUN python manage.py collectstatic --noinput || true
+# Create static directories and collect static files
+RUN mkdir -p /vol/static /vol/media && \
+    python manage.py collectstatic --noinput --verbosity=2
 
 # Expose app port
 EXPOSE 8000

@@ -19,6 +19,8 @@ from django.urls import path, include
 from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import RedirectView
 from django.http import JsonResponse
+from django.conf import settings
+from django.conf.urls.static import static
 from general.password_reset.views import (
     CustomPasswordResetView,
     CustomPasswordResetDoneView,
@@ -44,3 +46,8 @@ urlpatterns += i18n_patterns(
     path('reset/done/', CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
     prefix_default_language=False,
 )
+
+# Serve static files in production (WhiteNoise handles this automatically)
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
