@@ -212,8 +212,24 @@ CSRF_TRUSTED_ORIGINS = env_list(
     "https://*.elasticbeanstalk.com,http://*.elasticbeanstalk.com",
 )
 
-# CORS configuration
-CORS_ALLOWED_ORIGINS = [o.strip() for o in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",") if o.strip()]
+# CORS configuration - Allow frontend to call backend API
+CORS_ALLOWED_ORIGINS = [o.strip() for o in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,https://ie-university-professors.scalewave.es").split(",") if o.strip()]
+
+# Allow credentials for authentication
+CORS_ALLOW_CREDENTIALS = True
+
+# Allow all headers for API calls
+CORS_ALLOW_ALL_HEADERS = True
+
+# Allow common HTTP methods
+CORS_ALLOWED_METHODS = [
+    'DELETE',
+    'GET', 
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
