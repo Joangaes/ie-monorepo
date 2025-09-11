@@ -10,7 +10,7 @@ RUN apk add --no-cache libc6-compat python3 make g++
 COPY ie-professors-frontend/package*.json ./
 
 # Install dependencies (including dev dependencies for build)
-RUN npm ci
+RUN npm install
 
 # Copy source code
 COPY ie-professors-frontend/ .
