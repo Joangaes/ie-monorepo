@@ -12,7 +12,7 @@ ENV PORT=3000
 
 # Copy package files and install all dependencies
 COPY package.json package-lock.json* ./
-RUN npm ci --frozen-lockfile
+RUN npm install
 
 # Copy source code
 COPY . .
