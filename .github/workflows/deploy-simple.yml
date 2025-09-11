@@ -44,7 +44,7 @@ jobs:
       - name: Install frontend dependencies
         run: |
           cd ie-professors-frontend
-          npm ci
+          npm install
 
       - name: Build frontend (test)
         run: |
