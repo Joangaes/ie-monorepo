@@ -33,7 +33,6 @@ def health(request):
 
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')), 
-    path('', RedirectView.as_view(url='/admin/university/coursedelivery/?active_status=active', permanent=False)),  # 👈 Add this line
     path("api/", include("api.urls")),
     path("health/", health, name="health"),
 ]

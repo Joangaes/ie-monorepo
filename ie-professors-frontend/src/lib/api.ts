@@ -4,6 +4,11 @@ type ApiOptions = RequestInit & {
   headers?: Record<string, string>
 }
 
+// Get API base URL - empty string for same-origin requests
+function getApiBase(): string {
+  return process.env.NEXT_PUBLIC_PROFESSORS_API_SERVICE || ''
+}
+
 async function refreshToken(): Promise<string | null> {
   if (typeof window === "undefined") return null
   
@@ -12,7 +17,7 @@ async function refreshToken(): Promise<string | null> {
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_PROFESSORS_API_SERVICE}/api/token/refresh/`,
+      `${getApiBase()}/api/token/refresh/`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

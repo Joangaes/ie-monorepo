@@ -30,8 +30,9 @@ export function LoginForm({
     setLoading(true)
 
     try {
+      const apiBase = process.env.NEXT_PUBLIC_PROFESSORS_API_SERVICE || ''
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_PROFESSORS_API_SERVICE}/api/token/`,
+        `${apiBase}/api/token/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

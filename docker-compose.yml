@@ -8,6 +8,7 @@ services:
     build:
       context: .
       dockerfile: infra/nginx.Dockerfile
+    image: nginx-service
     ports:
       - "80:80"
     depends_on:
@@ -35,6 +36,7 @@ services:
     build:
       context: ./ie_professors_database
       dockerfile: Dockerfile
+    image: backend-service
     # Alternative for ECR pre-built images (uncomment and update):
     # image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_BACKEND_REPO}:${IMAGE_TAG:-latest}
     environment:
@@ -87,14 +89,14 @@ services:
     build:
       context: ./ie-professors-frontend
       dockerfile: Dockerfile
+    image: frontend-service
     # Alternative for ECR pre-built images (uncomment and update):
     # image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${ECR_FRONTEND_REPO}:${IMAGE_TAG:-latest}
     environment:
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: 1
-      # Runtime environment variables (NEXT_PUBLIC_* available in browser)
-      NEXT_PUBLIC_API_BASE: ${NEXT_PUBLIC_API_BASE} # !!!! Might be NEXT_PUBLIC_API
-      NEXT_PUBLIC_PROFESSORS_API_SERVICE: ${NEXT_PUBLIC_API_BASE}
+      # Frontend calls backend through nginx proxy (same origin)
+      NEXT_PUBLIC_PROFESSORS_API_SERVICE: ""
       PROFESSORS_API_SERVICE: "http://backend:8000"
     depends_on:
       - backend
