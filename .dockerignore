@@ -12,11 +12,9 @@ README*.md
 .vscode/
 .idea/
 
-# Frontend (not needed for backend container)
-ie-professors-frontend/
-
-# Keep backend and infra directories
+# Keep backend, frontend, and infra directories for multi-service build
 !ie_professors_database/
+!ie-professors-frontend/
 !infra/
 
 # Ensure dependency manifests are included
