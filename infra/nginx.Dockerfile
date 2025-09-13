@@ -13,7 +13,20 @@ RUN rm -f /etc/nginx/conf.d/default.conf.bak
 # Create nginx user and set permissions
 RUN chown -R nginx:nginx /var/cache/nginx && \
     chown -R nginx:nginx /var/log/nginx && \
-    chown -R nginx:nginx /etc/nginx/conf.d
+    chown -R nginx:nginx /etc/nginx/conf.d && \
+    mkdir -p /var/run/nginx && \
+    chown -R nginx:nginx /var/run/nginx
+
+# Create custom nginx.conf for non-root
+RUN echo 'pid /var/run/nginx/nginx.pid;\n\
+events { worker_connections 1024; }\n\
+http {\n\
+    include /etc/nginx/mime.types;\n\
+    default_type application/octet-stream;\n\
+    sendfile on;\n\
+    keepalive_timeout 65;\n\
+    include /etc/nginx/conf.d/*.conf;\n\
+}' > /etc/nginx/nginx.conf
 
 # Use non-root user
 USER nginx

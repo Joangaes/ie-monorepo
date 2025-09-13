@@ -8,10 +8,8 @@ services:
     ports:
       - "80:80"
     depends_on:
-      django:
-        condition: service_healthy
-      nextjs:
-        condition: service_healthy
+      - django
+      - nextjs
     restart: unless-stopped
 
   django:
