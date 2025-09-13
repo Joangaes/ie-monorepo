@@ -72,14 +72,18 @@ jobs:
         run: |
           pip install awsebcli
 
-      - name: Verify Dockerfile exists at root
+      - name: Verify multi-container setup
         run: |
-          if [ ! -f "Dockerfile" ]; then
-            echo "❌ ERROR: No Dockerfile found at repository root!"
-            echo "EB Docker platform requires Dockerfile or Dockerrun.aws.json at root"
+          if [ ! -f "Dockerrun.aws.json" ]; then
+            echo "❌ ERROR: No Dockerrun.aws.json found at repository root!"
+            echo "EB Multi-container Docker platform requires Dockerrun.aws.json"
             exit 1
           fi
-          echo "✅ Dockerfile found at root"
+          if [ ! -f "docker-compose.yml" ]; then
+            echo "❌ ERROR: No docker-compose.yml found at repository root!"
+            exit 1
+          fi
+          echo "✅ Multi-container setup verified"
 
       - name: Check Environment Status
         run: |
@@ -139,13 +143,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Fetch Logs on Failure
-        if: failure()
-        run: |
-          eb logs --all
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Notify deployment success
         if: success()
