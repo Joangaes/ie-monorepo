@@ -1,6 +1,8 @@
 # Production-ready Docker Compose for AWS Elastic Beanstalk
 # Single nginx entrypoint on port 80, proxies to frontend/backend services
-# Compatible with EB multi-container Docker (no profiles or buildx features)
+# Compatible with EB multi-container Docker (Compose v3)
+
+version: '3.8'
 
 services:
   # Nginx reverse proxy - single public entrypoint
@@ -26,10 +28,9 @@ services:
     logging:
       driver: awslogs
       options:
-        awslogs-group: "${EB_ENV_NAME:-env}-nginx"
-        awslogs-region: "${AWS_DEFAULT_REGION:-us-east-1}"
-        awslogs-stream-prefix: "${EB_LOG_STREAM_PREFIX:-app}"
-        # Required IAM role permissions: logs:CreateLogGroup, logs:CreateLogStream, logs:PutLogEvents
+        awslogs-group: "eb-nginx"
+        awslogs-region: "eu-north-1"
+        awslogs-stream-prefix: "nginx"
 
   # Django backend service
   backend:
@@ -80,9 +81,9 @@ services:
     logging:
       driver: awslogs
       options:
-        awslogs-group: "${EB_ENV_NAME:-env}-backend"
-        awslogs-region: "${AWS_DEFAULT_REGION:-us-east-1}"
-        awslogs-stream-prefix: "${EB_LOG_STREAM_PREFIX:-app}"
+        awslogs-group: "eb-backend"
+        awslogs-region: "eu-north-1"
+        awslogs-stream-prefix: "backend"
 
   # Next.js frontend service
   frontend:
@@ -110,9 +111,9 @@ services:
     logging:
       driver: awslogs
       options:
-        awslogs-group: "${EB_ENV_NAME:-env}-frontend"
-        awslogs-region: "${AWS_DEFAULT_REGION:-us-east-1}"
-        awslogs-stream-prefix: "${EB_LOG_STREAM_PREFIX:-app}"
+        awslogs-group: "eb-frontend"
+        awslogs-region: "eu-north-1"
+        awslogs-stream-prefix: "frontend"
 
 volumes:
   static_data:

@@ -74,16 +74,12 @@ jobs:
 
       - name: Verify multi-container setup
         run: |
-          if [ ! -f "Dockerrun.aws.json" ]; then
-            echo "❌ ERROR: No Dockerrun.aws.json found at repository root!"
-            echo "EB Multi-container Docker platform requires Dockerrun.aws.json"
-            exit 1
-          fi
           if [ ! -f "docker-compose.yml" ]; then
             echo "❌ ERROR: No docker-compose.yml found at repository root!"
+            echo "EB Multi-container Docker platform requires docker-compose.yml"
             exit 1
           fi
-          echo "✅ Multi-container setup verified"
+          echo "✅ Multi-container Compose setup verified"
 
       - name: Check Environment Status
         run: |
