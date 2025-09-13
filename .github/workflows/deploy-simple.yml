@@ -72,14 +72,19 @@ jobs:
         run: |
           pip install awsebcli
 
-      - name: Verify multi-container setup
+      - name: Verify EB Docker Compose setup
         run: |
           if [ ! -f "docker-compose.yml" ]; then
             echo "❌ ERROR: No docker-compose.yml found at repository root!"
-            echo "EB Multi-container Docker platform requires docker-compose.yml"
             exit 1
           fi
-          echo "✅ Multi-container Compose setup verified"
+          if [ ! -f "infra/nginx.conf" ]; then
+            echo "❌ ERROR: No nginx.conf found!"
+            exit 1
+          fi
+          echo "✅ EB Docker Compose setup verified"
+          echo "Services in compose:"
+          grep -A 1 "^[[:space:]]*[a-zA-Z].*:$" docker-compose.yml
 
       - name: Check Environment Status
         run: |
