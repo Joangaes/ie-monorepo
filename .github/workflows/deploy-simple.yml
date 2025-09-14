@@ -1,7 +1,7 @@
-# Simple CI/CD Pipeline - Direct EB Build
-# Uses EB's built-in Docker build (no ECR required)
+# ECR-based CI/CD Pipeline for IE Monorepo
+# Builds Docker image and pushes to ECR, then deploys via Dockerrun.aws.json
 
-name: Simple Deploy to AWS EB
+name: ECR Deploy to AWS EB
 
 on:
   push:
@@ -51,8 +51,8 @@ jobs:
           cd ie-professors-frontend
           npm run build
 
-  # Deploy stage (only on main branch)
-  deploy:
+  # Build and Deploy stage (only on main branch)
+  build-and-deploy:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
@@ -68,22 +68,53 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-north-1
 
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Create ECR repository if it doesn't exist
+        run: |
+          aws ecr describe-repositories --repository-names ie-monorepo --region eu-north-1 || \
+          aws ecr create-repository --repository-name ie-monorepo --region eu-north-1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ie-monorepo
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          echo "Building Docker image..."
+          docker buildx build \
+            --platform linux/amd64 \
+            --push \
+            --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            --tag $ECR_REGISTRY/$ECR_REPOSITORY:latest \
+            .
+          echo "Image pushed: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Get AWS Account ID
+        id: account-id
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          echo "ACCOUNT_ID=$ACCOUNT_ID" >> $GITHUB_OUTPUT
+
+      - name: Prepare Dockerrun.aws.json for deployment
+        env:
+          ACCOUNT_ID: ${{ steps.account-id.outputs.ACCOUNT_ID }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Replace placeholders in Dockerrun.aws.json
+          sed -i "s/<ACCOUNT_ID>/$ACCOUNT_ID/g" Dockerrun.aws.json
+          sed -i "s/<GIT_SHA>/$IMAGE_TAG/g" Dockerrun.aws.json
+          echo "Updated Dockerrun.aws.json:"
+          cat Dockerrun.aws.json
+
       - name: Install EB CLI
         run: |
           pip install awsebcli
-
-      - name: Verify EB Docker setup
-        run: |
-          if [ ! -f "Dockerfile" ]; then
-            echo "❌ ERROR: No Dockerfile found at repository root!"
-            exit 1
-          fi
-          if [ ! -f ".platform/nginx/conf.d/00-proxy.conf" ]; then
-            echo "❌ ERROR: No nginx proxy config found!"
-            exit 1
-          fi
-          echo "✅ EB Docker setup verified"
-          echo "✅ Custom nginx configuration found"
 
       - name: Check Environment Status
         run: |
@@ -129,22 +160,69 @@ jobs:
             DB_NAME="${{ secrets.DB_NAME }}" \
             DB_USER="${{ secrets.DB_USER }}" \
             DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-            DB_PORT="${{ secrets.DB_PORT }}"
+            DB_PORT="${{ secrets.DB_PORT }}" \
+            USE_POSTGRES="true"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Deploy to Elastic Beanstalk with Cache Busting
+      - name: Create EB Application Version
+        env:
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Set build args for cache busting
-          echo "Deploying with build ID: ${{ github.sha }}"
-          eb deploy Ieuniversitydocker-env --timeout 360 --debug
+          # Create application version with the updated Dockerrun.aws.json
+          eb appversion --staged --timeout 20
+          echo "✅ Application version created with ECR image: $IMAGE_TAG"
+
+      - name: Deploy to Elastic Beanstalk
+        run: |
+          echo "🚀 Deploying ECR image to EB environment..."
+          eb deploy --staged --timeout 20
+          echo "✅ Deployment initiated successfully"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      - name: Wait for deployment completion
+        run: |
+          echo "⏳ Waiting for deployment to complete..."
+          for i in {1..20}; do
+            STATUS=$(eb status Ieuniversitydocker-env --verbose | grep "Status:" | awk '{print $2}')
+            HEALTH=$(eb status Ieuniversitydocker-env --verbose | grep "Health:" | awk '{print $2}')
+            echo "Environment status: $STATUS, Health: $HEALTH (check $i/20)"
+            
+            if [ "$STATUS" = "Ready" ] && [ "$HEALTH" = "Ok" ]; then
+              echo "✅ Deployment completed successfully!"
+              break
+            elif [ "$STATUS" = "Ready" ] && [ "$HEALTH" = "Severe" ]; then
+              echo "❌ Deployment failed - Health is Severe"
+              eb health --refresh
+              exit 1
+            fi
+            
+            sleep 30
+          done
+
+      - name: Verify deployment endpoints
+        run: |
+          # Get the environment URL
+          EB_URL=$(eb status Ieuniversitydocker-env | grep "CNAME:" | awk '{print $2}')
+          echo "Testing deployment at: http://$EB_URL"
+          
+          # Test health endpoint
+          echo "Testing /healthz endpoint..."
+          curl -f "http://$EB_URL/healthz" || echo "Health check failed"
+          
+          # Test Next.js frontend
+          echo "Testing Next.js frontend..."
+          curl -f "http://$EB_URL/" || echo "Frontend test failed"
+          
+          # Test Django admin
+          echo "Testing Django admin..."
+          curl -f "http://$EB_URL/admin/" || echo "Admin test failed"
 
       - name: Notify deployment success
         if: success()
         run: |
-          echo "🚀 Deployment successful to production environment!"
+          echo "🚀 ECR-based deployment successful to production environment!"
+          echo "🐳 Docker image: ${{ steps.login-ecr.outputs.registry }}/ie-monorepo:${{ github.sha }}"
