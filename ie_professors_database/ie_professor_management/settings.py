@@ -42,6 +42,10 @@ ALLOWED_HOSTS = env_list(
 if os.getenv("DJANGO_ALLOW_ALL_HOSTS", "0") == "1":
     ALLOWED_HOSTS = ["*"]
 
+# For debugging purposes, temporarily allow all hosts
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+
 
 # Application definition
 
@@ -123,8 +127,9 @@ print(f"  DB_USER: {DB_USER}")
 print(f"  DB_PORT: {DB_PORT}")
 print(f"  DB_PASSWORD: {'***' if os.getenv('DB_PASSWORD') else 'Not set'}")
 
-if DB_HOST and DB_HOST.strip():
-    # PostgreSQL configuration
+# For local testing/development, use SQLite unless explicitly configured for PostgreSQL
+if DB_HOST and DB_HOST.strip() and os.getenv("USE_POSTGRES", "").lower() == "true":
+    # PostgreSQL configuration - only when explicitly enabled
     print(f"✅ Using PostgreSQL database at {DB_HOST}:{DB_PORT}")
     DATABASES = {
         'default': {
@@ -141,7 +146,7 @@ if DB_HOST and DB_HOST.strip():
     }
 else:
     # SQLite fallback for testing/development
-    print("⚠️  Using SQLite database (fallback - no DB_HOST provided)")
+    print("✅ Using SQLite database for local development")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -220,8 +225,15 @@ LOCALE_PATHS = [
 
 CSRF_TRUSTED_ORIGINS = env_list(
     "DJANGO_CSRF_TRUSTED_ORIGINS",
-    "https://*.elasticbeanstalk.com,http://*.elasticbeanstalk.com",
+    "https://*.elasticbeanstalk.com,http://*.elasticbeanstalk.com,https://localhost,http://localhost,https://127.0.0.1,http://127.0.0.1",
 )
+
+# Add custom domain if provided
+if os.getenv("CUSTOM_DOMAIN"):
+    CSRF_TRUSTED_ORIGINS.extend([
+        f"https://{os.getenv('CUSTOM_DOMAIN')}",
+        f"http://{os.getenv('CUSTOM_DOMAIN')}"
+    ])
 
 # CORS configuration - Allow frontend to call backend API
 CORS_ALLOWED_ORIGINS = [o.strip() for o in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,https://ie-university-professors.scalewave.es").split(",") if o.strip()]
@@ -261,6 +273,49 @@ WHITENOISE_AUTOREFRESH = True
 
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

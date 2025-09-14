@@ -31,10 +31,14 @@ from general.password_reset.views import (
 def health(request):
     return JsonResponse({"status": "ok"})
 
+def healthz(request):
+    return JsonResponse({"status": "ok"})
+
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')), 
     path("api/", include("api.urls")),
     path("health/", health, name="health"),
+    path("healthz/", healthz, name="healthz"),
 ]
 
 urlpatterns += i18n_patterns(
