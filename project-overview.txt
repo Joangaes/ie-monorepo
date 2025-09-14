@@ -1,4 +1,4 @@
-🗂️ Project Overview  
+🗂️ Project Overview   
 This project represents a frontend migration of an existing Django-based admin interface (originally built using django-unfold) into a React-based application.
 
 🎯 Purpose
