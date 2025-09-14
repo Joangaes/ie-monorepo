@@ -26,9 +26,9 @@ RUN pip install --no-cache-dir "poetry==${POETRY_VERSION}" \
  && poetry lock --no-update \
  && poetry install --only=main --no-interaction --no-ansi
 
-# Install frontend dependencies
+# Install frontend dependencies and build Next.js at image build time
 WORKDIR /app/ie-professors-frontend
-RUN npm install
+RUN npm install && npm run build
 
 # Create static and media directories
 RUN mkdir -p /vol/static /vol/media

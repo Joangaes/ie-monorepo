@@ -36,7 +36,7 @@ DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
 ALLOWED_HOSTS = env_list(
     "DJANGO_ALLOWED_HOSTS",
-    "localhost,127.0.0.1,.elasticbeanstalk.com",
+    "localhost,127.0.0.1,.elasticbeanstalk.com,.amazonaws.com",
 )
 
 if os.getenv("DJANGO_ALLOW_ALL_HOSTS", "0") == "1":
@@ -225,7 +225,7 @@ LOCALE_PATHS = [
 
 CSRF_TRUSTED_ORIGINS = env_list(
     "DJANGO_CSRF_TRUSTED_ORIGINS",
-    "https://*.elasticbeanstalk.com,http://*.elasticbeanstalk.com,https://localhost,http://localhost,https://127.0.0.1,http://127.0.0.1",
+    "https://*.elasticbeanstalk.com,http://*.elasticbeanstalk.com,https://*.amazonaws.com,http://*.amazonaws.com,https://localhost,http://localhost,https://127.0.0.1,http://127.0.0.1",
 )
 
 # Add custom domain if provided
