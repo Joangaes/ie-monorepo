@@ -2,9 +2,9 @@ name: Deploy to AWS Elastic Beanstalk (Multi-Container Docker)
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 env:
   AWS_REGION: eu-north-1
@@ -55,21 +55,18 @@ jobs:
 
       - name: Build & push Next.js frontend image
         run: |
-          # ECR_REPOSITORY_URI already exported in previous step
           docker build -f docker/next.Dockerfile -t $ECR_REPOSITORY_URI:frontend .
           docker push $ECR_REPOSITORY_URI:frontend
 
       - name: Generate and validate Dockerrun.aws.json with GitHub secrets
         run: |
           echo "=== Substituting environment variables in Dockerrun.aws.json ==="
-          
-          # Perform environment variable substitution
+
           envsubst '${ECR_REPOSITORY_URI} ${AWS_REGION} ${DJANGO_ALLOWED_HOSTS} ${DJANGO_SECRET_KEY} ${DB_NAME} ${DB_USER} ${DB_PASSWORD} ${DB_HOST} ${DB_PORT}' \
             < Dockerrun.aws.json > Dockerrun.aws.json.tmp
           mv Dockerrun.aws.json.tmp Dockerrun.aws.json
-          
+
           echo "=== Validating substitution completed successfully ==="
-          # Check if any placeholders remain unresolved (this will fail the pipeline if found)
           if grep -q '\${' Dockerrun.aws.json; then
             echo "❌ ERROR: Found unresolved placeholders in Dockerrun.aws.json:"
             grep '\${' Dockerrun.aws.json || true
@@ -79,18 +76,16 @@ jobs:
           else
             echo "✅ All placeholders successfully substituted"
           fi
-          
+
           echo "=== Validating JSON syntax ==="
-          # Validate JSON syntax
           if ! python3 -m json.tool Dockerrun.aws.json > /dev/null; then
             echo "❌ ERROR: Invalid JSON syntax in Dockerrun.aws.json"
             exit 1
           else
             echo "✅ JSON syntax is valid"
           fi
-          
+
           echo "=== Validating required keys exist ==="
-          # Check required keys exist
           cat > validate_dockerrun.py << 'EOF'
 import json
 import sys
@@ -123,20 +118,17 @@ if sorted(container_names) != sorted(expected_names):
 print('✅ All required keys and containers present')
 EOF
           python3 validate_dockerrun.py
-          
+
           echo "=== Displaying final Dockerrun.aws.json (with secrets masked) ==="
-          # Show the final file with secrets masked for security
           cat > mask_secrets.py << 'EOF'
-import json
 import re
 
 with open('Dockerrun.aws.json', 'r') as f:
     content = f.read()
 
-# Mask sensitive values in environment variables
 masked_content = re.sub(
-    r'(\"value\":\s*\")([^\"]*)(\".*(?:SECRET_KEY|PASSWORD|DB_USER))',
-    r'\1***MASKED***\3',
+    r'(\"value\":\s*\")[^\"]*(\")',
+    r'\1***MASKED***\2',
     content
 )
 
