@@ -1,0 +1,56 @@
+# AWS Elastic Beanstalk Docker Compose Configuration
+# This file defines a multi-container setup with Django backend, Next.js frontend, and Nginx reverse proxy
+version: "3.8"
+
+services:
+  # Django Backend Service - API and Admin Interface
+  django:
+    image: <ACCOUNT_ID>.dkr.ecr.eu-north-1.amazonaws.com/ie-monorepo:backend
+    command: gunicorn ie_professor_management.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120 --access-logfile - --error-logfile -
+    expose:
+      - "8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=ie_professor_management.settings
+      - DEBUG=false
+      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Next.js Frontend Service - React Application
+  next:
+    image: <ACCOUNT_ID>.dkr.ecr.eu-north-1.amazonaws.com/ie-monorepo:frontend
+    command: npm start
+    expose:
+      - "3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - NEXT_PUBLIC_API_URL=/api
+      - PORT=3000
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Nginx Reverse Proxy - Routes requests to appropriate services
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - django
+      - next
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

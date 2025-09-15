@@ -1,36 +1,4 @@
 {
-  "AWSEBDockerrunVersion": 2,
-  "containerDefinitions": [
-    {
-      "name": "ie-monorepo",
-      "image": "<ACCOUNT_ID>.dkr.ecr.eu-north-1.amazonaws.com/ie-monorepo:<GIT_SHA>",
-      "essential": true,
-      "memory": 512,
-      "portMappings": [
-        {
-          "hostPort": 80,
-          "containerPort": 80,
-          "protocol": "tcp"
-        }
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/aws/elasticbeanstalk/ie-monorepo",
-          "awslogs-region": "eu-north-1",
-          "awslogs-stream-prefix": "web"
-        }
-      },
-      "environment": [
-        {
-          "name": "DJANGO_SETTINGS_MODULE",
-          "value": "ie_professor_management.settings"
-        },
-        {
-          "name": "DEBUG",
-          "value": "false"
-        }
-      ]
-    }
-  ]
+  "AWSEBDockerrunVersion": 3,
+  "DockerComposeFile": "docker-compose.yml"
 }
