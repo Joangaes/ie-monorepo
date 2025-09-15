@@ -1,4 +1,4 @@
-name: Deploy to AWS Elastic Beanstalk
+name: Deploy to AWS Elastic Beanstalk (Single Container)
 
 on:
   push:
@@ -14,7 +14,7 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -26,49 +26,22 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-
-    - name: Build and push Django image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ie-monorepo
-        IMAGE_TAG: backend
-      run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./ie_professors_database
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-    - name: Build and push Next.js image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ie-monorepo
-        IMAGE_TAG: frontend
-      run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./ie-professors-frontend
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
+    # 👇 Build deployment package for EB
     - name: Create deployment package
-      env:
-        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-        AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
-        DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
-        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-        DB_NAME: ${{ secrets.DB_NAME }}
-        DB_USER: ${{ secrets.DB_USER }}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        DB_HOST: ${{ secrets.DB_HOST }}
-        DB_PORT: ${{ secrets.DB_PORT }}
       run: |
-        # Substitute environment variables in docker-compose.yml
-        envsubst < docker-compose.yml > docker-compose-deploy.yml
-        
-        # Create deployment package
-        zip -r deploy.zip Dockerrun.aws.json docker-compose-deploy.yml deploy/
-        
-        # Rename the substituted file back
-        mv docker-compose-deploy.yml docker-compose.yml
+        zip -r deploy.zip \
+          Dockerfile \
+          docker/ \
+          ie_professors_database/ \
+          ie-professors-frontend/ \
+          .ebextensions/ \
+          .platform/ \
+          --exclude=**/__pycache__/** \
+          --exclude=**/node_modules/** \
+          --exclude=**/.pytest_cache/** \
+          --exclude=**/*.log
 
+    # 👇 Deploy to Elastic Beanstalk
     - name: Deploy to EB
       uses: einaregilsson/beanstalk-deploy@v22
       with:
@@ -79,15 +52,14 @@ jobs:
         region: ${{ env.AWS_REGION }}
         version_label: ${{ github.sha }}
         deployment_package: deploy.zip
-        
+
+    # 👇 Set EB environment variables
     - name: Set EB Environment Variables
       run: |
         aws elasticbeanstalk update-environment \
           --application-name ${{ env.EB_APPLICATION_NAME }} \
           --environment-name ${{ env.EB_ENVIRONMENT_NAME }} \
           --option-settings \
-            Namespace=aws:elasticbeanstalk:application:environment,OptionName=AWS_ACCOUNT_ID,Value=${{ secrets.AWS_ACCOUNT_ID }} \
-            Namespace=aws:elasticbeanstalk:application:environment,OptionName=AWS_DEFAULT_REGION,Value=${{ env.AWS_REGION }} \
             Namespace=aws:elasticbeanstalk:application:environment,OptionName=DJANGO_ALLOWED_HOSTS,Value="${{ secrets.DJANGO_ALLOWED_HOSTS }}" \
             Namespace=aws:elasticbeanstalk:application:environment,OptionName=DJANGO_SECRET_KEY,Value="${{ secrets.DJANGO_SECRET_KEY }}" \
             Namespace=aws:elasticbeanstalk:application:environment,OptionName=DB_NAME,Value="${{ secrets.DB_NAME }}" \
@@ -96,6 +68,7 @@ jobs:
             Namespace=aws:elasticbeanstalk:application:environment,OptionName=DB_HOST,Value="${{ secrets.DB_HOST }}" \
             Namespace=aws:elasticbeanstalk:application:environment,OptionName=DB_PORT,Value="${{ secrets.DB_PORT }}"
 
+    # 👇 Configure EB Health Check
     - name: Configure EB Health Check
       run: |
         aws elasticbeanstalk update-environment \
