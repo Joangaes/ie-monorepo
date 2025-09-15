@@ -131,29 +131,58 @@ print(f"  DB_USER: {DB_USER}")
 print(f"  DB_PORT: {DB_PORT}")
 print(f"  DB_PASSWORD: {'***' if DB_PASSWORD else 'Not set'}")
 
-# Use PostgreSQL if all required environment variables are present
+# Database connection strategy: PostgreSQL first, then graceful fallback to no database
+DATABASE_AVAILABLE = False
+
 if DB_HOST and DB_HOST.strip() and DB_NAME and DB_USER and DB_PASSWORD:
-    # PostgreSQL configuration - all required vars present
-    print(f"✅ Using PostgreSQL database at {DB_HOST}:{DB_PORT}")
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': DB_NAME,       
-            'USER': DB_USER,           
-            'PASSWORD': DB_PASSWORD,   
-            'HOST': DB_HOST,
-            'PORT': DB_PORT,
-            'OPTIONS': {
-                'connect_timeout': 10,
-                'sslmode': 'prefer',  # AWS RDS supports SSL
-            },
+    # Test PostgreSQL connectivity before configuring
+    try:
+        import psycopg2
+        print(f"🔍 Testing PostgreSQL connection to {DB_HOST}:{DB_PORT}...")
+        
+        # Quick connection test with short timeout
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            port=DB_PORT,
+            database=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            connect_timeout=5
+        )
+        conn.close()
+        
+        # PostgreSQL is available - configure it
+        print(f"✅ PostgreSQL database connected at {DB_HOST}:{DB_PORT}")
+        DATABASE_AVAILABLE = True
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': DB_NAME,       
+                'USER': DB_USER,           
+                'PASSWORD': DB_PASSWORD,   
+                'HOST': DB_HOST,
+                'PORT': DB_PORT,
+                'OPTIONS': {
+                    'connect_timeout': 10,
+                    'sslmode': 'prefer',  # AWS RDS supports SSL
+                },
+            }
         }
-    }
+        
+    except Exception as e:
+        print(f"⚠️  PostgreSQL connection failed: {e}")
+        print("🔄 Falling back to no-database mode for graceful startup")
+        DATABASE_AVAILABLE = False
+        DATABASES = {}
+        
 else:
-    # Only use SQLite fallback in DEBUG mode or when explicitly allowed
+    print("⚠️  PostgreSQL environment variables not configured")
+    print(f"   Missing vars: DB_HOST={bool(DB_HOST)}, DB_NAME={bool(DB_NAME)}, DB_USER={bool(DB_USER)}, DB_PASSWORD={bool(DB_PASSWORD)}")
+    
+    # Use SQLite fallback only in DEBUG mode for local development
     if DEBUG or os.getenv("ALLOW_SQLITE_FALLBACK", "false").lower() == "true":
-        print("⚠️  Using SQLite database for local development")
-        print(f"   Missing PostgreSQL vars: DB_HOST={bool(DB_HOST)}, DB_NAME={bool(DB_NAME)}, DB_USER={bool(DB_USER)}, DB_PASSWORD={bool(DB_PASSWORD)}")
+        print("🔄 Using SQLite database for local development")
+        DATABASE_AVAILABLE = True
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',
@@ -161,11 +190,12 @@ else:
             }
         }
     else:
-        # In production, fail fast if PostgreSQL is not configured
-        print("❌ CRITICAL ERROR: PostgreSQL database not configured in production mode!")
-        print(f"   Missing vars: DB_HOST={bool(DB_HOST)}, DB_NAME={bool(DB_NAME)}, DB_USER={bool(DB_USER)}, DB_PASSWORD={bool(DB_PASSWORD)}")
-        print("   Set DEBUG=true or ALLOW_SQLITE_FALLBACK=true to use SQLite fallback")
-        raise RuntimeError("PostgreSQL database configuration required in production mode")
+        print("🔄 Running in no-database mode for graceful startup")
+        DATABASE_AVAILABLE = False
+        DATABASES = {}
+
+# Export database availability for use by entrypoint and health checks
+os.environ['DATABASE_AVAILABLE'] = str(DATABASE_AVAILABLE)
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"

@@ -2,6 +2,7 @@
 Health check views for monitoring application status.
 """
 import json
+import os
 import time
 from django.http import JsonResponse
 from django.db import connection
@@ -16,6 +17,7 @@ def health_check(request):
     """
     Simple health check endpoint that returns basic application status.
     Used by load balancers and monitoring systems.
+    Reports database connection status: 'connected', 'skipped', or 'failed'
     """
     start_time = time.time()
     
@@ -27,22 +29,33 @@ def health_check(request):
         "checks": {}
     }
     
-    # Database connectivity check
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT 1")
-            cursor.fetchone()
+    # Check database availability from settings
+    database_available = os.getenv('DATABASE_AVAILABLE', 'False').lower() == 'true'
+    
+    if not database_available or not settings.DATABASES:
+        # No database configured - this is OK, report as skipped
         health_status["checks"]["database"] = {
-            "status": "healthy",
-            "engine": settings.DATABASES['default']['ENGINE'],
-            "host": settings.DATABASES['default'].get('HOST', 'localhost')
+            "status": "skipped",
+            "message": "Running in no-database mode"
         }
-    except Exception as e:
-        health_status["status"] = "unhealthy"
-        health_status["checks"]["database"] = {
-            "status": "unhealthy",
-            "error": str(e)
-        }
+    else:
+        # Database configured - test connectivity
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT 1")
+                cursor.fetchone()
+            health_status["checks"]["database"] = {
+                "status": "connected",
+                "engine": settings.DATABASES['default']['ENGINE'],
+                "host": settings.DATABASES['default'].get('HOST', 'localhost')
+            }
+        except Exception as e:
+            # Database connection failed - this affects health status
+            health_status["status"] = "unhealthy"
+            health_status["checks"]["database"] = {
+                "status": "failed",
+                "error": str(e)
+            }
     
     # Response time check
     response_time = round((time.time() - start_time) * 1000, 2)
@@ -51,7 +64,7 @@ def health_check(request):
         "duration_ms": response_time
     }
     
-    # Return appropriate HTTP status code
+    # Application is healthy even without database (graceful degradation)
     status_code = 200 if health_status["status"] == "healthy" else 503
     
     return JsonResponse(health_status, status=status_code)

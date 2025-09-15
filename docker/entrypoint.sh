@@ -94,15 +94,45 @@ except Exception as e:
     exit 1
 }
 
-# Test database connectivity
+# Check if database is available (set by Django settings)
 echo ""
-echo "=== TESTING DATABASE CONNECTION ==="
-python -c "
+echo "=== CHECKING DATABASE AVAILABILITY ==="
+DATABASE_AVAILABLE=$(python -c "
+import os
+import sys
+import traceback
+from django.conf import settings
+
+try:
+    database_available = os.getenv('DATABASE_AVAILABLE', 'False').lower() == 'true'
+    has_databases = bool(settings.DATABASES)
+    
+    print(f'Database available from env: {database_available}')
+    print(f'DATABASES configured: {has_databases}')
+    
+    if database_available and has_databases:
+        print('✅ Database is available and configured')
+        print('true')
+    else:
+        print('⚠️  Database not available or not configured')
+        print('false')
+        
+except Exception as e:
+    print(f'❌ Error checking database availability: {e}')
+    print('false')
+" | tail -1)
+
+echo "Database availability check result: $DATABASE_AVAILABLE"
+
+if [ "$DATABASE_AVAILABLE" = "true" ]; then
+    # Database is available - run full database operations
+    echo ""
+    echo "=== TESTING DATABASE CONNECTION ==="
+    python -c "
 import os
 import sys
 import traceback
 from django.db import connection
-from django.core.exceptions import ImproperlyConfigured
 
 try:
     print('Testing database connection...')
@@ -125,24 +155,31 @@ except Exception as e:
     print('   Password: ***MASKED***')
     sys.exit(1)
 " || {
-    echo "❌ Database connection test failed. Container will exit."
-    exit 1
-}
-
-# Run database migrations
-echo ""
-echo "=== RUNNING DATABASE MIGRATIONS ==="
-echo "Checking for pending migrations..."
-python manage.py migrate --check --verbosity=1 || {
-    echo "Pending migrations detected. Running migrations..."
-    python manage.py migrate --noinput --verbosity=1 || {
-        echo "❌ Migration failed. Container will exit."
+        echo "❌ Database connection test failed. Container will exit."
         exit 1
     }
-}
-echo "✅ Database migrations completed successfully"
 
-# Collect static files (production requirement)
+    # Run database migrations
+    echo ""
+    echo "=== RUNNING DATABASE MIGRATIONS ==="
+    echo "Checking for pending migrations..."
+    python manage.py migrate --check --verbosity=1 || {
+        echo "Pending migrations detected. Running migrations..."
+        python manage.py migrate --noinput --verbosity=1 || {
+            echo "❌ Migration failed. Container will exit."
+            exit 1
+        }
+    }
+    echo "✅ Database migrations completed successfully"
+else
+    # No database available - skip database operations
+    echo ""
+    echo "=== SKIPPING DATABASE OPERATIONS ==="
+    echo "⚠️  Database not available - skipping migrations and database tests"
+    echo "✅ Application will run in no-database mode"
+fi
+
+# Collect static files (always run - doesn't require database)
 echo ""
 echo "=== COLLECTING STATIC FILES ==="
 python manage.py collectstatic --noinput --clear --verbosity=1 || {
