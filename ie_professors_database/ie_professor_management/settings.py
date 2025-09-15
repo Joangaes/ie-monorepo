@@ -127,16 +127,17 @@ print(f"  DB_USER: {DB_USER}")
 print(f"  DB_PORT: {DB_PORT}")
 print(f"  DB_PASSWORD: {'***' if os.getenv('DB_PASSWORD') else 'Not set'}")
 
-# For local testing/development, use SQLite unless explicitly configured for PostgreSQL
-if DB_HOST and DB_HOST.strip() and os.getenv("USE_POSTGRES", "").lower() == "true":
-    # PostgreSQL configuration - only when explicitly enabled
+# Use PostgreSQL if all required environment variables are present
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+if DB_HOST and DB_HOST.strip() and DB_NAME and DB_USER and DB_PASSWORD:
+    # PostgreSQL configuration - all required vars present
     print(f"✅ Using PostgreSQL database at {DB_HOST}:{DB_PORT}")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': DB_NAME,       
             'USER': DB_USER,           
-            'PASSWORD': os.getenv("DB_PASSWORD", "password"),   
+            'PASSWORD': DB_PASSWORD,   
             'HOST': DB_HOST,
             'PORT': DB_PORT,
             'OPTIONS': {
@@ -145,8 +146,9 @@ if DB_HOST and DB_HOST.strip() and os.getenv("USE_POSTGRES", "").lower() == "tru
         }
     }
 else:
-    # SQLite fallback for testing/development
+    # SQLite fallback for testing/development when PostgreSQL vars not all present
     print("✅ Using SQLite database for local development")
+    print(f"   Missing PostgreSQL vars: DB_HOST={bool(DB_HOST)}, DB_NAME={bool(DB_NAME)}, DB_USER={bool(DB_USER)}, DB_PASSWORD={bool(DB_PASSWORD)}")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

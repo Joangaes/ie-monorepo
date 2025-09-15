@@ -25,6 +25,6 @@ EXPOSE 3000
 # Use entrypoint script to wrap npm start with debugging info
 ENTRYPOINT ["/entrypoint.sh"]
 
-# Default CMD is set by Dockerrun command array (npm start)
+# Use standalone server for production (required when output: 'standalone' is set)
 # The entrypoint will execute whatever command is passed from Dockerrun
-CMD ["npm", "start"]
+CMD ["node", ".next/standalone/server.js"]

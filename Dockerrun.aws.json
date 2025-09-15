@@ -52,7 +52,7 @@
         { "name": "NEXT_PUBLIC_API_URL", "value": "/api" },
         { "name": "PORT", "value": "3000" }
       ],
-      "command": ["npm", "start"],
+      "command": ["node", ".next/standalone/server.js"],
       "logConfiguration": {
         "logDriver": "json-file"
       }
