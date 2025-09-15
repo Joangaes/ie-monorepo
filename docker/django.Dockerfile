@@ -1,45 +1,28 @@
 FROM python:3.12-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Set work directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        postgresql-client \
-        netcat-openbsd \
-        build-essential \
-        libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+# System deps (psycopg2 etc.)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential libpq-dev gcc curl netcat-traditional \
+ && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY ie_professors_database/pyproject.toml ie_professors_database/poetry.lock* ./
-RUN pip install --no-cache-dir poetry \
-    && poetry config virtualenvs.create false \
-    && poetry lock \
-    && poetry install --only=main --no-root --no-interaction --no-ansi
+# Copy backend code
+COPY ie_professors_database/ /app/
 
-# Copy project
-COPY ie_professors_database/ .
+# Install Python deps
+# Expect a pyproject.toml/poetry.lock OR requirements.txt in ie_professors_database
+# Prefer Poetry if present; otherwise use pip
+RUN if [ -f pyproject.toml ]; then \
+      pip install --no-cache-dir "poetry==1.8.3" && \
+      poetry config virtualenvs.create false && \
+      poetry install --only=main --no-interaction --no-ansi ; \
+    elif [ -f requirements.txt ]; then \
+      pip install --no-cache-dir -r requirements.txt ; \
+    else \
+      echo "No dependency file found" && exit 1 ; \
+    fi
 
-# Create volumes for static and media files
-RUN mkdir -p /vol/static /vol/media
-RUN chown -R nobody:nogroup /vol && chmod -R 755 /vol
-
-# Make entrypoint executable
-COPY ie_professors_database/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-# Switch to non-root user
-USER nobody
-
-# Expose port
 EXPOSE 8000
 
-# Run entrypoint
-ENTRYPOINT ["/entrypoint.sh"]
-
+# Default CMD is set by Dockerrun command array (gunicorn). Keep container lean.

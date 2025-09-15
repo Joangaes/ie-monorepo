@@ -1,49 +1,19 @@
-FROM node:20-alpine AS builder
+FROM node:20-slim
 
-# Set working directory
 WORKDIR /app
 
-# Install build dependencies for native modules
-RUN apk add --no-cache libc6-compat python3 make g++
-
-# Copy package files
+# Install deps
 COPY ie-professors-frontend/package*.json ./
+RUN npm ci
 
-# Install dependencies (including dev dependencies for build)
-RUN npm install
-
-# Copy source code
-COPY ie-professors-frontend/ .
-
-# Build the application (ignore ESLint errors)
+# Copy source and build
+COPY ie-professors-frontend/ ./
 RUN npm run build
 
-# Production image
-FROM node:20-alpine AS runner
-
-# Set working directory
-WORKDIR /app
-
-# Create a non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# Copy built application
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# Set environment variables
+# Runtime port
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV HOSTNAME=0.0.0.0
-
-# Switch to non-root user
-USER nextjs
-
-# Expose port
 EXPOSE 3000
 
-# Start the application
-CMD ["node", "server.js"]
-
+# Start Next (expected by Dockerrun command ["npm","start"])
+CMD ["npm","start"]
