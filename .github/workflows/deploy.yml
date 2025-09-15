@@ -30,12 +30,19 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Ensure envsubst is available
+        run: |
+          if ! command -v envsubst >/dev/null 2>&1; then
+            sudo apt-get update -y
+            sudo apt-get install -y gettext-base
+          fi
+
       - name: Abort any in-progress EB update (best-effort)
         run: |
           STATUS=$(aws elasticbeanstalk describe-environments \
             --application-name "$EB_APPLICATION_NAME" \
             --environment-names "$EB_ENVIRONMENT_NAME" \
-            --query "Environments[0].Status" --output text || echo "Unknown")
+            --query "Environments[0].Status" --output text 2>/dev/null || echo "Unknown")
           if [ "$STATUS" = "Updating" ]; then
             echo "Environment is Updating; aborting current operation..."
             aws elasticbeanstalk abort-environment-update \
@@ -47,6 +54,7 @@ jobs:
 
       - name: Build & push Django backend image
         run: |
+          set -e
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           ECR_REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY
           docker build -f docker/django.Dockerfile -t $ECR_REPOSITORY_URI:backend .
@@ -55,13 +63,15 @@ jobs:
 
       - name: Build & push Next.js frontend image
         run: |
+          set -e
           docker build -f docker/next.Dockerfile -t $ECR_REPOSITORY_URI:frontend .
           docker push $ECR_REPOSITORY_URI:frontend
 
       - name: Generate and validate Dockerrun.aws.json with GitHub secrets
         run: |
-          echo "=== Substituting environment variables in Dockerrun.aws.json ==="
+          set -e
 
+          echo "=== Substituting environment variables in Dockerrun.aws.json ==="
           envsubst '${ECR_REPOSITORY_URI} ${AWS_REGION} ${DJANGO_ALLOWED_HOSTS} ${DJANGO_SECRET_KEY} ${DB_NAME} ${DB_USER} ${DB_PASSWORD} ${DB_HOST} ${DB_PORT}' \
             < Dockerrun.aws.json > Dockerrun.aws.json.tmp
           mv Dockerrun.aws.json.tmp Dockerrun.aws.json
@@ -86,54 +96,49 @@ jobs:
           fi
 
           echo "=== Validating required keys exist ==="
-          cat > validate_dockerrun.py << 'EOF'
-import json
-import sys
-
-with open('Dockerrun.aws.json', 'r') as f:
-    data = json.load(f)
-
-required_keys = ['AWSEBDockerrunVersion', 'containerDefinitions', 'volumes']
-missing_keys = [key for key in required_keys if key not in data]
-
-if missing_keys:
-    print('❌ ERROR: Missing required keys: {}'.format(missing_keys))
-    sys.exit(1)
-
-if data.get('AWSEBDockerrunVersion') != 2:
-    print('❌ ERROR: AWSEBDockerrunVersion must be 2')
-    sys.exit(1)
-
-containers = data.get('containerDefinitions', [])
-if len(containers) != 3:
-    print('❌ ERROR: Expected 3 containers, found {}'.format(len(containers)))
-    sys.exit(1)
-
-container_names = [c.get('name') for c in containers]
-expected_names = ['django', 'next', 'nginx']
-if sorted(container_names) != sorted(expected_names):
-    print('❌ ERROR: Expected containers {}, found {}'.format(expected_names, container_names))
-    sys.exit(1)
-
-print('✅ All required keys and containers present')
-EOF
+          printf '%s\n' \
+            "import json, sys" \
+            "" \
+            "with open('Dockerrun.aws.json', 'r') as f:" \
+            "    data = json.load(f)" \
+            "" \
+            "required_keys = ['AWSEBDockerrunVersion', 'containerDefinitions', 'volumes']" \
+            "missing_keys = [k for k in required_keys if k not in data]" \
+            "" \
+            "if missing_keys:" \
+            "    print(f'❌ ERROR: Missing required keys: {missing_keys}')" \
+            "    sys.exit(1)" \
+            "" \
+            "if data.get('AWSEBDockerrunVersion') != 2:" \
+            "    print('❌ ERROR: AWSEBDockerrunVersion must be 2')" \
+            "    sys.exit(1)" \
+            "" \
+            "containers = data.get('containerDefinitions', [])" \
+            "if len(containers) != 3:" \
+            "    print(f'❌ ERROR: Expected 3 containers, found {len(containers)}')" \
+            "    sys.exit(1)" \
+            "" \
+            "container_names = [c.get('name') for c in containers]" \
+            "expected_names = ['django', 'next', 'nginx']" \
+            "if sorted(container_names) != sorted(expected_names):" \
+            "    print(f'❌ ERROR: Expected containers {expected_names}, found {container_names}')" \
+            "    sys.exit(1)" \
+            "" \
+            "print('✅ All required keys and containers present')" \
+          > validate_dockerrun.py
           python3 validate_dockerrun.py
 
-          echo "=== Displaying final Dockerrun.aws.json (with secrets masked) ==="
-          cat > mask_secrets.py << 'EOF'
-import re
-
-with open('Dockerrun.aws.json', 'r') as f:
-    content = f.read()
-
-masked_content = re.sub(
-    r'(\"value\":\s*\")[^\"]*(\")',
-    r'\1***MASKED***\2',
-    content
-)
-
-print(masked_content)
-EOF
+          echo "=== Displaying final Dockerrun.aws.json (with values masked) ==="
+          printf '%s\n' \
+            "import re" \
+            "" \
+            "with open('Dockerrun.aws.json', 'r') as f:" \
+            "    content = f.read()" \
+            "" \
+            "# Mask any JSON string value after \"value\": \"...\"" \
+            "masked_content = re.sub(r'(\\\"value\\\":\\s*\\\")[^\\\"]*(\\\")', r'\\1***MASKED***\\2', content)" \
+            "print(masked_content)" \
+          > mask_secrets.py
           python3 mask_secrets.py
         env:
           AWS_REGION: ${{ env.AWS_REGION }}
