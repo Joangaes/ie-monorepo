@@ -5,14 +5,20 @@ version: "3.8"
 services:
   # Django Backend Service - API and Admin Interface
   django:
-    image: <ACCOUNT_ID>.dkr.ecr.eu-north-1.amazonaws.com/ie-monorepo:backend
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/ie-monorepo:backend
     command: gunicorn ie_professor_management.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120 --access-logfile - --error-logfile -
     expose:
       - "8000"
     environment:
       - DJANGO_SETTINGS_MODULE=ie_professor_management.settings
       - DEBUG=false
-      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
       interval: 30s
@@ -22,7 +28,7 @@ services:
 
   # Next.js Frontend Service - React Application
   next:
-    image: <ACCOUNT_ID>.dkr.ecr.eu-north-1.amazonaws.com/ie-monorepo:frontend
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/ie-monorepo:frontend
     command: npm start
     expose:
       - "3000"

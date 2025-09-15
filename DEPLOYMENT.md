@@ -56,11 +56,19 @@ Nginx routes requests as follows:
 - `NEXT_PUBLIC_API_URL=/api`
 - `PORT=3000`
 
-## Deployment Steps
+## Deployment Steps (GitHub Actions)
 
-1. **Update Image References**: Replace `<ACCOUNT_ID>` in `docker-compose.yml` with your actual AWS account ID
-2. **Set Environment Variables**: Configure all required environment variables in the EB console
-3. **Deploy**: Use `eb deploy` or your CI/CD pipeline to deploy the application
+### Automated Deployment via GitHub Actions
+
+1. **Configure GitHub Secrets**: Add all required secrets to your GitHub repository (see `github-secrets.md`)
+2. **Push to Main Branch**: The workflow triggers automatically on push to main
+3. **Monitor Deployment**: Check GitHub Actions tab for deployment progress
+
+### Manual Deployment (Alternative)
+
+1. **Set Environment Variables**: Export all required environment variables locally
+2. **Substitute Variables**: Run `envsubst < docker-compose.yml > docker-compose-deploy.yml`
+3. **Deploy**: Use `eb deploy` with the substituted compose file
 
 ## Health Checks
 
@@ -72,11 +80,26 @@ Nginx routes requests as follows:
 
 ```
 ├── Dockerrun.aws.json          # EB Docker Compose v3 configuration
-├── docker-compose.yml          # Multi-container Docker setup
+├── docker-compose.yml          # Multi-container Docker setup (uses env vars)
 ├── deploy/
 │   └── nginx.conf             # Nginx reverse proxy configuration
+├── .github/
+│   └── workflows/
+│       └── deploy.yml         # GitHub Actions deployment workflow
+├── github-secrets.md          # GitHub secrets configuration guide
 └── DEPLOYMENT.md              # This documentation
 ```
+
+## GitHub Secrets Integration
+
+The deployment now uses GitHub secrets instead of manual EB console configuration:
+
+- **Environment Variables**: All sensitive data comes from GitHub secrets
+- **Image References**: AWS account ID and region are substituted automatically  
+- **Health Check**: Configured programmatically via AWS CLI
+- **Zero Manual EB Console Setup**: Everything is automated via GitHub Actions
+
+See `github-secrets.md` for the complete list of required secrets.
 
 ## Troubleshooting
 
