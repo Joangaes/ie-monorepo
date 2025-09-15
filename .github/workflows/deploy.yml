@@ -57,22 +57,37 @@ jobs:
           set -e
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           ECR_REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY
+          
+          # Build and tag with commit SHA
+          docker build -f docker/django.Dockerfile -t $ECR_REPOSITORY_URI:backend-${{ github.sha }} .
           docker build -f docker/django.Dockerfile -t $ECR_REPOSITORY_URI:backend .
+          
+          # Push both tags
+          docker push $ECR_REPOSITORY_URI:backend-${{ github.sha }}
           docker push $ECR_REPOSITORY_URI:backend
+          
           echo "ECR_REPOSITORY_URI=$ECR_REPOSITORY_URI" >> $GITHUB_ENV
+          echo "BACKEND_IMAGE_TAG=backend-${{ github.sha }}" >> $GITHUB_ENV
 
       - name: Build & push Next.js frontend image
         run: |
           set -e
+          # Build and tag with commit SHA
+          docker build -f docker/next.Dockerfile -t $ECR_REPOSITORY_URI:frontend-${{ github.sha }} .
           docker build -f docker/next.Dockerfile -t $ECR_REPOSITORY_URI:frontend .
+          
+          # Push both tags
+          docker push $ECR_REPOSITORY_URI:frontend-${{ github.sha }}
           docker push $ECR_REPOSITORY_URI:frontend
+          
+          echo "FRONTEND_IMAGE_TAG=frontend-${{ github.sha }}" >> $GITHUB_ENV
 
       - name: Generate and validate Dockerrun.aws.json with GitHub secrets
         run: |
           set -e
 
           echo "=== Substituting environment variables in Dockerrun.aws.json ==="
-          envsubst '${ECR_REPOSITORY_URI} ${AWS_REGION} ${DJANGO_ALLOWED_HOSTS} ${DJANGO_SECRET_KEY} ${DB_NAME} ${DB_USER} ${DB_PASSWORD} ${DB_HOST} ${DB_PORT}' \
+          envsubst '${ECR_REPOSITORY_URI} ${BACKEND_IMAGE_TAG} ${FRONTEND_IMAGE_TAG} ${AWS_REGION} ${DJANGO_ALLOWED_HOSTS} ${DJANGO_SECRET_KEY} ${DB_NAME} ${DB_USER} ${DB_PASSWORD} ${DB_HOST} ${DB_PORT}' \
             < Dockerrun.aws.json > Dockerrun.aws.json.tmp
           mv Dockerrun.aws.json.tmp Dockerrun.aws.json
 

@@ -114,21 +114,24 @@ WSGI_APPLICATION = 'ie_professor_management.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Use SQLite as fallback if PostgreSQL is not configured
-DB_HOST = os.getenv("DB_HOST")
-DB_NAME = os.getenv("DB_NAME", "ie_professors_db")
-DB_USER = os.getenv("DB_USER", "postgres")
-DB_PORT = os.getenv("DB_PORT", "5432")
+# Database Configuration - Support both DB_* and RDS_* environment variables
+# Priority: DB_* variables first, then RDS_* variables (AWS RDS format), then defaults
+
+# Check for standard DB_* variables first
+DB_HOST = os.getenv("DB_HOST") or os.getenv("RDS_HOSTNAME")
+DB_NAME = os.getenv("DB_NAME") or os.getenv("RDS_DB_NAME") or "ie_professors_db"
+DB_USER = os.getenv("DB_USER") or os.getenv("RDS_USERNAME") or "postgres"
+DB_PORT = os.getenv("DB_PORT") or os.getenv("RDS_PORT") or "5432"
+DB_PASSWORD = os.getenv("DB_PASSWORD") or os.getenv("RDS_PASSWORD")
 
 print(f"🔍 Database Configuration Debug:")
 print(f"  DB_HOST: {DB_HOST}")
 print(f"  DB_NAME: {DB_NAME}")
 print(f"  DB_USER: {DB_USER}")
 print(f"  DB_PORT: {DB_PORT}")
-print(f"  DB_PASSWORD: {'***' if os.getenv('DB_PASSWORD') else 'Not set'}")
+print(f"  DB_PASSWORD: {'***' if DB_PASSWORD else 'Not set'}")
 
 # Use PostgreSQL if all required environment variables are present
-DB_PASSWORD = os.getenv("DB_PASSWORD")
 if DB_HOST and DB_HOST.strip() and DB_NAME and DB_USER and DB_PASSWORD:
     # PostgreSQL configuration - all required vars present
     print(f"✅ Using PostgreSQL database at {DB_HOST}:{DB_PORT}")
@@ -142,19 +145,27 @@ if DB_HOST and DB_HOST.strip() and DB_NAME and DB_USER and DB_PASSWORD:
             'PORT': DB_PORT,
             'OPTIONS': {
                 'connect_timeout': 10,
+                'sslmode': 'prefer',  # AWS RDS supports SSL
             },
         }
     }
 else:
-    # SQLite fallback for testing/development when PostgreSQL vars not all present
-    print("✅ Using SQLite database for local development")
-    print(f"   Missing PostgreSQL vars: DB_HOST={bool(DB_HOST)}, DB_NAME={bool(DB_NAME)}, DB_USER={bool(DB_USER)}, DB_PASSWORD={bool(DB_PASSWORD)}")
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+    # Only use SQLite fallback in DEBUG mode or when explicitly allowed
+    if DEBUG or os.getenv("ALLOW_SQLITE_FALLBACK", "false").lower() == "true":
+        print("⚠️  Using SQLite database for local development")
+        print(f"   Missing PostgreSQL vars: DB_HOST={bool(DB_HOST)}, DB_NAME={bool(DB_NAME)}, DB_USER={bool(DB_USER)}, DB_PASSWORD={bool(DB_PASSWORD)}")
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
         }
-    }
+    else:
+        # In production, fail fast if PostgreSQL is not configured
+        print("❌ CRITICAL ERROR: PostgreSQL database not configured in production mode!")
+        print(f"   Missing vars: DB_HOST={bool(DB_HOST)}, DB_NAME={bool(DB_NAME)}, DB_USER={bool(DB_USER)}, DB_PASSWORD={bool(DB_PASSWORD)}")
+        print("   Set DEBUG=true or ALLOW_SQLITE_FALLBACK=true to use SQLite fallback")
+        raise RuntimeError("PostgreSQL database configuration required in production mode")
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"

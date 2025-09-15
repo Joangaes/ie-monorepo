@@ -7,6 +7,7 @@ from .views import (
     JoinedAcademicYearViewSet, CourseDeliverySectionViewSet,
     CurrentIntakeAPIView, ProgramDeliveryOverviewAPIView, DeliveryOverviewAPIView
 )
+from .health_views import health_check, readiness_check, liveness_check
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -39,4 +40,9 @@ urlpatterns = [
     path("current-intakes/", CurrentIntakeAPIView.as_view(), name="current-intakes"),
     path("program-delivery/<int:program_id>/<int:intake_id>/", ProgramDeliveryOverviewAPIView.as_view(), name="program-delivery-overview"),
     path("delivery-overview/", DeliveryOverviewAPIView.as_view(), name="delivery-overview"),
+    
+    # Health check endpoints
+    path("healthz/", health_check, name="health-check"),
+    path("readiness/", readiness_check, name="readiness-check"),
+    path("liveness/", liveness_check, name="liveness-check"),
 ]

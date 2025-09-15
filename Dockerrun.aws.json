@@ -6,7 +6,7 @@
   "containerDefinitions": [
     {
       "name": "django",
-      "image": "${ECR_REPOSITORY_URI}:backend",
+      "image": "${ECR_REPOSITORY_URI}:${BACKEND_IMAGE_TAG}",
       "essential": false,
       "memory": 512,
       "portMappings": [
@@ -34,13 +34,20 @@
         "--access-logfile", "-",
         "--error-logfile", "-"
       ],
+      "healthCheck": {
+        "command": ["CMD-SHELL", "curl -f http://localhost:8000/api/healthz/ || exit 1"],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      },
       "logConfiguration": {
         "logDriver": "json-file"
       }
     },
     {
       "name": "next",
-      "image": "${ECR_REPOSITORY_URI}:frontend",
+      "image": "${ECR_REPOSITORY_URI}:${FRONTEND_IMAGE_TAG}",
       "essential": false,
       "memory": 256,
       "portMappings": [
@@ -69,7 +76,7 @@
         { "sourceVolume": "nginx-config", "containerPath": "/etc/nginx/conf.d" }
       ],
       "dependsOn": [
-        { "containerName": "django", "condition": "START" },
+        { "containerName": "django", "condition": "HEALTHY" },
         { "containerName": "next", "condition": "START" }
       ],
       "logConfiguration": {
