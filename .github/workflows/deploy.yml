@@ -59,13 +59,88 @@ jobs:
           docker build -f docker/next.Dockerfile -t $ECR_REPOSITORY_URI:frontend .
           docker push $ECR_REPOSITORY_URI:frontend
 
-      - name: Generate Dockerrun.aws.json with GitHub secrets
+      - name: Generate and validate Dockerrun.aws.json with GitHub secrets
         run: |
+          echo "=== Substituting environment variables in Dockerrun.aws.json ==="
+          
+          # Perform environment variable substitution
           envsubst '${ECR_REPOSITORY_URI} ${AWS_REGION} ${DJANGO_ALLOWED_HOSTS} ${DJANGO_SECRET_KEY} ${DB_NAME} ${DB_USER} ${DB_PASSWORD} ${DB_HOST} ${DB_PORT}' \
-            < Dockerrun.aws.json > Dockerrun.aws.json.out
-          mv Dockerrun.aws.json.out Dockerrun.aws.json
-          echo "=== Rendered Dockerrun.aws.json ==="
-          cat Dockerrun.aws.json
+            < Dockerrun.aws.json > Dockerrun.aws.json.tmp
+          mv Dockerrun.aws.json.tmp Dockerrun.aws.json
+          
+          echo "=== Validating substitution completed successfully ==="
+          # Check if any placeholders remain unresolved (this will fail the pipeline if found)
+          if grep -q '\${' Dockerrun.aws.json; then
+            echo "❌ ERROR: Found unresolved placeholders in Dockerrun.aws.json:"
+            grep '\${' Dockerrun.aws.json || true
+            echo "Available environment variables:"
+            env | grep -E '^(ECR_REPOSITORY_URI|AWS_REGION|DJANGO_|DB_)' | sort
+            exit 1
+          else
+            echo "✅ All placeholders successfully substituted"
+          fi
+          
+          echo "=== Validating JSON syntax ==="
+          # Validate JSON syntax
+          if ! python -m json.tool Dockerrun.aws.json > /dev/null; then
+            echo "❌ ERROR: Invalid JSON syntax in Dockerrun.aws.json"
+            exit 1
+          else
+            echo "✅ JSON syntax is valid"
+          fi
+          
+          echo "=== Validating required keys exist ==="
+          # Check required keys exist
+          python -c "
+import json
+import sys
+
+with open('Dockerrun.aws.json', 'r') as f:
+    data = json.load(f)
+
+required_keys = ['AWSEBDockerrunVersion', 'containerDefinitions', 'volumes']
+missing_keys = [key for key in required_keys if key not in data]
+
+if missing_keys:
+    print(f'❌ ERROR: Missing required keys: {missing_keys}')
+    sys.exit(1)
+
+if data.get('AWSEBDockerrunVersion') != 2:
+    print('❌ ERROR: AWSEBDockerrunVersion must be 2')
+    sys.exit(1)
+
+containers = data.get('containerDefinitions', [])
+if len(containers) != 3:
+    print(f'❌ ERROR: Expected 3 containers, found {len(containers)}')
+    sys.exit(1)
+
+container_names = [c.get('name') for c in containers]
+expected_names = ['django', 'next', 'nginx']
+if sorted(container_names) != sorted(expected_names):
+    print(f'❌ ERROR: Expected containers {expected_names}, found {container_names}')
+    sys.exit(1)
+
+print('✅ All required keys and containers present')
+"
+          
+          echo "=== Displaying final Dockerrun.aws.json (with secrets masked) ==="
+          # Show the final file with secrets masked for security
+          python -c "
+import json
+import re
+
+with open('Dockerrun.aws.json', 'r') as f:
+    content = f.read()
+
+# Mask sensitive values in environment variables
+masked_content = re.sub(
+    r'(\"value\":\s*\")([^\"]*)(\".*(?:SECRET_KEY|PASSWORD|DB_USER))',
+    r'\1***MASKED***\3',
+    content
+)
+
+print(masked_content)
+"
         env:
           AWS_REGION: ${{ env.AWS_REGION }}
           DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}

@@ -1,4 +1,7 @@
 {
+  "_comment": "AWS Elastic Beanstalk Dockerrun v2 - Multi-container Django + Next.js + Nginx setup",
+  "_comment_secrets": "All ${PLACEHOLDER} values are substituted by GitHub Actions during deployment",
+  "_comment_logging": "All containers use awslogs driver to send logs to CloudWatch AND maintain stdout/stderr for EB logs",
   "AWSEBDockerrunVersion": 2,
   "containerDefinitions": [
     {
@@ -18,7 +21,9 @@
         { "name": "DB_USER", "value": "${DB_USER}" },
         { "name": "DB_PASSWORD", "value": "${DB_PASSWORD}" },
         { "name": "DB_HOST", "value": "${DB_HOST}" },
-        { "name": "DB_PORT", "value": "${DB_PORT}" }
+        { "name": "DB_PORT", "value": "${DB_PORT}" },
+        { "name": "PYTHONUNBUFFERED", "value": "1" },
+        { "name": "PYTHONDONTWRITEBYTECODE", "value": "1" }
       ],
       "command": [
         "gunicorn",
@@ -34,7 +39,8 @@
         "options": {
           "awslogs-group": "/aws/elasticbeanstalk/ie-university/django",
           "awslogs-region": "${AWS_REGION}",
-          "awslogs-stream-prefix": "django"
+          "awslogs-stream-prefix": "django",
+          "awslogs-create-group": "true"
         }
       }
     },
@@ -58,7 +64,8 @@
         "options": {
           "awslogs-group": "/aws/elasticbeanstalk/ie-university/next",
           "awslogs-region": "${AWS_REGION}",
-          "awslogs-stream-prefix": "next"
+          "awslogs-stream-prefix": "next",
+          "awslogs-create-group": "true"
         }
       }
     },
@@ -82,7 +89,8 @@
         "options": {
           "awslogs-group": "/aws/elasticbeanstalk/ie-university/nginx",
           "awslogs-region": "${AWS_REGION}",
-          "awslogs-stream-prefix": "nginx"
+          "awslogs-stream-prefix": "nginx",
+          "awslogs-create-group": "true"
         }
       }
     }
