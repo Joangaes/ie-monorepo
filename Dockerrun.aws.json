@@ -1,6 +1,6 @@
 {
   "_comment": "AWS Elastic Beanstalk Dockerrun v2 - Multi-container Django + Next.js + Nginx setup",
-  "_comment_secrets": "All ${PLACEHOLDER} values are substituted by GitHub Actions during deployment",
+  "_comment_secrets": "All placeholder values are substituted by GitHub Actions during deployment",
   "_comment_logging": "All containers use awslogs driver to send logs to CloudWatch AND maintain stdout/stderr for EB logs",
   "AWSEBDockerrunVersion": 2,
   "containerDefinitions": [
