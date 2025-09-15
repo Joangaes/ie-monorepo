@@ -91,7 +91,7 @@ jobs:
           
           echo "=== Validating required keys exist ==="
           # Check required keys exist
-          python3 -c "
+          cat > validate_dockerrun.py << 'EOF'
 import json
 import sys
 
@@ -121,11 +121,12 @@ if sorted(container_names) != sorted(expected_names):
     sys.exit(1)
 
 print('✅ All required keys and containers present')
-"
+EOF
+          python3 validate_dockerrun.py
           
           echo "=== Displaying final Dockerrun.aws.json (with secrets masked) ==="
           # Show the final file with secrets masked for security
-          python3 -c "
+          cat > mask_secrets.py << 'EOF'
 import json
 import re
 
@@ -140,7 +141,8 @@ masked_content = re.sub(
 )
 
 print(masked_content)
-"
+EOF
+          python3 mask_secrets.py
         env:
           AWS_REGION: ${{ env.AWS_REGION }}
           DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
