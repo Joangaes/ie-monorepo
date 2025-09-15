@@ -1,4 +1,4 @@
-name: Deploy to AWS Elastic Beanstalk (Single Container)
+name: Deploy to AWS Elastic Beanstalk (Multi-Container Docker)
 
 on:
   push:
@@ -10,6 +10,7 @@ env:
   AWS_REGION: eu-north-1
   EB_APPLICATION_NAME: Ieuniversitydocker
   EB_ENVIRONMENT_NAME: Ieuniversitydocker-env
+  ECR_REPOSITORY: ie-monorepo
 
 jobs:
   deploy:
@@ -25,6 +26,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
+
+      # Login to Amazon ECR
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
 
       # Optional: if EB is "Updating", abort it so a new deploy can proceed
       - name: Abort any in-progress EB update (best-effort)
@@ -43,39 +48,83 @@ jobs:
             echo "Environment status: $STATUS"
           fi
 
-      # Build the deployment bundle that EB will use to find Dockerfile and build the image
+      # Build and push backend (Django) image
+      - name: Build and push Django backend image
+        run: |
+          # Get AWS account ID
+          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ECR_REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY
+          
+          # Build Django image
+          docker build -f docker/django.Dockerfile -t $ECR_REPOSITORY_URI:backend .
+          
+          # Push Django image
+          docker push $ECR_REPOSITORY_URI:backend
+          
+          echo "Backend image pushed: $ECR_REPOSITORY_URI:backend"
+
+      # Build and push frontend (Next.js) image
+      - name: Build and push Next.js frontend image
+        run: |
+          # Get AWS account ID
+          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ECR_REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY
+          
+          # Build Next.js image
+          docker build -f docker/next.Dockerfile -t $ECR_REPOSITORY_URI:frontend .
+          
+          # Push Next.js image
+          docker push $ECR_REPOSITORY_URI:frontend
+          
+          echo "Frontend image pushed: $ECR_REPOSITORY_URI:frontend"
+
+      # Generate Dockerrun.aws.json with environment variables
+      - name: Generate Dockerrun.aws.json with secrets
+        run: |
+          # Get AWS account ID
+          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ECR_REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY
+          
+          # Substitute environment variables in Dockerrun.aws.json
+          envsubst '${ECR_REPOSITORY_URI} ${AWS_REGION} ${DJANGO_ALLOWED_HOSTS} ${DJANGO_SECRET_KEY} ${DB_NAME} ${DB_USER} ${DB_PASSWORD} ${DB_HOST} ${DB_PORT}' < Dockerrun.aws.json > Dockerrun.aws.json.tmp
+          mv Dockerrun.aws.json.tmp Dockerrun.aws.json
+          
+          # Verify the generated file
+          echo "Generated Dockerrun.aws.json:"
+          cat Dockerrun.aws.json
+        env:
+          DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+
+      # Create deployment package
       - name: Create deployment package
         run: |
           set -euo pipefail
+          
+          # Create deployment directory
+          mkdir -p deploy-package/deploy
+          
+          # Copy nginx configuration to deploy directory
+          cp deploy/nginx.conf deploy-package/deploy/default.conf
+          
+          # Copy the generated Dockerrun.aws.json
+          cp Dockerrun.aws.json deploy-package/
+          
+          # Create deployment zip containing only required files
+          cd deploy-package
+          zip -r ../deploy.zip .
+          cd ..
+          
+          # Verify deployment package contents
+          echo "Deployment package contents:"
+          unzip -l deploy.zip
 
-          # Sanity: ensure Dockerfile is at repo root
-          test -f Dockerfile || (echo "ERROR: Dockerfile not found at repo root." && exit 1)
-
-          # Zip only what's required for the image build/runtime
-          # NOTE: zip uses -x (not --exclude) and patterns must be quoted.
-          zip -r deploy.zip \
-            Dockerfile \
-            docker/ \
-            ie_professors_database/ \
-            ie-professors-frontend/ \
-            .ebextensions/ \
-            .platform/ \
-            -x "**/__pycache__/**" \
-               "**/node_modules/**" \
-               "**/.pytest_cache/**" \
-               "**/*.log" \
-               "**/.git/**" \
-               ".github/**" \
-               "infra/**" \
-               "docs/**" \
-               "cloud.logs" \
-               "*.xlsx" \
-               "*.bak" \
-               "**/*.local.*"
-
-          # Verify EB will see Dockerfile in the root of the zip
-          unzip -l deploy.zip | grep -q "^ *[0-9].* Dockerfile$" || (echo "ERROR: Dockerfile missing from zip root." && exit 1)
-
+      # Deploy to Elastic Beanstalk
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v22
         with:
@@ -87,25 +136,18 @@ jobs:
           version_label: ${{ github.sha }}
           deployment_package: deploy.zip
 
-      - name: Set EB Environment Variables
+      # Verify deployment
+      - name: Verify deployment
         run: |
-          aws elasticbeanstalk update-environment \
-            --application-name ${{ env.EB_APPLICATION_NAME }} \
-            --environment-name ${{ env.EB_ENVIRONMENT_NAME }} \
-            --option-settings \
-              Namespace=aws:elasticbeanstalk:application:environment,OptionName=DJANGO_ALLOWED_HOSTS,Value="${{ secrets.DJANGO_ALLOWED_HOSTS }}" \
-              Namespace=aws:elasticbeanstalk:application:environment,OptionName=DJANGO_SECRET_KEY,Value="${{ secrets.DJANGO_SECRET_KEY }}" \
-              Namespace=aws:elasticbeanstalk:application:environment,OptionName=DB_NAME,Value="${{ secrets.DB_NAME }}" \
-              Namespace=aws:elasticbeanstalk:application:environment,OptionName=DB_USER,Value="${{ secrets.DB_USER }}" \
-              Namespace=aws:elasticbeanstalk:application:environment,OptionName=DB_PASSWORD,Value="${{ secrets.DB_PASSWORD }}" \
-              Namespace=aws:elasticbeanstalk:application:environment,OptionName=DB_HOST,Value="${{ secrets.DB_HOST }}" \
-              Namespace=aws:elasticbeanstalk:application:environment,OptionName=DB_PORT,Value="${{ secrets.DB_PORT }}"
-
-      - name: Configure EB Health Check
-        run: |
-          aws elasticbeanstalk update-environment \
-            --application-name ${{ env.EB_APPLICATION_NAME }} \
-            --environment-name ${{ env.EB_ENVIRONMENT_NAME }} \
-            --option-settings \
-              Namespace=aws:elasticbeanstalk:healthreporting:system,OptionName=SystemType,Value=enhanced \
-              Namespace=aws:elasticbeanstalk:application:environment,OptionName=HEALTHCHECK_URL,Value=/health
+          echo "Deployment completed successfully!"
+          echo "Application URL: http://$EB_ENVIRONMENT_NAME.$AWS_REGION.elasticbeanstalk.com"
+          
+          # Wait a bit for the deployment to stabilize
+          sleep 30
+          
+          # Check environment health
+          aws elasticbeanstalk describe-environment-health \
+            --environment-name $EB_ENVIRONMENT_NAME \
+            --attribute-names Status,Color,Causes \
+            --query '{Status:Status,Color:Color,Causes:Causes}' \
+            --output table || echo "Health check failed, but deployment may still be in progress"

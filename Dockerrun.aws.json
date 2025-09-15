@@ -1,0 +1,160 @@
+{
+  "AWSEBDockerrunVersion": 3,
+  "containerDefinitions": [
+    {
+      "name": "django",
+      "image": "${ECR_REPOSITORY_URI}:backend",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "hostPort": 8000,
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "DJANGO_SETTINGS_MODULE",
+          "value": "ie_professor_management.settings"
+        },
+        {
+          "name": "DEBUG",
+          "value": "false"
+        },
+        {
+          "name": "DJANGO_ALLOWED_HOSTS",
+          "value": "${DJANGO_ALLOWED_HOSTS}"
+        },
+        {
+          "name": "SECRET_KEY",
+          "value": "${DJANGO_SECRET_KEY}"
+        },
+        {
+          "name": "DB_NAME",
+          "value": "${DB_NAME}"
+        },
+        {
+          "name": "DB_USER",
+          "value": "${DB_USER}"
+        },
+        {
+          "name": "DB_PASSWORD",
+          "value": "${DB_PASSWORD}"
+        },
+        {
+          "name": "DB_HOST",
+          "value": "${DB_HOST}"
+        },
+        {
+          "name": "DB_PORT",
+          "value": "${DB_PORT}"
+        }
+      ],
+      "command": [
+        "gunicorn",
+        "ie_professor_management.wsgi:application",
+        "--bind",
+        "0.0.0.0:8000",
+        "--workers",
+        "3",
+        "--timeout",
+        "120",
+        "--access-logfile",
+        "-",
+        "--error-logfile",
+        "-"
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/aws/elasticbeanstalk/ie-monorepo/django",
+          "awslogs-region": "${AWS_REGION}",
+          "awslogs-stream-prefix": "django"
+        }
+      }
+    },
+    {
+      "name": "next",
+      "image": "${ECR_REPOSITORY_URI}:frontend",
+      "essential": true,
+      "memory": 256,
+      "portMappings": [
+        {
+          "hostPort": 3000,
+          "containerPort": 3000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        },
+        {
+          "name": "NEXT_TELEMETRY_DISABLED",
+          "value": "1"
+        },
+        {
+          "name": "NEXT_PUBLIC_API_URL",
+          "value": "/api"
+        },
+        {
+          "name": "PORT",
+          "value": "3000"
+        }
+      ],
+      "command": [
+        "node",
+        "server.js"
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/aws/elasticbeanstalk/ie-monorepo/next",
+          "awslogs-region": "${AWS_REGION}",
+          "awslogs-stream-prefix": "next"
+        }
+      }
+    },
+    {
+      "name": "nginx",
+      "image": "nginx:alpine",
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "nginx-config",
+          "containerPath": "/etc/nginx/conf.d"
+        }
+      ],
+      "links": [
+        "django",
+        "next"
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/aws/elasticbeanstalk/ie-monorepo/nginx",
+          "awslogs-region": "${AWS_REGION}",
+          "awslogs-stream-prefix": "nginx"
+        }
+      }
+    }
+  ],
+  "volumes": [
+    {
+      "name": "nginx-config",
+      "host": {
+        "sourcePath": "/var/app/current/deploy"
+      }
+    }
+  ]
+}
