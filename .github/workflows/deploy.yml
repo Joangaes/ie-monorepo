@@ -67,6 +67,7 @@ jobs:
           echo "=== Rendered Dockerrun.aws.json ==="
           cat Dockerrun.aws.json
         env:
+          AWS_REGION: ${{ env.AWS_REGION }}
           DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           DB_NAME: ${{ secrets.DB_NAME }}

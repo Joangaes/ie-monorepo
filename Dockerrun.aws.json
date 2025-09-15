@@ -28,7 +28,15 @@
           "--timeout", "120",
           "--access-logfile", "-",
           "--error-logfile", "-"
-        ]
+        ],
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/aws/elasticbeanstalk/ie-university/django",
+            "awslogs-region": "${AWS_REGION}",
+            "awslogs-stream-prefix": "django"
+          }
+        }
       },
       {
         "name": "next",
@@ -44,7 +52,15 @@
           { "name": "NEXT_PUBLIC_API_URL", "value": "/api" },
           { "name": "PORT", "value": "3000" }
         ],
-        "command": ["npm", "start"]
+        "command": ["npm", "start"],
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/aws/elasticbeanstalk/ie-university/next",
+            "awslogs-region": "${AWS_REGION}",
+            "awslogs-stream-prefix": "next"
+          }
+        }
       },
       {
         "name": "nginx",
@@ -57,7 +73,18 @@
         "mountPoints": [
           { "sourceVolume": "nginx-config", "containerPath": "/etc/nginx/conf.d" }
         ],
-        "links": ["django", "next"]
+        "dependsOn": [
+          { "containerName": "django", "condition": "START" },
+          { "containerName": "next", "condition": "START" }
+        ],
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/aws/elasticbeanstalk/ie-university/nginx",
+            "awslogs-region": "${AWS_REGION}",
+            "awslogs-stream-prefix": "nginx"
+          }
+        }
       }
     ],
     "volumes": [
