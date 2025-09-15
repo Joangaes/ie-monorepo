@@ -38,7 +38,7 @@ for var in "${REQUIRED_VARS[@]}"; do
         echo "❌ $var: NOT SET"
     else
         if [[ "$var" == *"PASSWORD"* ]] || [[ "$var" == *"SECRET"* ]]; then
-            echo "✅ $var: ***MASKED*** (${#!var} characters)"
+            echo "✅ $var: ***MASKED***"
         else
             echo "✅ $var: ${!var}"
         fi
@@ -186,4 +186,3 @@ echo ""
 # 2. All output goes to stdout/stderr for both EB logs and CloudWatch
 # 3. Container exits when Gunicorn exits
 exec "$@"
-

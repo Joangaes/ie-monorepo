@@ -35,13 +35,7 @@
         "--error-logfile", "-"
       ],
       "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/aws/elasticbeanstalk/ie-university/django",
-          "awslogs-region": "${AWS_REGION}",
-          "awslogs-stream-prefix": "django",
-          "awslogs-create-group": "true"
-        }
+        "logDriver": "json-file"
       }
     },
     {
@@ -60,13 +54,7 @@
       ],
       "command": ["npm", "start"],
       "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/aws/elasticbeanstalk/ie-university/next",
-          "awslogs-region": "${AWS_REGION}",
-          "awslogs-stream-prefix": "next",
-          "awslogs-create-group": "true"
-        }
+        "logDriver": "json-file"
       }
     },
     {
@@ -85,13 +73,7 @@
         { "containerName": "next", "condition": "START" }
       ],
       "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/aws/elasticbeanstalk/ie-university/nginx",
-          "awslogs-region": "${AWS_REGION}",
-          "awslogs-stream-prefix": "nginx",
-          "awslogs-create-group": "true"
-        }
+        "logDriver": "json-file"
       }
     }
   ],
