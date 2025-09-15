@@ -8,8 +8,8 @@ on:
 
 env:
   AWS_REGION: eu-north-1
-  EB_APPLICATION_NAME: Ieuniversitydocker
-  EB_ENVIRONMENT_NAME: Ieuniversitydocker-env
+  EB_APPLICATION_NAME: IeUniversityECS
+  EB_ENVIRONMENT_NAME: IeUniversityECS-env
   ECR_REPOSITORY: ie-monorepo
 
 jobs:
