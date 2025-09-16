@@ -18,7 +18,14 @@ const nextConfig = {
     }
     return config
   },
-  /* config options here */
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://django:8000/api/:path*',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

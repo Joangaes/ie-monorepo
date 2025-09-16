@@ -1,7 +1,4 @@
 {
-  "_comment": "AWS Elastic Beanstalk Dockerrun v2 - Multi-container Django + Next.js + Nginx setup",
-  "_comment_secrets": "All placeholder values are substituted by GitHub Actions during deployment",
-  "_comment_logging": "All containers use awslogs driver to send logs to CloudWatch AND maintain stdout/stderr for EB logs",
   "AWSEBDockerrunVersion": 2,
   "containerDefinitions": [
     {
@@ -35,23 +32,21 @@
         "--error-logfile", "-"
       ],
       "healthCheck": {
-        "retries": 5,
+        "retries": 3,
         "command": ["CMD-SHELL", "curl -fsS http://localhost:8000/api/healthz/ || exit 1"],
-        "timeout": 5,
-        "interval": 15,
-        "startPeriod": 60
+        "timeout": 4,
+        "interval": 7,
+        "startPeriod": 20
       },
-      "logConfiguration": {
-        "logDriver": "json-file"
-      }
+      "logConfiguration": { "logDriver": "json-file" }
     },
     {
       "name": "next",
       "image": "${ECR_REPOSITORY_URI}:${FRONTEND_IMAGE_TAG}",
-      "essential": false,
+      "essential": true,
       "memory": 256,
       "portMappings": [
-        { "containerPort": 3000, "protocol": "tcp" }
+        { "containerPort": 3000, "hostPort": 80, "protocol": "tcp" }
       ],
       "environment": [
         { "name": "NODE_ENV", "value": "production" },
@@ -59,44 +54,15 @@
         { "name": "NEXT_PUBLIC_API_URL", "value": "/api" },
         { "name": "PORT", "value": "3000" }
       ],
+      "links": ["django"],
       "healthCheck": {
         "retries": 2,
-        "command": [
-          "CMD-SHELL",
-          "node -e \"require('http').get('http://localhost:3000/', r => process.exit(r.statusCode < 400 ? 0 : 1)).on('error', () => process.exit(1))\""
-        ],
-        "timeout": 2,
-        "interval": 5,
-        "startPeriod": 15
+        "command": ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3000', r => process.exit(r.statusCode < 400 ? 0 : 1)).on('error', () => process.exit(1))\""],
+        "timeout": 4,
+        "interval": 6,
+        "startPeriod": 10
       },
-      "logConfiguration": {
-        "logDriver": "json-file"
-      }
-    },
-    {
-      "name": "nginx",
-      "image": "nginx:alpine",
-      "essential": true,
-      "memory": 128,
-      "portMappings": [
-        { "containerPort": 80, "hostPort": 80, "protocol": "tcp" }
-      ],
-      "mountPoints": [
-        { "sourceVolume": "nginx-config", "containerPath": "/etc/nginx/conf.d" }
-      ],
-      "dependsOn": [
-        { "containerName": "django", "condition": "HEALTHY" },
-        { "containerName": "next", "condition": "START" }
-      ],
-      "logConfiguration": {
-        "logDriver": "json-file"
-      }
-    }
-  ],
-  "volumes": [
-    {
-      "name": "nginx-config",
-      "host": { "sourcePath": "/var/app/current/deploy" }
+      "logConfiguration": { "logDriver": "json-file" }
     }
   ]
 }
