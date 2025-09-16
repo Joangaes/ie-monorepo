@@ -1,14 +1,22 @@
 #!/usr/bin/env sh
 set -e
 
-echo "=== ENTRYPOINT: ensuring correct working dir ==="
+echo "=== ENTRYPOINT DEBUG ==="
+echo "CWD: $(pwd)"
+ls -lah
+
+echo "=== Listing /app ==="
+ls -lah /app
+
+echo "=== Listing /app/.next ==="
+ls -lah /app/.next || true
+
+echo "=== Listing /app/.next/static ==="
+ls -lah /app/.next/static || true
+
+echo "=== BUILD_ID ==="
+cat /app/.next/BUILD_ID || echo "No BUILD_ID found"
+
+echo "=== Starting Next.js standalone from /app/server.js ==="
 cd /app
-pwd
-
-# Light debug: confirm presence of server and static
-[ -f server.js ] && echo "server.js OK" || (echo "server.js MISSING" && ls -la)
-[ -d .next/static ] && echo ".next/static OK" || (echo ".next/static MISSING" && ls -la .next || true)
-[ -f .next/BUILD_ID ] && echo "BUILD_ID: $(cat .next/BUILD_ID)" || echo "BUILD_ID missing"
-
-echo "=== Starting Next standalone ==="
 exec node server.js
