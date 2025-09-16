@@ -44,7 +44,7 @@
       "name": "next",
       "image": "${ECR_REPOSITORY_URI}:${FRONTEND_IMAGE_TAG}",
       "essential": true,
-      "memory": 256,
+      "memory": 512,
       "portMappings": [
         { "containerPort": 3000, "protocol": "tcp" }
       ],

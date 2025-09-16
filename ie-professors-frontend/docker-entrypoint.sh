@@ -1,20 +1,14 @@
 #!/usr/bin/env sh
 set -e
 
-echo "=== DEBUG: Environment Variables ==="
-env | sort
-
-echo "=== DEBUG: Ensuring correct working directory ==="
+echo "=== ENTRYPOINT: ensuring correct working dir ==="
 cd /app
 pwd
-ls -la
 
-echo "=== DEBUG: .next layout (expect /app/.next/static to exist) ==="
-ls -la .next || true
-ls -la .next/static || true
-[ -f .next/BUILD_ID ] && echo "BUILD_ID: $(cat .next/BUILD_ID)" || echo "⚠️  BUILD_ID missing"
+# Light debug: confirm presence of server and static
+[ -f server.js ] && echo "server.js OK" || (echo "server.js MISSING" && ls -la)
+[ -d .next/static ] && echo ".next/static OK" || (echo ".next/static MISSING" && ls -la .next || true)
+[ -f .next/BUILD_ID ] && echo "BUILD_ID: $(cat .next/BUILD_ID)" || echo "BUILD_ID missing"
 
-echo "=== Starting Next.js standalone server from project root ==="
-# With output: 'standalone', server.js and the required node_modules are in /app after COPY.
-# Next expects .next/static to be a sibling of the CWD. Do NOT cd into a nested folder.
+echo "=== Starting Next standalone ==="
 exec node server.js
