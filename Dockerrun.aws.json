@@ -46,7 +46,7 @@
       "essential": true,
       "memory": 256,
       "portMappings": [
-        { "containerPort": 3000, "hostPort": 80, "protocol": "tcp" }
+        { "containerPort": 3000, "protocol": "tcp" }
       ],
       "environment": [
         { "name": "NODE_ENV", "value": "production" },
@@ -63,7 +63,31 @@
         "startPeriod": 10
       },
       "logConfiguration": { "logDriver": "json-file" }
+    },
+    {
+      "name": "nginx",
+      "image": "nginx:alpine",
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+        { "containerPort": 80, "hostPort": 80, "protocol": "tcp" }
+      ],
+      "mountPoints": [
+        { "sourceVolume": "nginx-config", "containerPath": "/etc/nginx/conf.d" }
+      ],
+      "dependsOn": [
+        { "containerName": "django", "condition": "HEALTHY" },
+        { "containerName": "next", "condition": "START" }
+      ],
+      "logConfiguration": {
+        "logDriver": "json-file"
+      }
     }
   ],
-  "volumes": []
+  "volumes": [
+    {
+      "name": "nginx-config",
+      "host": { "sourcePath": "/var/app/current/deploy" }
+    }
+  ]
 }
