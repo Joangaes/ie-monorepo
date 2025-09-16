@@ -9,9 +9,9 @@ RUN apk add --no-cache libc6-compat
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Copy package files and install dependencies
+# Copy package files and install all dependencies (including devDependencies for build)
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production
+RUN npm ci
 
 # Copy source code
 COPY . .
@@ -50,9 +50,10 @@ USER nextjs
 
 EXPOSE 3000
 
-# Health check
+# Health check - probe both server and static assets
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ && \
+      find .next/static/chunks -name "webpack-*.js" | head -1 | xargs -I {} wget --no-verbose --tries=1 --spider "http://localhost:3000/_next/static/chunks/$(basename {})" || exit 1
 
 # Start the application
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
