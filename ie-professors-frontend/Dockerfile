@@ -2,6 +2,12 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# --- Environment variables for build ---
+ARG NEXT_PUBLIC_PROFESSORS_API_SERVICE=/api
+ARG PROFESSORS_API_SERVICE=http://django:8000
+ENV NEXT_PUBLIC_PROFESSORS_API_SERVICE=$NEXT_PUBLIC_PROFESSORS_API_SERVICE
+ENV PROFESSORS_API_SERVICE=$PROFESSORS_API_SERVICE
+
 # Install system dependencies
 RUN apk add --no-cache libc6-compat
 
@@ -16,15 +22,18 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-ARG NEXT_PUBLIC_PROFESSORS_API_SERVICE
-ENV NEXT_PUBLIC_PROFESSORS_API_SERVICE=$NEXT_PUBLIC_PROFESSORS_API_SERVICE
-
-# Build the application
-RUN npm run build
+# Build the application - ensure Next sees them during build
+RUN --mount=type=cache,id=npm,target=/root/.npm echo "Building with $NEXT_PUBLIC_PROFESSORS_API_SERVICE $PROFESSORS_API_SERVICE" && npm run build
 
 # Runtime stage
 FROM node:20-alpine AS runner
 WORKDIR /app
+
+# --- Environment variables for runtime ---
+ARG NEXT_PUBLIC_PROFESSORS_API_SERVICE=/api
+ARG PROFESSORS_API_SERVICE=http://django:8000
+ENV NEXT_PUBLIC_PROFESSORS_API_SERVICE=$NEXT_PUBLIC_PROFESSORS_API_SERVICE
+ENV PROFESSORS_API_SERVICE=$PROFESSORS_API_SERVICE
 
 # Minimal runtime deps
 RUN apk add --no-cache curl wget libc6-compat
@@ -50,9 +59,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 # Entry script
 COPY --chown=nextjs:nodejs docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-ENV NEXT_PUBLIC_PROFESSORS_API_SERVICE=/api
-ENV PROFESSORS_API_SERVICE=http://django:8000
 
 USER nextjs
 EXPOSE 3000
