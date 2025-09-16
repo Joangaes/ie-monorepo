@@ -129,7 +129,7 @@ jobs:
             "    sys.exit(1)" \
             "" \
             "containers = data.get('containerDefinitions', [])" \
-            "if len(containers) != 3:" \
+            "if len(containers) != 2:" \
             "    print(f'❌ ERROR: Expected 3 containers, found {len(containers)}')" \
             "    sys.exit(1)" \
             "" \
