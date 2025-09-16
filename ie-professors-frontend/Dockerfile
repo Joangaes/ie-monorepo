@@ -1,18 +1,17 @@
-# Single-stage Next.js build for development and testing
-FROM node:20-alpine
+# Build stage
+FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Install system dependencies
-RUN apk add --no-cache curl wget libc6-compat
+RUN apk add --no-cache libc6-compat
 
 # Set environment variables
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
-ENV PORT=3000
 
-# Copy package files and install all dependencies
+# Copy package files and install dependencies
 COPY package.json package-lock.json* ./
-RUN npm install
+RUN npm ci --only=production
 
 # Copy source code
 COPY . .
@@ -20,14 +19,32 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Copy and set up entrypoint script
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Runtime stage
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+# Install system dependencies for runtime
+RUN apk add --no-cache curl wget libc6-compat
+
+# Set environment variables
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+ENV PORT=3000
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
-RUN chown -R nextjs:nodejs /app
+
+# Copy the standalone output from builder
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+# Copy the static assets from builder
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Copy public folder if it exists
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+# Copy and set up entrypoint script
+COPY --chown=nextjs:nodejs docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 USER nextjs
 
