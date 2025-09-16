@@ -23,13 +23,8 @@
         { "name": "PYTHONDONTWRITEBYTECODE", "value": "1" }
       ],
       "command": [
-        "gunicorn",
-        "ie_professor_management.wsgi:application",
-        "--bind", "0.0.0.0:8000",
-        "--workers", "3",
-        "--timeout", "120",
-        "--access-logfile", "-",
-        "--error-logfile", "-"
+        "sh", "-lc",
+        "python manage.py migrate --noinput && gunicorn ie_professor_management.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120 --access-logfile - --error-logfile -"
       ],
       "healthCheck": {
         "retries": 3,
@@ -52,7 +47,9 @@
         { "name": "NODE_ENV", "value": "production" },
         { "name": "NEXT_TELEMETRY_DISABLED", "value": "1" },
         { "name": "NEXT_PUBLIC_API_URL", "value": "/api" },
-        { "name": "PORT", "value": "3000" }
+        { "name": "PORT", "value": "3000" },
+        { "name": "PROFESSORS_API_SERVICE", "value": "http://django:8000" },
+        { "name": "NEXT_PUBLIC_PROFESSORS_API_SERVICE", "value": "/api" }
       ],
       "links": ["django"],
       "healthCheck": {
