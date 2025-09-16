@@ -75,6 +75,10 @@
       "mountPoints": [
         { "sourceVolume": "nginx-config", "containerPath": "/etc/nginx/conf.d" }
       ],
+      "links": [
+        "django:django",
+        "next:next"
+      ],
       "dependsOn": [
         { "containerName": "django", "condition": "HEALTHY" },
         { "containerName": "next", "condition": "START" }
