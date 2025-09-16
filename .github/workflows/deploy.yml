@@ -73,8 +73,8 @@ jobs:
         run: |
           set -e
           # Build and tag with commit SHA
-          docker build -f docker/next.Dockerfile -t $ECR_REPOSITORY_URI:frontend-${{ github.sha }} .
-          docker build -f docker/next.Dockerfile -t $ECR_REPOSITORY_URI:frontend .
+          docker build -f ie-professors-frontend/Dockerfile -t $ECR_REPOSITORY_URI:frontend-${{ github.sha }} ./ie-professors-frontend
+          docker build -f ie-professors-frontend/Dockerfile -t $ECR_REPOSITORY_URI:frontend ./ie-professors-frontend
           
           # Push both tags
           docker push $ECR_REPOSITORY_URI:frontend-${{ github.sha }}
