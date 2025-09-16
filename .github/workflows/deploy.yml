@@ -130,11 +130,11 @@ jobs:
             "" \
             "containers = data.get('containerDefinitions', [])" \
             "if len(containers) != 2:" \
-            "    print(f'❌ ERROR: Expected 3 containers, found {len(containers)}')" \
+            "    print(f'❌ ERROR: Expected 2 containers, found {len(containers)}')" \
             "    sys.exit(1)" \
             "" \
             "container_names = [c.get('name') for c in containers]" \
-            "expected_names = ['django', 'next', 'nginx']" \
+            "expected_names = ['django', 'next']" \
             "if sorted(container_names) != sorted(expected_names):" \
             "    print(f'❌ ERROR: Expected containers {expected_names}, found {container_names}')" \
             "    sys.exit(1)" \
@@ -168,8 +168,7 @@ jobs:
       - name: Create deployment package (only what EB needs)
         run: |
           set -euo pipefail
-          mkdir -p deploy-package/deploy
-          cp deploy/default.conf deploy-package/deploy/default.conf
+          mkdir -p deploy-package
           cp Dockerrun.aws.json deploy-package/
           cd deploy-package
           zip -r ../deploy.zip .
