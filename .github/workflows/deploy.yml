@@ -7,10 +7,10 @@ on:
     branches: [main]
 
 env:
-  AWS_REGION: eu-north-1
-  EB_APPLICATION_NAME: IeUniversityECS
-  EB_ENVIRONMENT_NAME: IeUniversityECS-env
-  ECR_REPOSITORY: ie-monorepo
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  EB_APPLICATION_NAME: ${{ secrets.EB_APPLICATION_NAME }}
+  EB_ENVIRONMENT_NAME: ${{ secrets.EB_ENVIRONMENT_NAME }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
 
 jobs:
   deploy:
@@ -146,25 +146,13 @@ jobs:
           echo "=== Displaying final Dockerrun.aws.json (with values masked) ==="
           printf '%s\n' \
             "import re" \
-            "import json" \
             "" \
             "with open('Dockerrun.aws.json', 'r') as f:" \
             "    content = f.read()" \
             "" \
-            "# Parse JSON to selectively mask values" \
-            "data = json.loads(content)" \
-            "" \
-            "# Mask sensitive environment variables but keep DB_USER visible" \
-            "for container in data.get('containerDefinitions', []):" \
-            "    for env_var in container.get('environment', []):" \
-            "        var_name = env_var.get('name', '')" \
-            "        if var_name in ['SECRET_KEY', 'DJANGO_SECRET_KEY', 'DB_PASSWORD']:" \
-            "            env_var['value'] = '***MASKED***'" \
-            "        elif var_name in ['DB_HOST', 'DB_NAME', 'DB_PORT', 'DJANGO_ALLOWED_HOSTS']:" \
-            "            env_var['value'] = '***MASKED***'" \
-            "        # DB_USER remains unmasked for debugging" \
-            "" \
-            "print(json.dumps(data, indent=2))" \
+            "# Mask any JSON string value after \"value\": \"...\"" \
+            "masked_content = re.sub(r'(\\\"value\\\":\\s*\\\")[^\\\"]*(\\\")', r'\\1***MASKED***\\2', content)" \
+            "print(masked_content)" \
           > mask_secrets.py
           python3 mask_secrets.py
         env:
