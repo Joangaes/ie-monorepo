@@ -64,5 +64,6 @@
       },
       "logConfiguration": { "logDriver": "json-file" }
     }
-  ]
+  ],
+  "volumes": []
 }
