@@ -60,14 +60,14 @@
         { "name": "PORT", "value": "3000" }
       ],
       "healthCheck": {
-        "retries": 3,
+        "retries": 2,
         "command": [
           "CMD-SHELL",
-          "node -e \"require('http').get('http://localhost:3000', r => process.exit(r.statusCode < 400 ? 0 : 1)).on('error', () => process.exit(1))\""
+          "node -e \"require('http').get('http://localhost:3000/', r => process.exit(r.statusCode < 400 ? 0 : 1)).on('error', () => process.exit(1))\""
         ],
-        "timeout": 5,
-        "interval": 10,
-        "startPeriod": 10
+        "timeout": 2,
+        "interval": 5,
+        "startPeriod": 15
       },
       "logConfiguration": {
         "logDriver": "json-file"
@@ -86,7 +86,7 @@
       ],
       "dependsOn": [
         { "containerName": "django", "condition": "HEALTHY" },
-        { "containerName": "next", "condition": "HEALTHY" }
+        { "containerName": "next", "condition": "START" }
       ],
       "logConfiguration": {
         "logDriver": "json-file"
