@@ -86,7 +86,7 @@
       ],
       "dependsOn": [
         { "containerName": "django", "condition": "HEALTHY" },
-        { "containerName": "next", "condition": "START" }
+        { "containerName": "next", "condition": "HEALTHY" }
       ],
       "logConfiguration": {
         "logDriver": "json-file"
