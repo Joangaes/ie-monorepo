@@ -51,6 +51,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --chown=nextjs:nodejs docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
+ENV NEXT_PUBLIC_PROFESSORS_API_SERVICE=/api
+ENV PROFESSORS_API_SERVICE=http://django:8000
+
 USER nextjs
 EXPOSE 3000
 
