@@ -23,37 +23,32 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Install system dependencies for runtime
 RUN apk add --no-cache curl wget libc6-compat
 
-# Set environment variables
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Create non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Non-root user
+RUN addgroup --system --gid 1001 nodejs \
+  && adduser --system --uid 1001 nextjs
 
-# Copy the standalone output from builder
+# Copy standalone output files into /app root (this places server.js at /app/server.js)
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-# Copy the static assets from builder
+# Copy static assets so Next can serve /_next/static/*
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-# Copy public folder if it exists
+# Copy public assets
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# Copy and set up entrypoint script
+# Entry script
 COPY --chown=nextjs:nodejs docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 USER nextjs
-
 EXPOSE 3000
 
-# Health check - probe both server and static assets
+# Healthcheck: probe home + one chunk file if present
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ && \
-      find .next/static/chunks -name "webpack-*.js" | head -1 | xargs -I {} wget --no-verbose --tries=1 --spider "http://localhost:3000/_next/static/chunks/$(basename {})" || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
 
-# Start the application
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

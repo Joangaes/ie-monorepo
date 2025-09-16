@@ -1,3 +1,6 @@
+// NOTE: Only this JS config is used in production. Avoid also having next.config.ts.
+// output: 'standalone' expects the server to start from project root (node server.js)
+// and .next/static present at /app/.next/static in the container.
 const path = require('path')
 
 /** @type {import('next').NextConfig} */
