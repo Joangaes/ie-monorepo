@@ -31,8 +31,13 @@ export function LoginForm({
 
     try {
       const apiBase = process.env.NEXT_PUBLIC_PROFESSORS_API_SERVICE || ''
+      const loginUrl = `${apiBase}/api/token/`
+      
+      // Debug log for URL construction to catch double-prefix issues
+      console.log(`[login] POST ${loginUrl}`)
+      
       const res = await fetch(
-        `${apiBase}/api/token/`,
+        loginUrl,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -40,18 +45,57 @@ export function LoginForm({
         }
       )
 
+      // Debug log for response details
+      console.log(`[login] status ${res.status}, content-type: ${res.headers.get('content-type')}`)
+      
+      // Check for redirect responses
+      if (res.status >= 300 && res.status < 400) {
+        const location = res.headers.get('location')
+        console.log(`[login] status ${res.status} ... ct= ${res.headers.get('content-type')} ... location= ${location}`)
+      }
+
       if (!res.ok) {
-        const data = await res.json()
+        // Check if response is HTML instead of JSON
+        const contentType = res.headers.get('content-type') || ''
+        if (contentType.includes('text/html')) {
+          const htmlText = await res.text()
+          const snippet = htmlText.substring(0, 100) + (htmlText.length > 100 ? '...' : '')
+          console.log(`[login] NON-JSON RESPONSE { snippet: "${snippet}" }`)
+          throw new Error(`Server returned HTML instead of JSON (status ${res.status})`)
+        }
+        
+        let data
+        try {
+          data = await res.json()
+        } catch (jsonError) {
+          const responseText = await res.text()
+          const snippet = responseText.substring(0, 100) + (responseText.length > 100 ? '...' : '')
+          console.log(`[login] JSON PARSE ERROR - Response: { snippet: "${snippet}" }`)
+          throw new Error(`Failed to parse error response as JSON (status ${res.status})`)
+        }
+        
         throw new Error(data.detail || "Login failed")
       }
 
-      const { access, refresh } = await res.json()
+      let tokenData
+      try {
+        tokenData = await res.json()
+      } catch (jsonError) {
+        const responseText = await res.text()
+        const snippet = responseText.substring(0, 100) + (responseText.length > 100 ? '...' : '')
+        console.log(`[login] SUCCESS JSON PARSE ERROR - Response: { snippet: "${snippet}" }`)
+        throw new Error("Failed to parse successful login response as JSON")
+      }
+
+      const { access, refresh } = tokenData
 
       localStorage.setItem("access_token", access)
       localStorage.setItem("refresh_token", refresh)
 
+      console.log(`[login] SUCCESS - tokens stored`)
       router.push("/dashboard")
     } catch (err: any) {
+      console.log(`[login] ERROR: ${err.message}`)
       setError(err.message)
     } finally {
       setLoading(false)
