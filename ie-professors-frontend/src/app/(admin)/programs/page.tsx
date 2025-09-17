@@ -143,19 +143,11 @@ export default function Programs() {
 
   // Fetch data when search or filters change
   useEffect(() => {
-    if (!base_url) {
-      setError("Missing PROFESSORS_API_SERVICE environment variable")
-      return
-    }
     fetchData()
   }, [searchQuery, filterValues])
 
   // Initial load
   useEffect(() => {
-    if (!base_url) {
-      setError("Missing PROFESSORS_API_SERVICE environment variable")
-      return
-    }
     fetchData()
   }, [])
 

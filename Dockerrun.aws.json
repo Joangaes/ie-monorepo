@@ -49,7 +49,7 @@
         { "name": "NEXT_PUBLIC_API_URL", "value": "/api" },
         { "name": "PORT", "value": "3000" },
         { "name": "PROFESSORS_API_SERVICE", "value": "http://django:8000" },
-        { "name": "NEXT_PUBLIC_PROFESSORS_API_SERVICE", "value": "/api" }
+        { "name": "NEXT_PUBLIC_PROFESSORS_API_SERVICE", "value": "" }
       ],
       "links": ["django"],
       "healthCheck": {
