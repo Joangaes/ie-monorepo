@@ -74,10 +74,10 @@ jobs:
           set -e
           # Build and tag with commit SHA
           docker build -f ie-professors-frontend/Dockerfile -t $ECR_REPOSITORY_URI:frontend-${{ github.sha }} ./ie-professors-frontend \
-            --build-arg NEXT_PUBLIC_PROFESSORS_API_SERVICE=/api \
+            --build-arg NEXT_PUBLIC_PROFESSORS_API_SERVICE="" \
             --build-arg PROFESSORS_API_SERVICE=http://django:8000
           docker build -f ie-professors-frontend/Dockerfile -t $ECR_REPOSITORY_URI:frontend ./ie-professors-frontend \
-            --build-arg NEXT_PUBLIC_PROFESSORS_API_SERVICE=/api \
+            --build-arg NEXT_PUBLIC_PROFESSORS_API_SERVICE="" \
             --build-arg PROFESSORS_API_SERVICE=http://django:8000
           
           # Push both tags
