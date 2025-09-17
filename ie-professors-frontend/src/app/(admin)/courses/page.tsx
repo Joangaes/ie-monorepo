@@ -137,19 +137,11 @@ export default function Courses() {
 
   // Fetch data when search or filters change
   useEffect(() => {
-    if (!base_url) {
-      setError("Missing API base URL")
-      return
-    }
     fetchData()
   }, [searchQuery, filterValues])
 
   // Initial load
   useEffect(() => {
-    if (!base_url) {
-      setError("Missing API base URL")
-      return
-    }
     fetchData()
   }, [])
 
