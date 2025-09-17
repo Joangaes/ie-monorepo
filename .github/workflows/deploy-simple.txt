@@ -1,5 +1,5 @@
 # ECR-based CI/CD Pipeline for IE Monorepo
-# Builds Docker image and pushes to ECR, then deploys via Dockerrun.aws.json  
+# Builds Docker image and pushes to ECR, then deploys via Dockerrun.aws.json   
 
 name: ECR Deploy to AWS EB       
 
