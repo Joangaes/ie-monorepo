@@ -12,6 +12,7 @@ import { useTranslations } from "@/hooks/use-translations"
 const base_url = process.env.NEXT_PUBLIC_PROFESSORS_API_SERVICE
 
 export default function Professors() {
+  console.log("NEXT_PUBLIC_API_URL", process.env.NEXT_PUBLIC_API_URL);
   const { t } = useTranslations()
   const [data, setData] = useState<Professor[]>([])
   const [nextUrl, setNextUrl] = useState<string | null>(null)
