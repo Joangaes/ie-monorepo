@@ -62,6 +62,8 @@ class IntakeAdmin(SimpleHistoryAdmin,ModelAdmin,ImportExportModelAdmin):
     list_display = ("name", "start_time", "end_time", "semester","active")
     search_fields = ("name",)
     actions_row = ["view_sections_action"]
+    list_per_page = 50
+    show_full_result_count = False
     
     fieldsets = (
         (None, {
@@ -127,6 +129,8 @@ class CourseAdmin(ModelAdmin,TabbedTranslationAdmin,ImportExportModelAdmin,Simpl
         "course_type",
     ]
     list_filter_submit = True
+    list_per_page = 25  # Reduce for better performance with many-to-many relationships
+    show_full_result_count = False
     
     fieldsets = (
         (None, {
@@ -139,9 +143,12 @@ class CourseAdmin(ModelAdmin,TabbedTranslationAdmin,ImportExportModelAdmin,Simpl
     )
 
     def get_queryset(self, request):
-        queryset= super().get_queryset(request)
-        queryset = queryset.prefetch_related("programs")
-        return queryset
+        return super().get_queryset(request).select_related('area').prefetch_related(
+            'programs',
+            'coursedelivery_set__professor',
+            'coursedelivery_set__sections__program',
+            'coursedelivery_set__sections__intake'
+        )
     
 
 @admin.register(University)
@@ -207,6 +214,17 @@ class ProfessorAdmin(ModelAdmin,ImportExportModelAdmin,SimpleHistoryAdmin):
         MissingCorporateEmailFilter,
     ]
     list_filter_submit = True
+    list_per_page = 50  # Reduce pagination load
+    show_full_result_count = False  # Avoid expensive COUNT(*) queries
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related(
+            'degrees__degree__university',
+            'courses__area',
+            'coursedelivery_set__course',
+            'coursedelivery_set__sections__program',
+            'coursedelivery_set__sections__intake'
+        )
 
     def get_campuses(self, obj:Professor):
         if not obj.campuses:
@@ -265,7 +283,7 @@ class CourseDeliveryAdmin(ModelAdmin,SimpleHistoryAdmin,ImportExportModelAdmin):
     list_display = ("course","get_programs", "professor")
     search_fields = ("course__name", "professor__name",)
     autocomplete_fields = ("course", "professor", "sections")
-    list_select_related = ["course","professor"]
+    # Remove list_select_related since we're handling it in get_queryset
     list_filter = [
         WorkingActiveFilter,
         ("sections__intake__semester"),
@@ -274,9 +292,11 @@ class CourseDeliveryAdmin(ModelAdmin,SimpleHistoryAdmin,ImportExportModelAdmin):
         ("sections__program",AutocompleteSelectMultipleFilter),
         ("professor",AutocompleteSelectMultipleFilter),
     ]
-    list_editable = ["professor"]
+    # Disable list_editable completely to eliminate N+1 queries
+    # list_editable = ["professor"]
     list_filter_submit = True
-    list_per_page = 20
+    list_per_page = 25  # Reduce page size for better performance
+    show_full_result_count = False
 
     fieldsets = (
         (None, {
@@ -285,23 +305,39 @@ class CourseDeliveryAdmin(ModelAdmin,SimpleHistoryAdmin,ImportExportModelAdmin):
     )
 
     def get_queryset(self, request):
-        queryset = super().get_queryset(request).prefetch_related("sections")
-        
-        # If no active_status filter is applied, default to active only
-        if 'active_status' not in request.GET or request.GET.get('active_status') == '':
-            queryset = queryset.filter(sections__intake__active=True).distinct()
-            
-        return queryset
+        # Completely remove the active filtering that causes complex JOINs
+        # Users can filter manually if needed
+        return CourseDelivery.objects.select_related(
+            'course', 
+            'course__area', 
+            'professor'
+        ).prefetch_related(
+            'sections',
+            'sections__intake',
+            'sections__program',
+            'sections__joined_academic_year'
+        ).all()
     
     @admin.display(description="Programs")
     def get_programs(self, obj: CourseDelivery):
+        # Use prefetched data to avoid N+1 queries
+        if hasattr(obj, '_prefetched_objects_cache') and 'sections' in obj._prefetched_objects_cache:
+            sections = obj._prefetched_objects_cache['sections']
+        else:
+            sections = obj.sections.all()
+            
         programs = {
             f"{section.program.name} – Year {section.course_year} - {section.get_campus_display()}"
-            for section in obj.sections.all()
+            for section in sections
             if section.program
         }
         return format_html("<br>".join(sorted(programs)))
     
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "professor":
+            # Use optimized queryset for professor field to avoid N+1 queries
+            kwargs["queryset"] = Professor.objects.select_related().all()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(Program)
@@ -312,6 +348,11 @@ class ProgramAdmin(ModelAdmin,SimpleHistoryAdmin,ImportExportModelAdmin):
     search_fields = ("name","code")
     list_filter = ("school",)
     autocomplete_fields = ["academic_director"]
+    list_per_page = 50
+    show_full_result_count = False
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('academic_director')
 
 @admin.register(Section)
 class SectionAdmin(ModelAdmin,SimpleHistoryAdmin,ImportExportModelAdmin):
@@ -320,6 +361,16 @@ class SectionAdmin(ModelAdmin,SimpleHistoryAdmin,ImportExportModelAdmin):
     list_display = ("course_year","name", "intake", "campus", "program")
     search_fields = ("name","campus")
     list_filter = ("campus", "intake")
+    list_per_page = 50
+    show_full_result_count = False
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            'intake', 'program', 'joined_academic_year'
+        ).prefetch_related(
+            'coursedelivery_set__course',
+            'coursedelivery_set__professor'
+        )
     autocomplete_fields = ["intake",'program',"joined_academic_year"]
     inlines = [CourseDeliveryInline]
     list_select_related = ["intake", "program"]
@@ -362,3 +413,5 @@ class JoinedAcademicYearAdmin(ModelAdmin,SimpleHistoryAdmin,ImportExportModelAdm
     export_form_class = ExportForm
     list_display = ["name","start_date"]
     search_fields = ["name","start_date"]
+    list_per_page = 50
+    show_full_result_count = False

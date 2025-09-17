@@ -270,6 +270,9 @@ export default function ProgramDetail() {
                           </CardHeader>
                           <CardContent>
                             <div className="space-y-3">
+                              {section.course_deliveries.length === 0 && (
+                                <div className="text-muted-foreground text-sm">No course deliveries found for this section</div>
+                              )}
                               {section.course_deliveries.map((delivery) => (
                                 <div 
                                   key={delivery.id} 

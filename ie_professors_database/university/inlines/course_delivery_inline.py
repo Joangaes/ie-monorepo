@@ -11,7 +11,9 @@ class CourseDeliveryInline(NonrelatedTabularInline):
     exclude = ['sections'] 
 
     def get_form_queryset(self, obj):
-        return self.model.objects.filter(sections=obj)
+        return self.model.objects.filter(sections=obj).select_related(
+            'course', 'course__area', 'professor'
+        ).prefetch_related('sections__intake', 'sections__program')
 
     def save_new_instance(self, parent, instance):
         instance.save()
@@ -73,7 +75,11 @@ class CourseDeliveryForCourseInline(TabularInline):
     def get_semester_info(self, obj):
         if not obj.pk:
             return "-"
-        sections = obj.sections.all()
+        # Use prefetched data if available
+        if hasattr(obj, '_prefetched_objects_cache') and 'sections' in obj._prefetched_objects_cache:
+            sections = obj._prefetched_objects_cache['sections']
+        else:
+            sections = obj.sections.all()
         semesters = {section.intake.get_semester_display() for section in sections if section.intake}
         return ", ".join(sorted(semesters))
     get_semester_info.short_description = _("Semester")
@@ -81,7 +87,11 @@ class CourseDeliveryForCourseInline(TabularInline):
     def get_year_info(self, obj):
         if not obj.pk:
             return "-"
-        sections = obj.sections.all()
+        # Use prefetched data if available
+        if hasattr(obj, '_prefetched_objects_cache') and 'sections' in obj._prefetched_objects_cache:
+            sections = obj._prefetched_objects_cache['sections']
+        else:
+            sections = obj.sections.all()
         years = {str(section.course_year) for section in sections}
         return ", ".join(sorted(years))
     get_year_info.short_description = _("Year")
@@ -89,7 +99,11 @@ class CourseDeliveryForCourseInline(TabularInline):
     def get_campus_info(self, obj):
         if not obj.pk:
             return "-"
-        sections = obj.sections.all()
+        # Use prefetched data if available
+        if hasattr(obj, '_prefetched_objects_cache') and 'sections' in obj._prefetched_objects_cache:
+            sections = obj._prefetched_objects_cache['sections']
+        else:
+            sections = obj.sections.all()
         campuses = {section.get_campus_display() for section in sections}
         return ", ".join(sorted(campuses))
     get_campus_info.short_description = _("Campus")

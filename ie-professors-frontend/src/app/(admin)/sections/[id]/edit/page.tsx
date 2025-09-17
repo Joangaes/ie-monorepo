@@ -1,5 +1,6 @@
 "use client"
 
+import { use } from "react"
 import { AdminTabbedForm, FieldConfig, TabConfig, InlineConfig } from "@/components/admin/admin-tabbed-form"
 
 const base_url = process.env.NEXT_PUBLIC_PROFESSORS_API_SERVICE
@@ -70,13 +71,14 @@ const sectionInlines: InlineConfig[] = [
     key: 'course_deliveries',
     label: 'Course Deliveries',
     endpoint: `${base_url}/api/course-deliveries`,
-    foreignKeyField: 'sections',
+    foreignKeyField: 'sections__in',
     tab: 'basic',
     fields: [
       { 
         key: 'course', 
         label: 'Course', 
         type: 'foreign-key',
+        required: true,
         foreignKeyConfig: {
           endpoint: `${base_url}/api/courses`,
           displayField: 'name',
@@ -98,12 +100,14 @@ const sectionInlines: InlineConfig[] = [
 ]
 
 interface EditSectionProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default function EditSection({ params }: EditSectionProps) {
+  const { id } = use(params)
+  
   return (
     <AdminTabbedForm
       title="Edit Section"
@@ -111,7 +115,7 @@ export default function EditSection({ params }: EditSectionProps) {
       fields={sectionFields}
       tabs={sectionTabs}
       inlines={sectionInlines}
-      recordId={params.id}
+      recordId={id}
       backPath="/sections"
       entityName="Section"
     />

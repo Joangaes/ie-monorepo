@@ -3,6 +3,7 @@ from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import FilterSet, CharFilter
 from django.utils import timezone
 from django.db.models import Count, Q
 from collections import defaultdict
@@ -20,6 +21,19 @@ from .serializers import (
     JoinedAcademicYearSerializer, ProfessorSimpleSerializer, CourseSimpleSerializer,
     CourseDeliverySectionSerializer
 )
+
+class CourseDeliveryFilter(FilterSet):
+    sections__in = CharFilter(method='filter_sections_in')
+    
+    def filter_sections_in(self, queryset, name, value):
+        if value:
+            section_ids = [int(id.strip()) for id in value.split(',') if id.strip().isdigit()]
+            return queryset.filter(sections__in=section_ids).distinct()
+        return queryset
+    
+    class Meta:
+        model = CourseDelivery
+        fields = ['course', 'professor']
 
 class UniversityViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -80,7 +94,15 @@ class JoinedAcademicYearViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 class SectionViewSet(viewsets.ModelViewSet):
-    queryset = Section.objects.select_related('intake', 'program', 'joined_academic_year').all()
+    queryset = Section.objects.select_related(
+        'intake', 
+        'program', 
+        'joined_academic_year'
+    ).prefetch_related(
+        'coursedelivery_set__course',
+        'coursedelivery_set__course__area',
+        'coursedelivery_set__professor'
+    ).all()
     serializer_class = SectionSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'program__name', 'program__code']
@@ -101,7 +123,12 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 class ProfessorViewSet(viewsets.ModelViewSet):
-    queryset = Professor.objects.prefetch_related('degrees', 'courses').all()
+    queryset = Professor.objects.prefetch_related(
+        'degrees__degree__university', 
+        'courses__area',
+        'coursedelivery_set__course',
+        'coursedelivery_set__sections'
+    ).all()
     serializer_class = ProfessorSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'last_name', 'email', 'corporate_email']
@@ -129,11 +156,11 @@ class ProfessorCoursePossibilityViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 class CourseDeliveryViewSet(viewsets.ModelViewSet):
-    queryset = CourseDelivery.objects.select_related('course', 'professor').prefetch_related('sections').all()
+    queryset = CourseDelivery.objects.with_full_relations().all()
     serializer_class = CourseDeliverySerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_class = CourseDeliveryFilter
     search_fields = ['course__name', 'course__code', 'professor__name', 'professor__last_name']
-    filterset_fields = ['course', 'professor']
     ordering_fields = ['created_at']
     ordering = ['-created_at']
     permission_classes = [IsAuthenticated]
@@ -164,8 +191,14 @@ class CurrentIntakeAPIView(APIView):
         else:
             selected_date = timezone.now().date()
 
+        # Optimize: Get active intakes with proper prefetching
         intakes = (
             Intake.get_active_at(selected_date)
+            .prefetch_related(
+                'section_set__coursedelivery_set__professor',
+                'section_set__coursedelivery_set__course__programs',
+                'section_set__program'
+            )
             .annotate(
                 missing_professors=Count(
                     "section__coursedelivery",
@@ -175,12 +208,15 @@ class CurrentIntakeAPIView(APIView):
             )
         )
 
+        # Optimize: Get missing deliveries with single query
         missing_by_program = (
             CourseDelivery.objects
             .filter(
                 professor__isnull=True,
                 sections__intake__in=intakes
             )
+            .select_related('course')
+            .prefetch_related('course__programs', 'sections__intake')
             .values("sections__intake__id", "course__programs__name")
             .annotate(missing_count=Count("id"))
             .order_by("sections__intake__id", "course__programs__name")
@@ -190,7 +226,7 @@ class CurrentIntakeAPIView(APIView):
         for entry in missing_by_program:
             grouped_by_intake[entry["sections__intake__id"]].append(entry)
 
-        # Serialize the data
+        # Serialize the data efficiently
         intake_data = []
         for intake in intakes:
             intake_info = {
@@ -231,10 +267,10 @@ class ProgramDeliveryOverviewAPIView(APIView):
         ).order_by('course_year', 'name')
 
         # Get all course deliveries that are assigned to any of these sections
-        course_deliveries = CourseDelivery.objects.filter(
+        course_deliveries = CourseDelivery.objects.with_full_relations().filter(
             sections__program=program,
             sections__intake=intake
-        ).select_related('course', 'professor').prefetch_related('sections').distinct()
+        ).distinct()
 
         # Create a mapping of section -> course deliveries
         section_deliveries_map = {}

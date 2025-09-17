@@ -168,7 +168,19 @@ export function AdminTabbedForm({
   const loadForeignKeyData = async () => {
     const foreignKeyFields = fields.filter(f => f.type === 'foreign-key' && f.foreignKeyConfig)
     
-    for (const field of foreignKeyFields) {
+    // Also include foreign key fields from inlines
+    const inlineForeignKeyFields: FieldConfig[] = []
+    inlines.forEach(inline => {
+      inline.fields.forEach(field => {
+        if (field.type === 'foreign-key' && field.foreignKeyConfig) {
+          inlineForeignKeyFields.push(field)
+        }
+      })
+    })
+    
+    const allForeignKeyFields = [...foreignKeyFields, ...inlineForeignKeyFields]
+    
+    for (const field of allForeignKeyFields) {
       if (!field.foreignKeyConfig) continue
       
       try {
@@ -186,7 +198,14 @@ export function AdminTabbedForm({
   const loadInlineData = async () => {
     for (const inline of inlines) {
       try {
-        const data = await apiGet(`${inline.endpoint}/?${inline.foreignKeyField}=${recordId}`)
+        let queryParam = `${inline.foreignKeyField}=${recordId}`
+        
+        // Special handling for course deliveries with sections
+        if (inline.endpoint.includes('course-deliveries') && inline.foreignKeyField === 'sections__in') {
+          queryParam = `sections__in=${recordId}`
+        }
+        
+        const data = await apiGet(`${inline.endpoint}/?${queryParam}`)
         setInlineData(prev => ({
           ...prev,
           [inline.key]: data.results || data
@@ -457,17 +476,17 @@ export function AdminTabbedForm({
           }
         } else if (inline.endpoint.includes('course-deliveries')) {
           if (payload.professor) {
-            payload.professor_id = payload.professor
-            delete payload.professor
+            payload.professor = payload.professor
           }
           if (payload.course) {
-            payload.course_id = payload.course
-            delete payload.course
+            payload.course = payload.course
           }
-          if (inline.foreignKeyField === 'professor') {
-            payload.professor_id = recordId
+          if (inline.foreignKeyField === 'sections__in') {
+            payload.sections = [recordId]
+          } else if (inline.foreignKeyField === 'professor') {
+            payload.professor = recordId
           } else if (inline.foreignKeyField === 'course') {
-            payload.course_id = recordId
+            payload.course = recordId
           }
         } else {
           // Default behavior for other inlines
@@ -499,14 +518,8 @@ export function AdminTabbedForm({
             delete payload.course
           }
         } else if (inline.endpoint.includes('course-deliveries')) {
-          if (payload.professor) {
-            payload.professor_id = payload.professor
-            delete payload.professor
-          }
-          if (payload.course) {
-            payload.course_id = payload.course
-            delete payload.course
-          }
+          // For course deliveries, keep the foreign keys as they are
+          // The API expects 'course' and 'professor', not 'course_id' and 'professor_id'
         }
         
         await apiPatch(`${inline.endpoint}/${item.id}/`, payload)

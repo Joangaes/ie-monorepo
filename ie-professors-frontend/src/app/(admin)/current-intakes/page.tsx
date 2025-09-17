@@ -117,9 +117,8 @@ export default function CurrentIntakes() {
 
   const handleProgramClick = async (programName: string, intakeId: string) => {
     try {
-      // Since the backend API has a bug, let's try a different approach
-      // We'll use the sections API to get the data we need
-      router.push(`/current-intakes/sections/${intakeId}?program=${encodeURIComponent(programName)}`)
+      // Navigate to the program detail page which has the fixed API implementation
+      router.push(`/current-intakes/program/${encodeURIComponent(programName)}/${intakeId}`)
     } catch (error) {
       console.error("Navigation error:", error)
     }

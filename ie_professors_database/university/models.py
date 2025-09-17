@@ -135,6 +135,9 @@ class Section(BaseModel):
         verbose_name_plural = _("Sections")
         indexes = [
             models.Index(fields=["-created_at"]),
+            models.Index(fields=["intake", "program"]),
+            models.Index(fields=["program", "course_year"]),
+            models.Index(fields=["campus", "course_year"]),
         ]
 
 class University(BaseModel):
@@ -231,10 +234,26 @@ class ProfessorCoursePossibility(BaseModel):
         return f"{self.professor} - {self.course}"
 
 
+class CourseDeliveryManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().select_related('course', 'professor').prefetch_related('sections')
+    
+    def with_full_relations(self):
+        return self.get_queryset().select_related(
+            'course__area',
+            'professor'
+        ).prefetch_related(
+            'sections__intake',
+            'sections__program',
+            'sections__joined_academic_year'
+        )
+
 class CourseDelivery(BaseModel):
     course = models.ForeignKey(Course, verbose_name=_("Course"), on_delete=models.CASCADE,null=True)
     professor = models.ForeignKey(Professor, verbose_name=_("Professor"), on_delete=models.CASCADE,null=True,blank=True)
     sections = models.ManyToManyField(Section, verbose_name=_("Section"))
+    
+    objects = CourseDeliveryManager()
 
     def __str__(self):
         return ""
@@ -242,6 +261,12 @@ class CourseDelivery(BaseModel):
     class Meta:
         verbose_name = _("Course Delivery")
         verbose_name_plural = _("Course Deliveries")
+        indexes = [
+            models.Index(fields=["course", "professor"]),
+            models.Index(fields=["professor"]),
+            models.Index(fields=["course"]),
+            models.Index(fields=["-created_at"]),
+        ]
 
 class CourseDeliverySection(models.Model):
     course_delivery = models.ForeignKey(CourseDelivery, on_delete=models.CASCADE)

@@ -166,6 +166,7 @@ if DB_HOST and DB_HOST.strip() and DB_NAME and DB_USER and DB_PASSWORD:
                     'connect_timeout': 10,
                     'sslmode': 'prefer',  # AWS RDS supports SSL
                 },
+                'CONN_MAX_AGE': 300,  # Connection pooling - keep connections for 5 minutes
             }
         }
         
@@ -526,4 +527,18 @@ UNFOLD = {
         },
     ],
 }
+}
+
+# Debug Toolbar disabled - performance optimization complete
+
+# Caching Configuration for better performance
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': 300,  # 5 minutes
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000,
+        }
+    }
 }

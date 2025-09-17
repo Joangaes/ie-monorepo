@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 from unfold.views import UnfoldModelAdminViewMixin
-from university.models import Intake,CourseDelivery
+from university.models import Intake, CourseDelivery, Section
 from django.utils import timezone
 from django.db.models import Count, Q
 from collections import defaultdict
@@ -37,11 +37,10 @@ class CurrentIntakeLandingView(UnfoldModelAdminViewMixin, TemplateView):
             )
         )
 
+        # Optimize: Use optimized manager and better prefetching
         course_deliveries = (
-            CourseDelivery.objects
+            CourseDelivery.objects.with_full_relations()
             .filter(professor__isnull=True, sections__intake__in=intakes)
-            .select_related("course")
-            .prefetch_related("sections__intake", "sections__program")
             .distinct()
         )
 
@@ -57,10 +56,16 @@ class CurrentIntakeLandingView(UnfoldModelAdminViewMixin, TemplateView):
             })
         }))
 
+        # Use prefetched data to avoid N+1 queries
         for cd in course_deliveries:
-            for section in cd.sections.all():
+            # Use prefetched sections data
+            sections = cd.sections.all() if hasattr(cd, '_prefetched_objects_cache') else cd.sections.all()
+            for section in sections:
                 intake = section.intake
                 program = section.program
+                if not program:  # Skip sections without programs
+                    continue
+                    
                 program_data = grouped_by_intake[intake.id][program.id]
                 program_data["program"] = program
                 program_data["total_missing"] += 1
@@ -73,11 +78,26 @@ class CurrentIntakeLandingView(UnfoldModelAdminViewMixin, TemplateView):
                 })
                 program_data["sections"][section_key]["missing_count"] += 1
 
+        # Optimize: Prefetch all sections for all intakes in single query
+        all_sections_by_intake = {}
+        all_sections = (
+            Section.objects
+            .filter(intake__in=intakes)
+            .select_related('program', 'intake')
+            .prefetch_related('program')
+        )
+        for section in all_sections:
+            if section.intake.id not in all_sections_by_intake:
+                all_sections_by_intake[section.intake.id] = []
+            all_sections_by_intake[section.intake.id].append(section)
+
         for intake in intakes:
             missing_programs = []
             complete_programs = []
 
-            all_programs = set(s.program for s in intake.section_set.all())
+            # Use prefetched sections data
+            intake_sections = all_sections_by_intake.get(intake.id, [])
+            all_programs = set(s.program for s in intake_sections if s.program)
 
             missing_program_dict = grouped_by_intake.get(intake.id, {})
 
