@@ -6,7 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, AlertTriangle, User, MapPin, Calendar, BookOpen } from "lucide-react"
-import { apiGet } from "@/lib/api"
+import { apiGet, apiPatch } from "@/lib/api"
+import { ProfessorAssignmentModal } from "@/components/professor-assignment-modal"
+import { toast } from "react-hot-toast"
 
 const base_url = process.env.NEXT_PUBLIC_PROFESSORS_API_SERVICE
 
@@ -62,6 +64,11 @@ export default function ProgramDetail() {
   const [data, setData] = useState<ProgramDeliveryData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [assignmentModal, setAssignmentModal] = useState<{
+    isOpen: boolean
+    courseDelivery: CourseDelivery | null
+    sectionInfo: { name: string; campus: string } | null
+  }>({ isOpen: false, courseDelivery: null, sectionInfo: null })
 
   const programName = decodeURIComponent(params.programName as string)
   const intakeId = params.intakeId as string
@@ -122,6 +129,45 @@ export default function ProgramDetail() {
     return sections.reduce((count, section) => {
       return count + section.course_deliveries.filter(cd => !cd.professor).length
     }, 0)
+  }
+
+  const handleAssignProfessor = (courseDelivery: CourseDelivery, sectionInfo: { name: string; campus: string }) => {
+    setAssignmentModal({ 
+      isOpen: true, 
+      courseDelivery, 
+      sectionInfo 
+    })
+  }
+
+  const handleCloseAssignmentModal = () => {
+    setAssignmentModal({ isOpen: false, courseDelivery: null, sectionInfo: null })
+  }
+
+  const handleAssignmentSave = async (professorData: any) => {
+    if (!assignmentModal.courseDelivery || !professorData.professor) {
+      toast.error("Missing assignment data")
+      return
+    }
+
+    try {
+      const professor = professorData.professor
+      const courseDelivery = assignmentModal.courseDelivery
+      
+      await apiPatch(`${base_url}/api/course-deliveries/${courseDelivery.id}/`, {
+        professor: professor.id
+      })
+      
+      toast.success(`Successfully assigned ${professor.name} ${professor.last_name}`)
+      
+      // Refresh data to show the updated assignment
+      await fetchData()
+      
+    } catch (error: any) {
+      console.error('Error assigning professor:', error)
+      toast.error(`Failed to assign professor: ${error.message}`)
+    }
+    
+    handleCloseAssignmentModal()
   }
 
   if (loading) return <div className="container mx-auto py-10">Loading...</div>
@@ -262,7 +308,14 @@ export default function ProgramDetail() {
                                       <div className="flex items-center gap-2">
                                         <AlertTriangle className="h-4 w-4 text-red-500" />
                                         <span className="text-red-600 font-medium">Unassigned</span>
-                                        <Button size="sm" variant="outline">
+                                        <Button 
+                                          size="sm" 
+                                          variant="outline"
+                                          onClick={() => handleAssignProfessor(delivery, {
+                                            name: section.name,
+                                            campus: section.campus_display
+                                          })}
+                                        >
                                           Assign
                                         </Button>
                                       </div>
@@ -281,6 +334,21 @@ export default function ProgramDetail() {
             })}
         </div>
       </div>
+
+      {/* Professor Assignment Modal */}
+      {assignmentModal.courseDelivery && (
+        <ProfessorAssignmentModal
+          isOpen={assignmentModal.isOpen}
+          onClose={handleCloseAssignmentModal}
+          onSave={handleAssignmentSave}
+          assignment={assignmentModal.courseDelivery && assignmentModal.sectionInfo ? {
+            courseCode: assignmentModal.courseDelivery.course?.code || 'Unknown',
+            sectionId: assignmentModal.sectionInfo.name,
+            campus: assignmentModal.sectionInfo.campus,
+            timeSlot: 'morning' as const
+          } : null}
+        />
+      )}
     </div>
   )
 }

@@ -173,6 +173,7 @@ export default function DeliveryOverview() {
   const { t } = useTranslations();
   const [selectedProgram, setSelectedProgram] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [programSearchTerm, setProgramSearchTerm] = useState("");
   const [selectedIntake, setSelectedIntake] = useState<string>("all");
   const [isAssignmentModalOpen, setIsAssignmentModalOpen] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState<{
@@ -311,6 +312,18 @@ export default function DeliveryOverview() {
   // Get years data from API (now organized by actual sections)
   const yearsData = apiData?.years || {};
   
+  // Filter programs based on search term
+  const filteredPrograms = React.useMemo(() => {
+    if (!apiData?.filters.programs) return [];
+    
+    return apiData.filters.programs.filter(program => {
+      if (programSearchTerm === "") return true;
+      const searchLower = programSearchTerm.toLowerCase();
+      return program.name.toLowerCase().includes(searchLower) ||
+             program.code.toLowerCase().includes(searchLower);
+    });
+  }, [apiData?.filters.programs, programSearchTerm]);
+
   // Filter sections and courses based on search term
   const filteredYearsData = React.useMemo(() => {
     const filtered: { [year: string]: YearData } = {};
@@ -603,27 +616,52 @@ export default function DeliveryOverview() {
             </div>
           </div>
 
+          {/* Program Search */}
+          <div className="flex items-center space-x-2 mb-4">
+            <Search className="h-4 w-4 text-muted-foreground" />
+            <div className="relative">
+              <Input
+                placeholder="Search programs by name or code..."
+                value={programSearchTerm}
+                onChange={(e) => setProgramSearchTerm(e.target.value)}
+                className="w-80 pr-8"
+              />
+              {programSearchTerm && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setProgramSearchTerm("")}
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100"
+                >
+                  ×
+                </Button>
+              )}
+            </div>
+            {programSearchTerm && (
+              <Badge variant="secondary" className="text-xs">
+                {filteredPrograms.length} program{filteredPrograms.length !== 1 ? 's' : ''} found
+              </Badge>
+            )}
+          </div>
+
           {/* Program Tabs */}
-          <ScrollArea className="w-full">
-            <div className="flex space-x-2 pb-2">
-              {apiData?.filters.programs.map((program) => (
+          <div className="w-full overflow-x-auto scrollbar-thin">
+            <div className="flex space-x-2 pb-4 min-w-max">
+              {filteredPrograms.map((program) => (
                 <Button
                   key={program.id}
                   variant="outline"
                   onClick={() => setSelectedProgram(program.id.toString())}
-                  className="whitespace-nowrap"
+                  className="whitespace-nowrap flex-shrink-0"
                 >
                   {program.code}
-                  <Badge variant="secondary" className="ml-2">
-                    {program.name.split(' ').length > 3 ? 
-                      program.name.split(' ').slice(0, 3).join(' ') + '...' : 
-                      program.name
-                    }
+                  <Badge variant="secondary" className="ml-2 max-w-none">
+                    {program.name}
                   </Badge>
                 </Button>
               ))}
             </div>
-          </ScrollArea>
+          </div>
         </div>
 
         {/* Empty State */}
@@ -665,38 +703,80 @@ export default function DeliveryOverview() {
           </div>
         </div>
 
+        {/* Program Search */}
+        <div className="flex items-center space-x-2 mb-4">
+          <Search className="h-4 w-4 text-muted-foreground" />
+          <div className="relative">
+            <Input
+              placeholder="Search programs by name or code..."
+              value={programSearchTerm}
+              onChange={(e) => setProgramSearchTerm(e.target.value)}
+              className="w-80 pr-8"
+            />
+            {programSearchTerm && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setProgramSearchTerm("")}
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100"
+              >
+                ×
+              </Button>
+            )}
+          </div>
+          {programSearchTerm && (
+            <Badge variant="secondary" className="text-xs">
+              {filteredPrograms.length} program{filteredPrograms.length !== 1 ? 's' : ''} found
+            </Badge>
+          )}
+        </div>
+
         {/* Program Tabs */}
-        <ScrollArea className="w-full">
-          <div className="flex space-x-2 pb-2">
-            {apiData?.filters.programs.map((program) => (
+        <div className="w-full overflow-x-auto scrollbar-thin">
+          <div className="flex space-x-2 pb-4 min-w-max">
+            {filteredPrograms.map((program) => (
               <Button
                 key={program.id}
                 variant={selectedProgram === program.id.toString() ? "default" : "outline"}
                 onClick={() => setSelectedProgram(program.id.toString())}
-                className="whitespace-nowrap"
+                className="whitespace-nowrap flex-shrink-0"
               >
                 {program.code}
-                <Badge variant="secondary" className="ml-2">
-                  {program.name.split(' ').length > 3 ? 
-                    program.name.split(' ').slice(0, 3).join(' ') + '...' : 
-                    program.name
-                  }
+                <Badge variant="secondary" className="ml-2 max-w-none">
+                  {program.name}
                 </Badge>
               </Button>
             ))}
           </div>
-        </ScrollArea>
+        </div>
 
         {/* Filters */}
         <div className="flex flex-wrap gap-4">
           <div className="flex items-center space-x-2">
             <Search className="h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search courses..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-64"
-            />
+            <div className="relative">
+              <Input
+                placeholder="Search courses by name or code..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-80 pr-8"
+              />
+              {searchTerm && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100"
+                >
+                  ×
+                </Button>
+              )}
+            </div>
+            {searchTerm && (
+              <Badge variant="secondary" className="text-xs">
+                Filtering courses
+              </Badge>
+            )}
           </div>
 
           <Select value={selectedIntake} onValueChange={setSelectedIntake}>
@@ -871,10 +951,10 @@ export default function DeliveryOverview() {
                                 <td className="border border-gray-200 p-2 text-center">
                                     <span className="font-mono font-medium text-xs">{courseObj.code}</span>
                                 </td>
-                                <td className="border border-gray-200 p-2">
-                                    <span className="text-xs font-medium truncate" title={courseObj.name}>
+                                <td className="border border-gray-200 p-2 max-w-xs">
+                                    <div className="text-xs font-medium overflow-x-auto whitespace-nowrap scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100" title={courseObj.name}>
                                       {courseObj.name}
-                                  </span>
+                                    </div>
                                 </td>
                                 <td className="border border-gray-200 p-2 text-center">
                                   <Badge 

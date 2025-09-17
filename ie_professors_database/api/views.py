@@ -224,37 +224,56 @@ class ProgramDeliveryOverviewAPIView(APIView):
         except (Program.DoesNotExist, Intake.DoesNotExist):
             return Response({'error': 'Program or Intake not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Get sections for this program and intake
+        # Get all sections for this program and intake
         sections = Section.objects.filter(
             program=program,
             intake=intake
-        ).prefetch_related('coursedelivery_set__course', 'coursedelivery_set__professor')
+        ).order_by('course_year', 'name')
 
+        # Get all course deliveries that are assigned to any of these sections
+        course_deliveries = CourseDelivery.objects.filter(
+            sections__program=program,
+            sections__intake=intake
+        ).select_related('course', 'professor').prefetch_related('sections').distinct()
+
+        # Create a mapping of section -> course deliveries
+        section_deliveries_map = {}
+        for section in sections:
+            section_deliveries_map[section.id] = []
+
+        # Populate the mapping
+        for delivery in course_deliveries:
+            for section in delivery.sections.filter(program=program, intake=intake):
+                if section.id in section_deliveries_map:
+                    delivery_data = {
+                        'id': delivery.id,
+                        'course': {
+                            'id': delivery.course.id if delivery.course else None,
+                            'name': delivery.course.name if delivery.course else None,
+                            'code': delivery.course.code if delivery.course else None,
+                            'credits': delivery.course.credits if delivery.course else None,
+                            'sessions': delivery.course.sessions if delivery.course else None,
+                            'course_type_display': delivery.course.get_course_type_display() if delivery.course and delivery.course.course_type else None,
+                        } if delivery.course else None,
+                        'professor': {
+                            'id': delivery.professor.id if delivery.professor else None,
+                            'name': delivery.professor.name if delivery.professor else None,
+                            'last_name': delivery.professor.last_name if delivery.professor else None,
+                            'corporate_email': delivery.professor.corporate_email if delivery.professor else None,
+                        } if delivery.professor else None
+                    }
+                    section_deliveries_map[section.id].append(delivery_data)
+
+        # Build the sections data
         sections_data = []
         for section in sections:
-            course_deliveries = []
-            for delivery in section.coursedelivery_set.all():
-                course_deliveries.append({
-                    'id': delivery.id,
-                    'course': {
-                        'id': delivery.course.id if delivery.course else None,
-                        'name': delivery.course.name if delivery.course else None,
-                        'code': delivery.course.code if delivery.course else None,
-                    },
-                    'professor': {
-                        'id': delivery.professor.id if delivery.professor else None,
-                        'name': f"{delivery.professor.name} {delivery.professor.last_name}" if delivery.professor else None,
-                        'email': delivery.professor.corporate_email if delivery.professor else None,
-                    } if delivery.professor else None
-                })
-            
             sections_data.append({
                 'id': section.id,
                 'name': section.name,
                 'campus': section.campus,
                 'campus_display': section.get_campus_display(),
                 'course_year': section.course_year,
-                'course_deliveries': course_deliveries
+                'course_deliveries': section_deliveries_map[section.id]
             })
 
         return Response({

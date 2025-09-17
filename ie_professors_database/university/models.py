@@ -115,12 +115,8 @@ class Course(models.Model):
         verbose_name = _("Course")
         verbose_name_plural = _("Courses")
     
-class SectionNameChoices(models.TextChoices):
-    A = "A", _("A")
-    B = "B", _("B")
-    
 class Section(BaseModel):
-    name = models.CharField(_("Name"), max_length=1, choices= SectionNameChoices.choices)
+    name = models.CharField(_("Name"), max_length=50)
     intake = models.ForeignKey(Intake, verbose_name=_("Intake"), on_delete=models.CASCADE)
     campus = models.CharField(_("Campus"), max_length=50, choices=CampusChoices.choices)
     course_year = models.SmallIntegerField(_("Course Year"), default=1)

@@ -9,13 +9,9 @@ const sectionFields: FieldConfig[] = [
   { 
     key: 'name', 
     label: 'Section Name', 
-    type: 'select', 
+    type: 'text', 
     required: true,
-    tab: 'basic',
-    options: [
-      { value: 'A', label: 'Section A' },
-      { value: 'B', label: 'Section B' },
-    ]
+    tab: 'basic'
   },
   { 
     key: 'campus', 
