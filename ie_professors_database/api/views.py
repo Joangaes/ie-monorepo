@@ -111,6 +111,42 @@ class SectionViewSet(viewsets.ModelViewSet):
     ordering = ['-created_at']
     permission_classes = [IsAuthenticated]
 
+    @action(detail=False, methods=['get'], url_path='active-by-program')
+    def active_by_program(self, request):
+        """
+        Optimized endpoint to fetch active sections for a program with intakes in one call.
+        Expects: ?program=1
+        Returns: { active_intakes: [...], sections: [...] }
+        """
+        program_id = request.GET.get('program')
+        if not program_id:
+            return Response({'error': 'program parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            program_id = int(program_id)
+        except ValueError:
+            return Response({'error': 'Invalid program ID format'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Get active intakes
+        active_intakes = Intake.objects.filter(is_active=True).values(
+            'id', 'name', 'semester', 'start_time', 'end_time'
+        )
+        
+        # Get sections for this program with optimized query
+        sections = Section.objects.select_related(
+            'intake', 'program', 'joined_academic_year'
+        ).filter(program_id=program_id).values(
+            'id', 'name', 'campus', 'course_year', 
+            'intake__id', 'intake__name', 'intake__semester',
+            'program__id', 'program__name', 'program__code',
+            'joined_academic_year__id', 'joined_academic_year__name'
+        )
+        
+        return Response({
+            'active_intakes': list(active_intakes),
+            'sections': list(sections)
+        })
+
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.prefetch_related('programs').select_related('area').all()
     serializer_class = CourseSerializer
@@ -164,6 +200,50 @@ class CourseDeliveryViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_at']
     ordering = ['-created_at']
     permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=['get'], url_path='bulk-by-sections')
+    def bulk_by_sections(self, request):
+        """
+        Optimized endpoint to fetch course deliveries for multiple sections at once.
+        Expects: ?sections=1,2,3,4 (comma-separated section IDs)
+        Returns: { section_id: [course_deliveries] }
+        """
+        sections_param = request.GET.get('sections', '')
+        if not sections_param:
+            return Response({'error': 'sections parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            section_ids = [int(id.strip()) for id in sections_param.split(',') if id.strip().isdigit()]
+            if not section_ids:
+                return Response({'error': 'Invalid section IDs provided'}, status=status.HTTP_400_BAD_REQUEST)
+        except ValueError:
+            return Response({'error': 'Invalid section IDs format'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Optimized query: fetch all course deliveries for all sections at once
+        course_deliveries = CourseDelivery.objects.select_related(
+            'course', 'course__area', 'professor'
+        ).prefetch_related(
+            'sections'
+        ).filter(sections__id__in=section_ids).distinct()
+        
+        # Group deliveries by section
+        deliveries_by_section = {}
+        for section_id in section_ids:
+            deliveries_by_section[section_id] = []
+        
+        # Serialize all deliveries once to avoid repeated serialization
+        serialized_deliveries = {}
+        for delivery in course_deliveries:
+            serialized_deliveries[delivery.id] = CourseDeliverySerializer(delivery).data
+        
+        # Group deliveries by section using prefetched data
+        for delivery in course_deliveries:
+            # Use prefetched sections to avoid additional queries
+            for section in delivery.sections.all():
+                if section.id in section_ids:
+                    deliveries_by_section[section.id].append(serialized_deliveries[delivery.id])
+        
+        return Response(deliveries_by_section)
 
 class CourseDeliverySectionViewSet(viewsets.ModelViewSet):
     queryset = CourseDeliverySection.objects.select_related('course_delivery', 'section').all()

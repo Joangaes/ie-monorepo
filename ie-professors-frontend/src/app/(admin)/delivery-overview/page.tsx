@@ -260,23 +260,56 @@ export default function DeliveryOverview() {
     if (!selectedProgramData) return;
     
     try {
-      // Fetch active terms (what frontend calls "Term" but API calls "intakes")
-      const termsResponse = await apiGet<any>(`${base_url}/api/intakes/?is_active=true`);
-      const activeTerms = termsResponse.results || termsResponse;
-      
-      // Fetch sections for this program
-      const sectionsResponse = await apiGet<any>(`${base_url}/api/sections/?program=${selectedProgram}`);
-      const programSections = sectionsResponse.results || sectionsResponse;
+      // Use the optimized endpoint to fetch both active intakes and sections in one call
+      const response = await apiGet<{active_intakes: any[], sections: any[]}>(`${base_url}/api/sections/active-by-program/?program=${selectedProgram}`);
+      const { active_intakes: activeTerms, sections: programSections } = response;
       
       // Filter sections linked to active terms
       const activeSections = programSections.filter((section: any) => 
-        activeTerms.some((term: any) => term.id === section.intake?.id)
-      );
+        activeTerms.some((term: any) => term.id === section.intake__id)
+      ).map((section: any) => ({
+        // Transform the flattened response back to the expected format
+        id: section.id,
+        name: section.name,
+        campus: section.campus,
+        course_year: section.course_year,
+        intake: {
+          id: section.intake__id,
+          name: section.intake__name,
+          semester: section.intake__semester
+        },
+        program: {
+          id: section.program__id,
+          name: section.program__name,
+          code: section.program__code
+        },
+        joined_academic_year: {
+          id: section.joined_academic_year__id,
+          name: section.joined_academic_year__name
+        }
+      }));
       
-      // Auto-populate these sections
-      for (const section of activeSections) {
-        await autoAddSectionColumn(section);
-      }
+      // Add all section columns first
+      const newSectionColumns: SectionColumn[] = [];
+      activeSections.forEach((section: any) => {
+        const newSectionColumn: SectionColumn = {
+          id: `section_${section.id}_${section.course_year}_auto`,
+          name: `${section.name} (Year ${section.course_year})`,
+          displayName: `${section.name} (Year ${section.course_year})`,
+          sectionData: { ...section, targetYear: section.course_year }
+        };
+        newSectionColumns.push(newSectionColumn);
+      });
+      
+      // Update section columns state
+      setSectionColumns(prev => {
+        const existingIds = new Set(prev.map(col => col.sectionData.id));
+        const uniqueNewColumns = newSectionColumns.filter(col => !existingIds.has(col.sectionData.id));
+        return [...prev, ...uniqueNewColumns];
+      });
+      
+      // Bulk populate courses for all sections at once (major optimization!)
+      await populateBulkSectionCourses(activeSections);
       
       // Mark this program as auto-populated
       autoPopulatedRef.current = selectedProgramData.id.toString();
@@ -385,6 +418,58 @@ export default function DeliveryOverview() {
     }
   };
 
+  // Optimized bulk course population for multiple sections
+  const populateBulkSectionCourses = async (sections: any[]) => {
+    if (sections.length === 0) return;
+    
+    try {
+      // Get all section IDs
+      const sectionIds = sections.map(section => section.id).join(',');
+      
+      // Fetch course deliveries for all sections at once using the optimized bulk endpoint
+      const response = await apiGet<{[key: string]: any[]}>(`${base_url}/api/course-deliveries/bulk-by-sections/?sections=${sectionIds}`);
+      
+      // Process each section's data
+      const yearCoursesUpdate: {[year: number]: YearCourses} = {};
+      
+      sections.forEach(section => {
+        const sectionId = section.id.toString();
+        const targetYear = section.course_year;
+        const courseDeliveries = response[sectionId] || [];
+        
+        // Extract courses from course deliveries
+        const allSectionCourses = courseDeliveries
+          .filter((delivery: any) => delivery.course) // Only keep deliveries with courses
+          .map((delivery: any) => ({
+            ...delivery.course,
+            delivery_year: delivery.year || delivery.academic_year, // Keep track of delivery year
+            delivery_info: delivery // Keep delivery info for reference
+          }));
+        
+        if (!yearCoursesUpdate[targetYear]) {
+          yearCoursesUpdate[targetYear] = {};
+        }
+        yearCoursesUpdate[targetYear][section.id] = allSectionCourses;
+      });
+      
+      // Update state with all the new data at once
+      setYearCourses(prev => {
+        const updated = { ...prev };
+        Object.entries(yearCoursesUpdate).forEach(([year, yearData]) => {
+          const yearNum = parseInt(year);
+          if (!updated[yearNum]) {
+            updated[yearNum] = {};
+          }
+          Object.assign(updated[yearNum], yearData);
+        });
+        return updated;
+      });
+      
+    } catch (error: any) {
+      toast.error(`Failed to fetch courses for sections: ${error.message}`);
+    }
+  };
+
   const removeSectionColumn = (sectionId: string) => {
     setSectionColumns(prev => prev.filter(col => col.id !== sectionId));
     
@@ -426,12 +511,16 @@ export default function DeliveryOverview() {
     if (!selectedProgramData || sectionColumns.length === 0) return;
 
     try {
+      // Get all section IDs at once
+      const sectionIds = sectionColumns.map(col => col.sectionData.id).join(',');
+      
+      // Fetch all course deliveries for all sections at once using bulk endpoint
+      const response = await apiGet<{[key: string]: any[]}>(`${base_url}/api/course-deliveries/bulk-by-sections/?sections=${sectionIds}`);
+      
       const assignments: {[key: string]: any} = {};
-      for (const sectionCol of sectionColumns) {
-        const sectionId = sectionCol.sectionData.id;
-        const response = await apiGet<any>(`${base_url}/api/course-deliveries/?sections=${sectionId}`);
-        const deliveries = response.results || response;
-        
+      
+      // Process all deliveries from the bulk response
+      Object.entries(response).forEach(([sectionId, deliveries]) => {
         deliveries.forEach((delivery: any) => {
           if (delivery.course && delivery.professor) {
             // Store assignments using course ID as primary key (more reliable)
@@ -442,7 +531,8 @@ export default function DeliveryOverview() {
             assignments[idKey].push(delivery.professor);
           }
         });
-      }
+      });
+      
       setProfessorAssignments(assignments);
     } catch (error: any) {
       console.error('Error fetching professor assignments:', error);
